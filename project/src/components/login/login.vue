@@ -1,0 +1,81 @@
+<template>
+    <div class="login">
+        <div class="phone-box ilist">
+            <input v-model="phone" class="text phone" type="text" placeholder="输入手机号码" maxlength="11">
+            <p :class="['codebtn bgcolor',{hide:hide}]" @click="phoneCheck()">获取验证码</p>
+            <p :class="['timeCatch codebtn',{hide:show}]" ref="seconds">{{seconds}}s</p>
+        </div>
+        <input class="text code ilist" type="text" placeholder="输入验证码" maxlength="4">
+        <pop :message="message">
+            <div slot="pop">{{msg}}</div>
+        </pop>  
+    </div>
+</template>
+
+<script>
+    import pop from '../pop'
+    export default{
+        data(){
+            return{
+                hide:false,
+                show:true,
+                seconds:60,
+                phone:'',
+                message:true,
+                msg:''
+            }
+        },
+        methods:{
+            sec(){
+                this.seconds--;
+            },
+            phoneCheck(){
+                var regPhone = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|17[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/; 
+                if (!this.phone) {
+                    this.message=false
+                    this.msg='手机号不能为空'
+                } else if (!regPhone.test(this.phone)) {
+                    this.message=false
+                    this.msg='手机号格式错误'
+                } else {
+                    this.hide = true;
+                    this.show = false;
+                    setInterval(this.sec,1000);
+                    this.message=true
+                    return true
+                }
+                this.popoff();
+            },
+            popoff(){
+                let self = this;
+                setTimeout(function() {
+                    self.message=true
+                }, 2000);
+            }
+
+        },
+        components:{
+            pop
+        }
+    }
+</script>
+
+<style scoped>
+    .ilist {margin-top: 3.5rem;}
+    .phone-box {position: relative;}
+    .phone-box .codebtn {position: absolute;width: 18rem;height: 5.6rem;line-height: 5.6rem;text-align: center;border-radius:0.8rem;
+    font-size: 2.4rem;color:#fff;right: 2rem;top: 1.2rem;
+    box-shadow:0 0.4rem 1.2rem rgba(49,170,246,0.5);
+    }
+    .sign-btn {height: 8rem;line-height: 8rem;color:#fff;font-size: 2.4rem;text-align: center;margin:3.5rem 4rem 0;border-radius:1.2rem;}
+    .timeCatch {background: #ccc;}
+    .bgcolor {
+        background: #8a5607;
+        background: -moz-linear-gradient(top, #55bafa 0% 0%, #31aaf6 100% 100%);
+        background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#55bafa), color-stop(100%,#31aaf6));
+        background: -webkit-linear-gradient(top, #55bafa 0% 0%,#31aaf6 100% 100%);
+        background: -o-linear-gradient(top, #55bafa 0% 0%,#31aaf6 100% 100%);
+        background: -ms-linear-gradient(top, #55bafa 0% 0%,#31aaf6 100% 100%);
+        background: linear-gradient(to bottom, #55bafa 0% 0%,#31aaf6 100% 100%);
+    }
+</style>

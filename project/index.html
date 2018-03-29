@@ -5,10 +5,23 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>绘画大赛</title>
     <script>!function(e){function t(a){if(i[a])return i[a].exports;var n=i[a]={exports:{},id:a,loaded:!1};return e[a].call(n.exports,n,n.exports,t),n.loaded=!0,n.exports}var i={};return t.m=e,t.c=i,t.p="",t(0)}([function(e,t){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var i=window;t["default"]=i.flex=function(normal,e,t){var a=e||10,n=t||1,r=i.document,o=navigator.userAgent,d=o.match(/Android[\S\s]+AppleWebkit\/(\d{3})/i),l=o.match(/U3\/((\d+|\.){5,})/i),c=l&&parseInt(l[1].split(".").join(""),10)>=80,p=navigator.appVersion.match(/(iphone|ipad|ipod)/gi),s=i.devicePixelRatio||1;p||d&&d[1]>534||c||(s=1);var u=normal?1:1/s,m=r.querySelector('meta[name="viewport"]');m||(m=r.createElement("meta"),m.setAttribute("name","viewport"),r.head.appendChild(m)),m.setAttribute("content","width=device-width,user-scalable=no,initial-scale="+u+",maximum-scale="+u+",minimum-scale="+u),r.documentElement.style.fontSize=normal?"50px": a/2*s*n+"px"},e.exports=t["default"]}]);  flex(false,10, 1);</script>
-
+    <style>
+      .pf {font-family: PingFangTC-Light, sans-serif;}
+      .sy {font-family: 'Source Han Sans CN';}
+      input {-webkit-appearance:none;-moz-appearance:none;-ms-appearance:none;}
+      select {-webkit-appearance:none;-moz-appearance:none;-ms-appearance:none;}
+      :-moz-placeholder {color:#c5d1dc;}
+      ::-moz-placeholder {color:#c5d1dc;}
+      input:-ms-input-placeholder{color:#c5d1dc;}
+      input::-webkit-input-placeholder{color:#c5d1dc;}
+      textarea:-ms-input-placeholder{color:#c5d1dc;}
+      textarea::-webkit-input-placeholder{color:#c5d1dc;}
+      .text {font-size: 2.8rem;color:#333;border:0.1rem solid #ccc;border-radius:1.5rem;line-height: 8rem;width: 100%;
+      text-indent:0.5em;}
+    </style>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app" class="pf"></div>
     <!-- built files will be auto injected -->
   </body>
 </html>

@@ -89,9 +89,9 @@ export default {
 			],
 			option: {
 				img: 'https://o90cnn3g2.qnssl.com/0C3ABE8D05322EAC3120DDB11F9D1F72.png',
-				autoCrop: true,
-				autoCropWidth: 200,
-				autoCropHeight: 200,
+				// autoCrop: true,
+				// autoCropWidth: 200,
+				// autoCropHeight: 200,
 				fixedBox: true
 			},
 			downImg: '#'
