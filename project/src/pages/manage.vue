@@ -83,9 +83,10 @@
 </script>
 
 <style scoped>
-    .manage {background: #fff;padding-bottom: 8rem;}
+    body,html{background: #fff;}
+    .manage {background: #fff;padding-bottom: 14rem;}
     .manageTop {background:url('../public/images/bj1.jpg') no-repeat center center;background-size: 100%;min-height: 40.3rem;}
-    .manageTop h2{font-size: 3.8rem;color:#fff;padding:3rem 0;}
+    .manageTop h2{font-size: 3.8rem;color:#fff;padding:1.5rem 0;position: relative;top: 1.5rem;}
     .voice {background: url('../public/images/decorate2.jpg') no-repeat center center;background-size: 100%;height: 7.9rem;
     border-radius:0 0 1.5rem 1.5rem;margin-top: 2rem;}
     .voice-con {width: 19rem;height: 5.8rem;margin:0 auto;border-radius:1.2rem;background: #fff;position: relative;top: 1rem;display: flex;
@@ -93,7 +94,7 @@
     .voice-con .voice-icon {width: 2.3rem;margin-left: 2rem;}
     .voice-con .seconds {font-size: 2.4rem;color:#999;margin-left: 9rem;}
     .infor {background: #fff;border-radius:1.5rem;box-shadow:0 1.4rem 6rem rgba(3,15,39,0.14);width: 61rem;margin:0 auto;
-    position: relative;min-height: 31rem;}
+    position: relative;min-height: 31rem;position: relative;top: 2rem;}
     .infor-box {padding: 3rem;}
     .infor-con {width: 34rem;}
     .infor .name {font-size: 3.4rem;color:#333;margin-bottom: 1rem;}
