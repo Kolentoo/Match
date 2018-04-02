@@ -28,9 +28,14 @@
         methods:{
             sec(){
                 this.seconds--;
+                if(this.seconds===0){
+                    this.hide = false;
+                    this.show = true;
+                }
             },
             phoneCheck(){
                 var regPhone = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|17[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/; 
+                console.log(this.phone)
                 if (!this.phone) {
                     this.message=false
                     this.msg='手机号不能为空'
@@ -42,6 +47,29 @@
                     this.show = false;
                     setInterval(this.sec,1000);
                     this.message=true
+                    var tk = sessionStorage.getItem('tk'); 
+                    this.$axios.post(`http://192.168.1.227:8081/actives/getPictureSayCode`, {
+                        _token:tk,
+                        mobile:this.phone
+                    })
+                    .then(function (response) {
+                        console.log(response);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+
+                    // this.$axios({
+                    //     method: 'post',
+                    //     url: 'http://192.168.1.227:8081/actives/getPictureSayCode',
+                    //     data: {
+                    //         _token:tk,
+                    //         mobile:this.phone
+                    //     }
+                    // }).then((res)=>{
+                    //     console.log(res)
+                    // })
                     return true
                 }
                 this.popoff();
@@ -53,6 +81,17 @@
                 }, 2000);
             }
 
+        },
+        created(){
+            this.$axios.get(`http://192.168.1.227:8081/actives/getToken`,{
+                params:{
+
+                }
+            }).then(res=>{
+                sessionStorage.setItem('tk',res.data); 
+                // var tk = sessionStorage.getItem('tk'); 
+                // console.log(tk)
+            })
         },
         components:{
             pop

@@ -83,12 +83,14 @@
         <pop :message="message">
             <div slot="pop">{{msg}}</div>
         </pop>
+        <popus></popus>
     </div>
 </template>
 
 <script>
     import login from '../components/login/login'
     import pop from '../components/pop'
+    import popus from '../components/popus/popus'
     export default{
         data(){
             return{
@@ -106,7 +108,7 @@
             }
         },
         components:{
-            login,pop
+            login,pop,popus
         },
         created(){
 
