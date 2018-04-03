@@ -11,16 +11,16 @@
                     <div class="content">
                         <div class="subtance">
                             <div class="input">
-                                <input class="work-name" type="text" placeholder="输入作品名字，限10字以内">
+                                <input class="work-name" type="text" placeholder="输入作品名字，限10字以内" v-model="workname">
                             </div>
-                            <textarea class="work-story" placeholder="输入我的作品故事，限100字以内"></textarea>
+                            <textarea class="work-story" placeholder="输入我的作品故事，限100字以内" v-model="workstory"></textarea>
                         </div>
                     </div>
                     <div class="file-box clearfix">
-                        <chart class="fl" msg="上传参赛者照片"></chart>
-                        <chart class="fr" msg="上传作品"></chart>
+                        <chart ref="chart1" class="fl" msg="上传参赛者照片"></chart>
+                        <chart ref="chart2" class="fr" msg="上传作品"></chart>
                     </div>
-                    <p class="sure">确定</p>
+                    <p class="sure" @click="sure">确定</p>
                 </div>
             </div>
             
@@ -54,25 +54,89 @@
             </div>
             <div class="mask"></div>
         </div>
+        <pop :message="message">
+            <div slot="pop">{{msg}}</div>
+        </pop>
     </div>
 </template>
 
 <script>
     import chart from '../components/chart/chart'
+    import pop from '../components/pop'
     export default{
         data(){
             return{
                 on:true,
                 photo:'上传参赛者照片',
-                work:'上传作品'
+                work:'上传作品',
+                message:true,
+                msg:'',
+                workname:'',
+                workstory:'',
+                base1:'',
+                base2:''
             }
         },
         components:{
-            chart
+            chart,pop
         },
         methods:{
             pclose(){
                 this.on = true
+            },
+            sure(){
+                this.$refs.chart1.getbase1();
+                this.$refs.chart2.getbase2();
+                var self = this
+                setTimeout(function() {
+                    console.log(self.$refs.chart1.base1)
+                }, 1000);
+                console.log(this.$refs.chart1)
+                if(this.workname===''){
+                    this.message=false
+                    this.msg='作品名字不能为空'
+                }else{
+                    if(this.workstory===''){
+                        this.message=false;
+                        this.msg='作品故事不能为空'
+                    }else{
+                        if(this.$refs.chart1.previewsurl===''){
+                            this.message=false;
+                            this.msg='头像不能为空'
+                        }else{
+                            if(this.$refs.chart2.previewsurl2===''){
+                                this.message=false;
+                                this.msg='作品不能为空'
+                            }else{
+                                console.log('test ok')
+                                // this.upinfo();
+                            }
+                        }
+                    }
+                }
+                this.popoff();
+            },
+            upinfo(){
+                // var tk = sessionStorage.getItem('tk'); 
+                // this.$axios.post('http://192.168.1.227:8081/actives/pictureSayAdd',{
+                //     params:{
+                //         _token:tk,
+                //         id:1,
+                //         mobile:'',
+                //         head_img:'',
+                //         works_img:'',
+                //         works_name:'',
+                //         works_det:''
+                //     }
+                // }).then((res)=>{
+                //     console.log(res)
+                // })
+            },
+            popoff(){
+                let self = this;
+                setTimeout(function() {
+                    self.message=true
+                }, 2000);
             }
         }
     }

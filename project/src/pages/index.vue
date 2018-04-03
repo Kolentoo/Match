@@ -76,7 +76,7 @@
                     <div class="login-box">
                         <login></login>
                     </div>
-                    <p class="sign-btn bgcolor">登录</p>
+                    <p class="sign-btn bgcolor" @click="signbtn2">登录</p>
                 </div>
             </div>
         </div>
@@ -185,6 +185,7 @@
                                             this.$refs.login.codeCheck()
                                             if(this.$refs.login.codeCheck()===true){
                                                 console.log('ok')
+                                                this.submitInfo();
                                             }
                                         }
                                     }
@@ -195,6 +196,18 @@
                 }else{
 
                 }
+            },
+            signbtn2(){
+                var tk = sessionStorage.getItem('tk'); 
+                this.$axios.get(`http://192.168.1.227:8081/actives/SignIn`,{
+                    params:{
+                        _token:tk,
+                        mobile:this.$refs.login.phone,
+                        code:this.$refs.login.code
+                    }
+                }).then(res=>{
+                    console.log(res)
+                })
             },
             submitInfo(){
                 var tk = sessionStorage.getItem('tk'); 
@@ -208,13 +221,11 @@
                         province:this.cid2,
                         city:this.city2,
                         organization:this.school,
-                        mobile:'',
-                        code:''
+                        mobile:this.$refs.login.phone,
+                        code:this.$refs.login.code
                     }
                 }).then(res=>{
-                    
-                    // var tk = sessionStorage.getItem('tk'); 
-                    // console.log(tk)
+                    console.log(res)
                 })
             },
             choose(){

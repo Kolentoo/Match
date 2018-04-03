@@ -40,7 +40,7 @@
                 <button @click="finish('blob')" class="btn">preview(blob)</button>
                 <a @click="down('base64')" class="btn">download(base64)</a>
                 <a @click="down('blob')" class="btn">download(blob)</a>
-                <p class="base" @click="getbase()">获取base64</p>
+                <p class="base" @click="getbase1()">获取base64</p>
                 <div style=" width: 100%;" class="tips hide">
                     <label class="c-item">
                         <span>上传图片是否显示原始宽高 (针对大图 可以铺满)</span>
@@ -119,6 +119,8 @@
                 previewsurl:'',
                 previewsurl2:'',
                 previews: {},
+                base1:'',
+                base2:'',
                 lists: [
                     {
                         img: ''
@@ -219,22 +221,20 @@
                 // 转化为blob
                 reader.readAsArrayBuffer(file)
             },
-            getbase(){
+            getbase1(){
                 this.$refs.cropper.getCropData((data) => {
                 // do something
-                console.log(data)  
+                   this.base1=data 
                 })
             },
             closepic(){
                 this.previewsurl='';
-                console.log(this.previews)
             },
 
 
             // 实时预览函数
             realTime2 (data) {
                 this.previewsurl2 = data.url
-                console.log(data)
             },
             finish2 (type) {
                 // 输出
@@ -289,7 +289,6 @@
                     }
                     if (num === 1) {
                         this.option2.img = data
-                        console.log(data)
                     } else if (num === 2) {
                         this.example2.img = data
                     }
@@ -302,12 +301,11 @@
             getbase2(){
                 this.$refs.cropper2.getCropData((data) => {
                 // do something
-                console.log(data)  
+                    this.base2=data 
                 })
             },
             closepic2(){
                 this.previewsurl2='';
-                console.log(this.previews)
             }
         },
         components: {
@@ -323,7 +321,7 @@
     .zone .p1 {font-size: 2.8rem;text-align: center;color:#666;padding-top: 2rem;}
 
     .wrapper {width: 24rem;height: 24rem;background: #f2f5f7;border-radius:1.2rem;overflow: hidden;}
-    .wrapper .vue-cropper {background: none;display: none;} 
+    .wrapper .vue-cropper {background: none;opacity: 0;} 
     .loadbtn {position: absolute;width: 100%;height: 100%;top: 0;left: 0;display: inline-block;opacity: 0;z-index:500;}
     .closepic {position: absolute;top: 0;right: 0;margin:-2.1rem -2.1rem 0 0;}
     .cropper-box-canvas {opacity: 0;}
