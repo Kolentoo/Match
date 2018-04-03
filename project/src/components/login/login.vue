@@ -5,7 +5,7 @@
             <p :class="['codebtn bgcolor',{hide:hide}]" @click="phoneCheck()">获取验证码</p>
             <p :class="['timeCatch codebtn',{hide:show}]" ref="seconds">{{seconds}}s</p>
         </div>
-        <input class="text code ilist" type="text" placeholder="输入验证码" maxlength="4">
+        <input class="text code ilist" type="text" placeholder="输入验证码" maxlength="4" v-model="code">
         <pop :message="message">
             <div slot="pop">{{msg}}</div>
         </pop>  
@@ -22,12 +22,15 @@
                 seconds:60,
                 phone:'',
                 message:true,
-                msg:''
+                msg:'',
+                code:''
             }
         },
         methods:{
             sec(){
-                this.seconds--;
+                if(this.seconds>0){
+                    this.seconds--;
+                }
                 if(this.seconds===0){
                     this.hide = false;
                     this.show = true;
@@ -35,7 +38,6 @@
             },
             phoneCheck(){
                 var regPhone = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|17[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/; 
-                console.log(this.phone)
                 if (!this.phone) {
                     this.message=false
                     this.msg='手机号不能为空'
@@ -47,38 +49,59 @@
                     this.show = false;
                     setInterval(this.sec,1000);
                     this.message=true
-                    var tk = sessionStorage.getItem('tk'); 
-                    this.$axios.post(`http://192.168.1.227:8081/actives/getPictureSayCode`, {
-                        _token:tk,
-                        mobile:this.phone
-                    })
-                    .then(function (response) {
-                        console.log(response);
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-
-
-                    // this.$axios({
-                    //     method: 'post',
-                    //     url: 'http://192.168.1.227:8081/actives/getPictureSayCode',
-                    //     data: {
-                    //         _token:tk,
-                    //         mobile:this.phone
-                    //     }
-                    // }).then((res)=>{
-                    //     console.log(res)
-                    // })
-                    return true
+                    this.sencode();
                 }
                 this.popoff();
+            },
+            sencode(){
+                var tk = sessionStorage.getItem('tk'); 
+                this.$axios.post(`http://192.168.1.227:8081/actives/getPictureSayCode`, {
+                    _token:tk,
+                    mobile:this.phone
+                }).then((res)=> {
+                    if(res.status===0){
+                        this.msg=res.msg
+                        this.message=false
+                    }else{
+                        this.msg='发送成功'
+                        this.message=false
+                    }
+                })
+                this.popoff();
+            },
+            pcheck(){
+                var regPhone = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|17[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/; 
+                if (!this.phone) {
+                    this.message=false
+                    this.msg='手机号不能为空'
+                } else if (!regPhone.test(this.phone)) {
+                    this.message=false
+                    this.msg='手机号格式错误'
+                } else {
+                    return true;
+                }
+                this.popoff();
+            },
+            codeCheck(){
+                if (!this.code) {
+                    this.message=false
+                    this.msg='验证码不能为空'
+                    this.popoff();
+                    return false
+                }else if(this.code.length<4){
+                    this.message=false
+                    this.msg='验证码错误'
+                    this.popoff();
+                    return false
+                }else{
+                    return true
+                }
             },
             popoff(){
                 let self = this;
                 setTimeout(function() {
                     self.message=true
-                }, 2000);
+                }, 3000);
             }
 
         },
@@ -103,7 +126,7 @@
     .ilist {margin-top: 3.5rem;}
     .phone-box {position: relative;}
     .phone-box .codebtn {position: absolute;width: 18rem;height: 5.6rem;line-height: 5.6rem;text-align: center;border-radius:0.8rem;
-    font-size: 2.4rem;color:#fff;right: 2rem;top: 1.2rem;
+    font-size: 2.4rem;color:#fff;right: 0rem;top: 2rem;
     box-shadow:0 0.4rem 1.2rem rgba(49,170,246,0.5);
     }
     .sign-btn {height: 8rem;line-height: 8rem;color:#fff;font-size: 2.4rem;text-align: center;margin:3.5rem 4rem 0;border-radius:1.2rem;}

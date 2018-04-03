@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import index from '../pages/index'
 import manage from '../pages/manage'
 import upload from '../pages/upload'
-// import home from '../pages/home'
+import home from '../pages/home'
 
 Vue.use(Router)
 
@@ -23,6 +23,11 @@ export default new Router({
       path: '/upload',
       name: 'upload',
       component: upload
+    },
+    {
+      path: '/home',
+      name: 'home',
+      component: home
     }
   ]
 })

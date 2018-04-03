@@ -42,28 +42,28 @@
                         <div class="group-box info">
                             <select name="group" class="group ilist" v-model="group">
                                 <option value="">选择比赛组别</option>
-                                <option value="">幼儿组</option>
-                                <option value="">少儿组</option>
-                                <option value="">特别组</option>
+                                <option value="0">幼儿组</option>
+                                <option value="1">少儿组</option>
+                                <option value="2">特别组</option>
                             </select>
                             <img class="arrow" src="../public/images/arrow.png" alt="">
                         </div>
                         <div class="user-info clearfix ilist">
                             <div class="city1 info fl">
-                                <select name="city1" v-model="city1">
-                                    <option value="">省份/直辖市</option>
+                                <select name="city1" v-model="city1" @change="choose">
+                                    <option :value="idx" v-for="(item,idx) in cgroup">{{item.name}}</option>
                                 </select>
                                 <img class="arrow" src="../public/images/arrow.png" alt="">
                             </div>
                             <div class="city2 info fr">
                                 <select name="city2" v-model="city2">
-                                    <option value="">城市/区县</option>
+                                    <option :value="list.id" v-for="list in cgroup2">{{list.name}}</option>
                                 </select>
                                 <img class="arrow" src="../public/images/arrow.png" alt="">
                             </div>
                         </div>
-                        <input class="text ilist school" type="text" placeholder="输入所在机构名或学校" maxlength="25">
-                        <login></login>
+                        <input class="text ilist school" type="text" placeholder="输入所在机构名或学校" maxlength="25" v-model="school">
+                        <login ref="login"></login>
                     </div>
                     <p class="sign-btn bgcolor" @click="signbtn">报名</p>
                 </div>
@@ -103,15 +103,35 @@
                 age:'',
                 sex:'',
                 group:'',
-                city1:'',
-                city2:''
+                cgroup:[{
+                    id:0,
+                    name:'省份/直辖市'
+                }],
+                cgroup2:[{
+                    id:0,
+                    name:'城市/区县'
+                }],
+                city1:0,
+                cid:'',
+                cid2:'',
+                city2:0,
+                school:''
             }
         },
         components:{
             login,pop,popus
         },
         created(){
+            this.$axios.get(`http://192.168.1.227:8081/actives/getCity`, {
+            }).then((res)=> {
+                this.cgroup=res.data.msg
+                this.cgroup.unshift({
+                    id:0,
+                    name:'省份/直辖市'
+                })
+                this.city1 = 0
 
+            })
         },
         methods:{
             tab(event){
@@ -140,7 +160,6 @@
             signbtn(){
                 this.checkName();
                 if(this.checkName()===true){
-                    console.log(this.age)
                     if(this.age===''){
                         this.message=false
                         this.msg='参赛者年龄不能为空'
@@ -153,13 +172,57 @@
                                 this.message=false
                                 this.msg='参赛组别不能为空'
                             }else{
-                                console.log('ok')
+                                if(this.city1===0||this.city1===0){
+                                    this.message=false
+                                    this.msg='请选择城市'
+                                }else{
+                                    if(this.school===''){
+                                        this.message=false
+                                        this.msg='学校或者机构不能为空'
+                                    }else{
+                                        this.$refs.login.pcheck()
+                                        if(this.$refs.login.pcheck()===true){
+                                            this.$refs.login.codeCheck()
+                                            if(this.$refs.login.codeCheck()===true){
+                                                console.log('ok')
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
                 }else{
 
                 }
+            },
+            submitInfo(){
+                var tk = sessionStorage.getItem('tk'); 
+                this.$axios.get(`http://192.168.1.227:8081/actives/saveInfo`,{
+                    params:{
+                        _token:tk,
+                        childname:this.name,
+                        age:this.age,
+                        sex:this.sex,
+                        group_type:this.group,
+                        province:this.cid2,
+                        city:this.city2,
+                        organization:this.school,
+                        mobile:'',
+                        code:''
+                    }
+                }).then(res=>{
+                    
+                    // var tk = sessionStorage.getItem('tk'); 
+                    // console.log(tk)
+                })
+            },
+            choose(){
+                this.cgroup2=this.cgroup[this.city1].child; 
+                this.city2=this.cgroup2[0].id;
+                let cid1 = this.city2.toString(); 
+                this.cid2 = cid1.substr(0,2);
+                console.log(cid2);
             },
             popoff(){
                 let self = this;
