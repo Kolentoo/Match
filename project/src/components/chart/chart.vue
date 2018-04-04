@@ -70,12 +70,12 @@
                     </label>
                 </div>
             </div>
-            <div class="show-preview" :style="{'width': previews.w + 'px', 'height': previews.h + 'px',  'overflow': 'hidden', 'margin': '5px'}">
+            <div :class="['show-preview',{picon:on}]" :style="{'width': previews.w + 'px', 'height': previews.h + 'px',  'overflow': 'hidden', 'margin': '5px'}">
                 <div :style="previews.div">
-                    <img :src="previewsurl" :style="previews.img">
+                    <img :src="previewsurl||curl1" :style="previews.img">
                 </div>
             </div>
-            <img v-if="previewsurl!=''" class="closepic" @click="closepic()" src="../../public/images/close.png" alt="">
+            <img v-if="previewsurl!=''||curl1!=''" class="closepic" @click="closepic()" src="../../public/images/close.png" alt="">
         </div>
 
         <div class="sign" v-if="msg==='上传作品'">
@@ -99,12 +99,12 @@
                 <label class="btn loadbtn" for="uploads2">upload</label>
             </div>
             <input type="file" id="uploads2" style="position:absolute; clip:rect(0 0 0 0);" accept="image/png, image/jpeg, image/gif, image/jpg" @change="uploadImg2($event, 1)">
-            <div class="show-preview" :style="{'width': previews.w + 'px', 'height': previews.h + 'px',  'overflow': 'hidden', 'margin': '5px'}">
+            <div :class="['show-preview',{picon:on}]" :style="{'width': previews.w + 'px', 'height': previews.h + 'px',  'overflow': 'hidden', 'margin': '5px'}">
                 <div :style="previews.div">
-                    <img :src="previewsurl2" :style="previews.img">
+                    <img :src="previewsurl2||curl2" :style="previews.img">
                 </div>
             </div>
-            <img v-if="previewsurl2!=''" class="closepic" @click="closepic2()" src="../../public/images/close.png" alt="">
+            <img v-if="previewsurl2!=''||curl2!=''" class="closepic" @click="closepic2()" src="../../public/images/close.png" alt="">
         </div>
     </div>
 </template>
@@ -112,7 +112,7 @@
 <script>
     import vueCropper from 'vue-cropper'
     export default{
-        props:['msg'],
+        props:['msg','curl1','curl2'],
         data(){
             return{
                 crap: false,
@@ -137,7 +137,8 @@
                     img:'',
                     fixedBox: true
                 },
-                downImg: '#'
+                downImg: '#',
+                on:false
             }
         },
         methods: {
@@ -204,31 +205,38 @@
                 var reader = new FileReader()
                 reader.onload = (e) => {
                     let data
-                    if (typeof e.target.result === 'object') {
-                        // 把Array Buffer转化为blob 如果是base64不需要
-                        data = window.URL.createObjectURL(new Blob([e.target.result]))
-                    } else {
-                        data = e.target.result
-                    }
+                    // if (typeof e.target.result === 'object') {
+                    //     // 把Array Buffer转化为blob 如果是base64不需要
+                    //     data = window.URL.createObjectURL(new Blob([e.target.result]))
+                    // } else {
+                    //     data = e.target.result
+                    // }
+                    data = e.target.result
                     if (num === 1) {
                         this.option.img = data
                     } else if (num === 2) {
                         this.example2.img = data
                     }
+                    this.$emit('gbs',e.target.result);
                 }
                 // 转化为base64
                 // reader.readAsDataURL(file)
                 // 转化为blob
-                reader.readAsArrayBuffer(file)
-            },
-            getbase1(){
-                this.$refs.cropper.getCropData((data) => {
+                reader.readAsDataURL(file)
+                this.on=false
+                // this.getbase1();
+                // this.$refs.cropper.getCropData((data) => {
                 // do something
-                   this.base1=data 
-                })
+                
+            // })
             },
+            // getbase1(){
+
+            // },
             closepic(){
                 this.previewsurl='';
+                this.curl1='';
+                this.on=true
             },
 
 
@@ -281,35 +289,46 @@
                 var reader = new FileReader()
                 reader.onload = (e) => {
                     let data
-                    if (typeof e.target.result === 'object') {
-                        // 把Array Buffer转化为blob 如果是base64不需要
-                        data = window.URL.createObjectURL(new Blob([e.target.result]))
-                    } else {
-                        data = e.target.result
-                    }
+                    // if (typeof e.target.result === 'object') {
+                    //     // 把Array Buffer转化为blob 如果是base64不需要
+                    //     data = window.URL.createObjectURL(new Blob([e.target.result]))
+                    // } else {
+                    //     data = e.target.result
+                    // }
+                    data = e.target.result
                     if (num === 1) {
                         this.option2.img = data
                     } else if (num === 2) {
                         this.example2.img = data
                     }
+                    this.$emit('gbs2',data);
                 }
                 // 转化为base64
                 // reader.readAsDataURL(file)
                 // 转化为blob
-                reader.readAsArrayBuffer(file)
+                reader.readAsDataURL(file)
+                this.on=false
             },
-            getbase2(){
-                this.$refs.cropper2.getCropData((data) => {
-                // do something
-                    this.base2=data 
-                })
-            },
+            // getbase2(){
+
+            // },
             closepic2(){
                 this.previewsurl2='';
+                this.curl2='';
+                this.on=true
             }
         },
         components: {
             vueCropper
+        },
+        created(){
+            console.log(this.curl1)
+            if(this.curl1!=''){
+                this.previewsurl=this.curl1
+            }
+            if(this.curl2!=''){
+                this.previewsur2=this.curl2
+            }
         }
     }
 </script>
@@ -320,13 +339,16 @@
     .zone img{width: 4rem;height: 4rem;text-align: center;display: block;margin:0 auto;padding-top: 7rem;}
     .zone .p1 {font-size: 2.8rem;text-align: center;color:#666;padding-top: 2rem;}
 
+    .sign {width: 24rem;height: 24rem;overflow: hidden;}
     .wrapper {width: 24rem;height: 24rem;background: #f2f5f7;border-radius:1.2rem;overflow: hidden;}
     .wrapper .vue-cropper {background: none;opacity: 0;} 
     .loadbtn {position: absolute;width: 100%;height: 100%;top: 0;left: 0;display: inline-block;opacity: 0;z-index:500;}
-    .closepic {position: absolute;top: 0;right: 0;margin:-2.1rem -2.1rem 0 0;}
+    .closepic {position: absolute;top: 0;right: 0;margin:-2.1rem -2.1rem 0 0;z-index:200;}
     .cropper-box-canvas {opacity: 0;}
     .show-preview {position: absolute;width: 100%;height: 100%;top: 0;left: 0;z-index:5;}
+    .show-preview img{width: 150%;min-height: 25rem;}
     .btn {font-size: 3.6rem;}
     .tips {font-size: 4rem;}
     .base {font-size: 4rem;}
+    .picon {opacity: 0;}
 </style>

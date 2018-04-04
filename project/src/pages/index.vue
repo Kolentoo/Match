@@ -1,11 +1,11 @@
 <template>
     <div class="sign">
         <div class="sign-box">
-            <p class="sign-time">报名时间：2018年4月7日-6月8日</p>
+            <p class="sign-time">报名时间：2018年4月8日-6月10日</p>
             <div class="content">
                 <ul class="tab-con">
-                    <li :class="['tab-list',match==='未报名'?'tabon':'']" @click="tab('未报名')">大赛报名</li>
-                    <li :class="['tab-list',match==='已报名'?'tabon':'']" @click="tab('已报名')">我的报名</li>
+                    <li :class="['tab-list b',match==='未报名'?'tabon':'']" @click="tab('未报名')">比赛报名</li>
+                    <li :class="['tab-list b',match==='已报名'?'tabon':'']" @click="tab('已报名')">我的报名</li>
                 </ul>
                 <div class="match-box" v-if="match==='未报名'">
                     <div class="info-box">
@@ -14,19 +14,7 @@
                             <div class="age info fl">
                                 <select name="age" v-model="age">
                                     <option value="">参赛者年龄</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                    <option value="7">7</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                    <option value="10">10</option>
-                                    <option value="11">11</option>
-                                    <option value="12">12</option>
-                                    <option value="13">13</option>
-                                    <option value="14">14</option>
-                                    <option value="15">15</option>
+                                    <option :value="item" v-for="item in 50" :key="item">{{item}}</option>
                                 </select>
                                 <img class="arrow" src="../public/images/arrow.png" alt="">
                             </div>
@@ -63,18 +51,18 @@
                             </div>
                         </div>
                         <input class="text ilist school" type="text" placeholder="输入所在机构名或学校" maxlength="25" v-model="school">
-                        <login ref="login"></login>
+                        <login ref="login" :login1="login1"></login>
                     </div>
                     <p class="sign-btn bgcolor" @click="signbtn">报名</p>
                 </div>
                 <div class="my-match" v-if="match==='已报名'">
                     <div class="tips">
                         <p class="p1">已报名的参赛者登录后，可上传及修改作品和语音</p>
-                        <p class="p1">作品上传日期：2018-04-07~2018-06-08</p>
-                        <p class="p1">语音上传日期：2018-04-14~2018-06-08</p>
+                        <p class="p1">作品上传日期：2018年4月8日-6月10日</p>
+                        <p class="p1">语音上传日期：2018年4月15日-6月10日</p>
                     </div>
                     <div class="login-box">
-                        <login></login>
+                        <login ref="login2" :login2="login2"></login>
                     </div>
                     <p class="sign-btn bgcolor" @click="signbtn2">登录</p>
                 </div>
@@ -83,7 +71,7 @@
         <pop :message="message">
             <div slot="pop">{{msg}}</div>
         </pop>
-        <popus></popus>
+        <popus :tips="tips" :mask="mask" @close="parentClose" @gosign="gosign"></popus>
     </div>
 </template>
 
@@ -100,6 +88,8 @@
                 phone:'',
                 msg:'',
                 message:true,
+                tips:'',
+                mask:false,
                 age:'',
                 sex:'',
                 group:'',
@@ -115,14 +105,16 @@
                 cid:'',
                 cid2:'',
                 city2:0,
-                school:''
+                school:'',
+                login1:'send1',
+                login2:'send2'
             }
         },
         components:{
             login,pop,popus
         },
         created(){
-            this.$axios.get(`http://192.168.1.227:8081/actives/getCity`, {
+            this.$axios.get(`/actives/getCity`, {
             }).then((res)=> {
                 this.cgroup=res.data.msg
                 this.cgroup.unshift({
@@ -148,7 +140,7 @@
                             this.message=true
                             return true
                         } else {
-                            this.msg='姓名错误';
+                            this.msg='姓名格式错误';
                         }
                     }
                 } else {
@@ -171,24 +163,19 @@
                             if(this.group===''){
                                 this.message=false
                                 this.msg='参赛组别不能为空'
-                            }else{
-                                if(this.city1===0||this.city1===0){
+                            }else if(this.age<7){
+                                if(this.group==1){
                                     this.message=false
-                                    this.msg='请选择城市'
+                                    this.msg='少儿组年龄必须为7-15岁'
                                 }else{
-                                    if(this.school===''){
-                                        this.message=false
-                                        this.msg='学校或者机构不能为空'
-                                    }else{
-                                        this.$refs.login.pcheck()
-                                        if(this.$refs.login.pcheck()===true){
-                                            this.$refs.login.codeCheck()
-                                            if(this.$refs.login.codeCheck()===true){
-                                                console.log('ok')
-                                                this.submitInfo();
-                                            }
-                                        }
-                                    }
+                                    this.otherCheck();
+                                }
+                            }else{
+                                if(this.group==0){
+                                    this.message=false
+                                    this.msg='幼儿组年龄必须为3-6岁'
+                                }else{
+                                    this.otherCheck();
                                 }
                             }
                         }
@@ -198,48 +185,112 @@
                 }
             },
             signbtn2(){
-                var tk = sessionStorage.getItem('tk'); 
-                this.$axios.get(`http://192.168.1.227:8081/actives/SignIn`,{
-                    params:{
-                        _token:tk,
-                        mobile:this.$refs.login.phone,
-                        code:this.$refs.login.code
+                this.$refs.login2.pcheck()
+                if(this.$refs.login2.pcheck()===true){
+                    this.$refs.login2.codeCheck()
+                    if(this.$refs.login2.codeCheck()===true){
+                        this.submitInfo2();
                     }
-                }).then(res=>{
-                    console.log(res)
-                })
+                }
             },
             submitInfo(){
                 var tk = sessionStorage.getItem('tk'); 
-                this.$axios.get(`http://192.168.1.227:8081/actives/saveInfo`,{
-                    params:{
-                        _token:tk,
-                        childname:this.name,
-                        age:this.age,
-                        sex:this.sex,
-                        group_type:this.group,
-                        province:this.cid2,
-                        city:this.city2,
-                        organization:this.school,
-                        mobile:this.$refs.login.phone,
-                        code:this.$refs.login.code
-                    }
+                this.$axios.post(`/actives/saveInfo`,{
+                    _token:tk,
+                    childname:this.name,
+                    age:this.age,
+                    sex:this.sex,
+                    group_type:this.group,
+                    province:this.cid2,
+                    city:this.city2,
+                    organization:this.school,
+                    mobile:this.$refs.login.phone,
+                    code:this.$refs.login.code
                 }).then(res=>{
-                    console.log(res)
+                    
+                    if(res.data.status===1){
+                        // this.msg="登录成功"
+                        sessionStorage.setItem('tid',res.data.content.id); 
+                        this.tips='ok';
+                        this.mask=true;
+                    }else if(res.data.msg==='此手机号已报名'){
+                        // sessionStorage.setItem('tid',res.data.content.id); 
+                        this.tips='had'
+                        this.mask=true;
+                    }else{
+                        this.tips='fail';
+                        this.message=false
+                        this.msg=res.data.msg
+                    }
+                    this.popoff();
+                    
                 })
+            },
+            submitInfo2(){
+                var tk = sessionStorage.getItem('tk'); 
+                this.$axios.post(`/actives/SignIn`,{
+                    _token:tk,
+                    mobile:this.$refs.login2.phone,
+                    code:this.$refs.login2.code
+                }).then(res=>{
+                    if(res.data.status===1){
+                        this.$router.push('manage');
+                        sessionStorage.setItem('tid',res.data.content.id); 
+                    }else{
+                        this.message=false
+                        this.msg=res.data.msg
+                    }
+                    this.popoff();
+                })
+            },
+            groupCheck(){
+                if(this.age<7){
+                    this.group!=1
+                    return true
+                }else{
+                    this.group!=2
+                    return false
+                }
+            },
+            otherCheck(){
+                if(this.city1===0||this.city1===0){
+                    this.message=false
+                    this.msg='请选择城市'
+                }else{
+                    if(this.school===''){
+                        this.message=false
+                        this.msg='学校或者机构不能为空'
+                    }else{
+                        this.$refs.login.pcheck()
+                        if(this.$refs.login.pcheck()===true){
+                            this.$refs.login.codeCheck()
+                            if(this.$refs.login.codeCheck()===true){
+                                this.submitInfo();
+                            }
+                        }
+                    }
+                }
             },
             choose(){
                 this.cgroup2=this.cgroup[this.city1].child; 
                 this.city2=this.cgroup2[0].id;
-                let cid1 = this.city2.toString(); 
-                this.cid2 = cid1.substr(0,2);
-                console.log(cid2);
+                let cid1 = this.city2.toString().substr(0,2); 
+                this.cid2 = cid1;
+                console.log(this.cid2);
             },
             popoff(){
                 let self = this;
                 setTimeout(function() {
                     self.message=true
                 }, 2000);
+            },
+            parentClose(){
+                this.tips='',
+                this.mask=false;
+            },
+            gosign(){
+                this.parentClose();
+                this.match='已报名'
             }
         }
     }
@@ -254,7 +305,7 @@
     .tab-con {display: flex;}
     .tab-list {width: 50%;font-size: 3.2rem;color:#c5d1dc;background: #f5f5f5;text-align: center;line-height: 8rem;}
     .tabon {color:#31aaf6;background: #fff;}
-    .info-box {margin: 0 4rem;}
+    .info-box {width: 59rem;margin:0 auto;}
     .content select{line-height: 8rem;color:#333;font-size: 2.8rem;text-align: center;display: inline-block;
     border-radius:1.5rem;border:0.1rem solid #ccc;height: 8rem;text-indent: 0.5em;}
     .info-box .user-info .info {width: 47%;}
@@ -264,9 +315,10 @@
     .group-box select {width: 100%;}
     .user-info option{text-align: center;}
     .info-box .ilist {margin-top: 3.5rem;}
-    .sign-btn {height: 8rem;line-height: 8rem;color:#fff;font-size: 2.4rem;text-align: center;margin:3.5rem 4rem 0;border-radius:1.2rem;}
+    .sign-btn {height: 8rem;line-height: 8rem;color:#fff;font-size: 2.8rem;text-align: center;margin:3.5rem 4rem 0;border-radius:1.2rem;
+    box-shadow: 0 0.8rem 3rem rgba(49,170,246,0.5);}
     .bgcolor {
-        background: #8a5607;
+        background: #55bafa;
         background: -moz-linear-gradient(top, #55bafa 0% 0%, #31aaf6 100% 100%);
         background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#55bafa), color-stop(100%,#31aaf6));
         background: -webkit-linear-gradient(top, #55bafa 0% 0%,#31aaf6 100% 100%);

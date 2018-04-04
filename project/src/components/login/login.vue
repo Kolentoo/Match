@@ -3,7 +3,7 @@
         <div class="phone-box ilist">
             <input v-model="phone" class="text phone" type="text" placeholder="输入手机号码" maxlength="11">
             <p :class="['codebtn bgcolor',{hide:hide}]" @click="phoneCheck()">获取验证码</p>
-            <p :class="['timeCatch codebtn',{hide:show}]" ref="seconds">{{seconds}}s</p>
+            <p :class="['timeCatch codebtn codesec',{hide:show}]" ref="seconds">{{seconds}}s</p>
         </div>
         <input class="text code ilist" type="text" placeholder="输入验证码" maxlength="4" v-model="code">
         <pop :message="message">
@@ -15,6 +15,7 @@
 <script>
     import pop from '../pop'
     export default{
+        props:['login1','login2'],
         data(){
             return{
                 hide:false,
@@ -55,19 +56,37 @@
             },
             sencode(){
                 var tk = sessionStorage.getItem('tk'); 
-                this.$axios.post(`http://192.168.1.227:8081/actives/getPictureSayCode`, {
-                    _token:tk,
-                    mobile:this.phone
-                }).then((res)=> {
-                    if(res.status===0){
-                        this.msg=res.msg
-                        this.message=false
-                    }else{
-                        this.msg='发送成功'
-                        this.message=false
-                    }
-                })
-                this.popoff();
+                if(this.login1==='send1'){
+                    this.$axios.post(`/actives/getPictureSayCode`, {
+                        _token:tk,
+                        mobile:this.phone
+                    }).then((res)=> {
+                        if(res.status===0){
+                            this.msg=res.msg
+                            this.message=false
+                        }else{
+                            this.msg='发送成功'
+                            this.message=false
+                        }
+                    })
+                    this.popoff();
+                }
+                if(this.login2==='send2'){
+                    this.$axios.post(`/actives/signPictureSayCode`, {
+                        _token:tk,
+                        mobile:this.phone
+                    }).then((res)=> {
+                        if(res.status===0){
+                            this.msg=res.msg
+                            this.message=false
+                        }else{
+                            this.msg='发送成功'
+                            this.message=false
+                        }
+                    })
+                    this.popoff();
+                }
+                
             },
             pcheck(){
                 var regPhone = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|17[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/; 
@@ -106,14 +125,13 @@
 
         },
         created(){
-            this.$axios.get(`http://192.168.1.227:8081/actives/getToken`,{
+            this.$axios.get(`/actives/getToken`,{
                 params:{
 
                 }
             }).then(res=>{
                 sessionStorage.setItem('tk',res.data); 
                 // var tk = sessionStorage.getItem('tk'); 
-                // console.log(tk)
             })
         },
         components:{
@@ -126,13 +144,14 @@
     .ilist {margin-top: 3.5rem;}
     .phone-box {position: relative;}
     .phone-box .codebtn {position: absolute;width: 18rem;height: 5.6rem;line-height: 5.6rem;text-align: center;border-radius:0.8rem;
-    font-size: 2.4rem;color:#fff;right: 0rem;top: 2rem;
+    font-size: 2.4rem;color:#fff;right: 1.5rem;top: 1.5rem;
     box-shadow:0 0.4rem 1.2rem rgba(49,170,246,0.5);
     }
+    .phone-box .codesec {box-shadow:none;}
     .sign-btn {height: 8rem;line-height: 8rem;color:#fff;font-size: 2.4rem;text-align: center;margin:3.5rem 4rem 0;border-radius:1.2rem;}
     .timeCatch {background: #ccc;}
     .bgcolor {
-        background: #8a5607;
+        background: #55bafa;
         background: -moz-linear-gradient(top, #55bafa 0% 0%, #31aaf6 100% 100%);
         background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#55bafa), color-stop(100%,#31aaf6));
         background: -webkit-linear-gradient(top, #55bafa 0% 0%,#31aaf6 100% 100%);

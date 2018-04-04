@@ -4,23 +4,25 @@
             <div class="load-inner">
                 <div class="load-con">
                     <div class="title">
-                        <p class="p1 tc">上传作品</p>
+                        <p class="p1 tc" v-if="fixed===''">作品上传</p>
+                        <p class="p1 tc" v-if="fixed==='yes'">作品修改</p>
                         <img class="tree1" src="../public/images/tree1.png" alt="">
                         <img class="tree2" src="../public/images/tree2.png" alt="">
                     </div>
                     <div class="content">
                         <div class="subtance">
                             <div class="input">
-                                <input class="work-name" type="text" placeholder="输入作品名字，限10字以内" v-model="workname">
+                                <input class="work-name" type="text" placeholder="输入作品名字，限10字以内" v-model="workname" maxlength="10">
                             </div>
-                            <textarea class="work-story" placeholder="输入我的作品故事，限100字以内" v-model="workstory"></textarea>
+                            <textarea class="work-story" placeholder="输入我的作品故事，限100字以内" v-model="workstory" maxlength="100">
+                            </textarea>
                         </div>
                     </div>
                     <div class="file-box clearfix">
-                        <chart ref="chart1" class="fl" msg="上传参赛者照片"></chart>
-                        <chart ref="chart2" class="fr" msg="上传作品"></chart>
+                        <chart ref="chart1" class="fl" msg="上传参赛者照片" @gbs="gbs" :curl1="curl1"></chart>
+                        <chart ref="chart2" class="fr" msg="上传作品" @gbs2="gbs2" :curl2="curl2"></chart>
                     </div>
-                    <p class="sure" @click="sure">确定</p>
+                    <p class="sure" @click="sure">确定</p> 
                 </div>
             </div>
             
@@ -57,11 +59,14 @@
         <pop :message="message">
             <div slot="pop">{{msg}}</div>
         </pop>
+        <img v-if="loading" class="loading" src="../public/images/loading.gif" alt="">
+        <popus :voiceupload="voiceupload" :mask="mask" @close="parentClose"></popus>
     </div>
 </template>
 
 <script>
     import chart from '../components/chart/chart'
+    import popus from '../components/popus/popus'
     import pop from '../components/pop'
     export default{
         data(){
@@ -74,24 +79,26 @@
                 workname:'',
                 workstory:'',
                 base1:'',
-                base2:''
+                base2:'',
+                loading:false,
+                workupload:false,
+                voiceupload:-1,
+                info:'',
+                mask:false,
+                curl1:'',
+                curl2:'',
+                fixed:''
             }
         },
         components:{
-            chart,pop
+            chart,pop,popus
         },
         methods:{
             pclose(){
                 this.on = true
+                localStorage.setItem('first', 1);
             },
             sure(){
-                this.$refs.chart1.getbase1();
-                this.$refs.chart2.getbase2();
-                var self = this
-                setTimeout(function() {
-                    console.log(self.$refs.chart1.base1)
-                }, 1000);
-                console.log(this.$refs.chart1)
                 if(this.workname===''){
                     this.message=false
                     this.msg='作品名字不能为空'
@@ -100,16 +107,15 @@
                         this.message=false;
                         this.msg='作品故事不能为空'
                     }else{
-                        if(this.$refs.chart1.previewsurl===''){
+                        if(this.$refs.chart1.previewsurl===''&&this.$refs.chart1.curl1===''){
                             this.message=false;
                             this.msg='头像不能为空'
                         }else{
-                            if(this.$refs.chart2.previewsurl2===''){
+                            if(this.$refs.chart2.previewsurl2===''&&this.$refs.chart2.curl2===''){
                                 this.message=false;
                                 this.msg='作品不能为空'
                             }else{
-                                console.log('test ok')
-                                // this.upinfo();
+                                this.upinfo();
                             }
                         }
                     }
@@ -117,26 +123,92 @@
                 this.popoff();
             },
             upinfo(){
-                // var tk = sessionStorage.getItem('tk'); 
-                // this.$axios.post('http://192.168.1.227:8081/actives/pictureSayAdd',{
-                //     params:{
-                //         _token:tk,
-                //         id:1,
-                //         mobile:'',
-                //         head_img:'',
-                //         works_img:'',
-                //         works_name:'',
-                //         works_det:''
-                //     }
-                // }).then((res)=>{
-                //     console.log(res)
-                // })
+                var tk = sessionStorage.getItem('tk'); 
+                var tid = sessionStorage.getItem('tid'); 
+                let curl = window.location.href;
+                if(this.$refs.chart1.previewsurl){
+                    var tbase1 = this.base1;
+                }else{
+                    var tbase1 = '';
+                }
+                if(this.$refs.chart2.previewsurl2){
+                    var tbase2 = this.base2;
+                }else{
+                    var tbase2 = '';
+                }
+                this.loading=true
+                this.$axios.post('/actives/pictureSayAdd',{
+                    _token:tk,
+                    id:tid,
+                    head_img:tbase1,
+                    works_img:tbase2,
+                    works_name:this.workname,
+                    works_det:this.workstory
+                }).then((res)=>{
+                    this.loading=false
+                    var tid = sessionStorage.getItem('tid'); 
+                    this.$axios.get(`/actives/ParticipantInfo`,{
+                        params:{
+                            id:tid
+                        }
+                    }).then((res)=>{
+                        this.info=res.data.content
+                        if(res.data.status===1){
+                            if(res.data.content.works_voice===''){
+                                this.voiceupload=0
+                            }else{
+                                this.voiceupload=1
+                            }
+                            this.mask=true
+                        }else{
+                            this.msg=res.data.msg;
+                            this.message=false
+                        }
+                        this.popoff();
+                    })
+                })
             },
             popoff(){
                 let self = this;
                 setTimeout(function() {
                     self.message=true
                 }, 2000);
+            },
+            gbs(dbase){
+                this.base1=dbase
+            },
+            gbs2(dbase){
+                this.base2=dbase
+            },
+            parentClose(){
+                this.voiceupload='',
+                this.mask=false;
+                this.$router.push('manage');
+            }
+        },
+        created(){
+            this.on = true
+            let first = localStorage.getItem("first");
+            if(first===1){
+                this.on = false
+            }
+            let curl = window.location.href;
+            if(curl.indexOf('fixed')>-1){
+                var tid = sessionStorage.getItem('tid'); 
+                this.fixed='yes'
+                this.$axios.get(`/actives/ParticipantInfo`,{
+                    params:{
+                        id:tid
+                    }
+                }).then((res)=>{
+                    this.info=res.data.content
+                    this.workname=this.info.works_name;
+                    this.workstory=this.info.works_det
+                    this.curl1=this.info.head_img;
+                    this.curl2=this.info.works_img;
+                })
+            }else{
+                this.fixed=''
             }
         }
     }
@@ -174,4 +246,5 @@
     .photo-tips .pclose {background: rgb(50,179,246);color:#fff;font-size: 3.6rem;text-align: center;margin-top: 5rem;height: 8rem;
     line-height: 8rem;border-radius: 0 0 1.2rem 1.2rem;}
     .mask {background: rgba(0,0,0,0.5);position: fixed;width: 100%;height: 100%;top: 0;left: 0;}
+    .loading {position: fixed;top: 50%;left: 50%;width: 18rem;height: 18rem;margin:-9rem 0 0 -9rem;z-index:999;}
 </style>
