@@ -35,6 +35,7 @@
                 if(this.seconds===0){
                     this.hide = false;
                     this.show = true;
+                    this.seconds=60
                 }
             },
             phoneCheck(){
