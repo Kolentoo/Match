@@ -7,25 +7,31 @@
 
         <div class="sign" v-if="msg==='上传参赛者照片'">
             <div class="wrapper">
-                <vueCropper
-                    ref="cropper"
-                    :img="option.img"
-                    :outputSize="option.size"
-                    :outputType="option.outputType"
-                    :info="true"
-                    :full="option.full"
-                    :canMove="option.canMove"
-                    :canMoveBox="option.canMoveBox"
-                    :fixedBox="option.fixedBox"
-                    :original="option.original"
-                    @realTime="realTime"
-                    :autoCrop="option.autoCrop"
-                    :autoCropWidth="option.autoCropWidth"
-                    :autoCropHeight="option.autoCropHeight"
-                ></vueCropper>
+                <div :class="['cropper-box',{cropperoff:coff}]">
+                    <vueCropper
+                        ref="cropper"
+                        :img="option.img"
+                        :outputSize="option.size"
+                        :outputType="option.outputType"
+                        :info="true"
+                        :full="option.full"
+                        :canMove="option.canMove"
+                        :canMoveBox="option.canMoveBox"
+                        :fixedBox="option.fixedBox"
+                        :original="option.original"
+                        @realTime="realTime"
+                        :autoCrop="option.autoCrop"
+                        :autoCropWidth="option.autoCropWidth"
+                        :autoCropHeight="option.autoCropHeight"
+                    ></vueCropper>
+                    <div class="cropper-group">
+                        <p class="p1" @click="closecropper">取消</p>
+                        <p class="p2" @click="surecropper">确定</p>
+                    </div>
+                </div>
                 <label class="btn loadbtn" for="uploads">upload</label>
             </div>
-            <div class="test-button hide">
+            <div class="test-button">
                 
                 <input type="file" id="uploads" style="position:absolute; clip:rect(0 0 0 0);" accept="image/png, image/jpeg, image/gif, image/jpg" @change="uploadImg($event, 1)">
                 <button @click="startCrop" v-if="!crap" class="btn">start</button>
@@ -121,17 +127,32 @@
                 previews: {},
                 base1:'',
                 base2:'',
+                coff:true,
                 lists: [
                     {
                         img: ''
                     }
                 ],
                 option: {
-                    img: '',
+                    // img: 'https://o90cnn3g2.qnssl.com/0C3ABE8D05322EAC3120DDB11F9D1F72.png',
                     // autoCrop: true,
-                    // autoCropWidth: 200,
-                    // autoCropHeight: 200,
-                    fixedBox: true
+                    // autoCropWidth: 400,
+                    // autoCropHeight: 400,
+                    // fixedBox: true
+
+                    img: '',
+                    info: true,
+                    size: 1,
+                    outputType: 'jpeg',
+                    canScale: false,
+                    autoCrop: true,
+                    // 只有自动截图开启 宽度高度才生效
+                    autoCropWidth: 400,
+                    autoCropHeight: 400,
+                    // 开启宽度和高度比例
+                    fixed: true,
+                    fixedNumber: [1, 1]
+
                 },
                 option2:{
                     img:'',
@@ -224,13 +245,20 @@
                 // 转化为blob
                 reader.readAsDataURL(file)
                 this.on=false
+                this.coff=false
+                this.option.autoCrop=true
                 // this.getbase1();
-                // this.$refs.cropper.getCropData((data) => {
-                // do something
-                
-            // })
             },
             // getbase1(){
+            closecropper(){
+                this.coff=true
+            },
+            surecropper(){
+                this.$refs.cropper.getCropData((data) => {
+                    this.previewsurl=data
+                })
+                this.coff=true
+            },
 
             // },
             closepic(){
@@ -341,12 +369,17 @@
 
     .sign {width: 24rem;height: 24rem;overflow: hidden;}
     .wrapper {width: 24rem;height: 24rem;background: #f2f5f7;border-radius:1.2rem;overflow: hidden;}
-    .wrapper .vue-cropper {background: none;opacity: 0;} 
+    .wrapper .cropper-box {position: fixed;width: 100%;height: 100%;z-index:1500;top: 0;left: 0;}
+    .wrapper .cropperoff {z-index:-1;display: none;}
+    .wrapper .vue-cropper {background: none;}  
+    .wrapper .cropper-group {background: #fff;position: fixed;height: 10rem;line-height: 10rem;font-size: 3.6rem;color:#333;
+    display:flex;justify-content: space-between;bottom: 0;left: 0;width: 100%;}
+    .wrapper .cropper-group p{line-height: 10rem;padding:0 3rem;}
     .loadbtn {position: absolute;width: 100%;height: 100%;top: 0;left: 0;display: inline-block;opacity: 0;z-index:500;}
     .closepic {position: absolute;top: 0;right: 0;margin:-2.1rem -2.1rem 0 0;z-index:200;}
     .cropper-box-canvas {opacity: 0;}
     .show-preview {position: absolute;width: 100%;height: 100%;top: 0;left: 0;z-index:5;}
-    .show-preview img{width: 150%;min-height: 25rem;}
+    .show-preview img{width: 100%;min-height: 25rem;}
     .btn {font-size: 3.6rem;}
     .tips {font-size: 4rem;}
     .base {font-size: 4rem;}
