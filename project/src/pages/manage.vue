@@ -22,7 +22,13 @@
                     </div>
                     <img class="decorate" src="../public/images/decorate.png" alt="" v-if="picurl===''">
                     <div class="picbox fr">
-                        <img class="workpic" :src="picurl" alt="" v-if="picurl!=''">
+                        <div class="wborder">
+                            <div class="workbox">
+                                <div class="picinner">
+                                    <img ref="wpic" class="workpic" :src="picurl" alt="" v-if="picurl!=''">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="voice" v-if="vupload">
@@ -38,7 +44,8 @@
                 <li class="clist" @click="gowork">
                     <h3 v-if="picurl===''" class="b">作品上传</h3>
                     <h3 v-if="picurl!=''" class="b">作品修改</h3>
-                    <p class="p1">上传日期：2018-04-07～2018-06-08</p>
+                    <p v-if="picurl===''" class="p1">上传日期：2018-04-08～2018-06-10</p>
+                    <p v-if="picurl!=''" class="p1">截止日期：2018-06-10</p>
                     <div class="status">
                         <span class="s2" v-if="work===1">未开始</span>
                         <span class="s2 s3" v-if="work===2">已开始</span>
@@ -49,7 +56,7 @@
                 </li>
                 <li class="clist">
                     <h3 class="b">语音上传</h3>
-                    <p class="p1">上传日期：2018-04-14～2018-06-08</p>
+                    <p class="p1">上传日期：2018-04-15～2018-06-10</p>
                     <div class="status">
                         <span class="s2" v-if="voice===1">未开始</span>
                         <span class="s2 s3" v-if="voice===2">已开始</span>
@@ -95,7 +102,7 @@
         },
         created(){
             var tid = sessionStorage.getItem('tid'); 
-            this.$axios.get(`${local}/actives/ParticipantInfo`,{
+            this.$axios.get(`${panda}/actives/ParticipantInfo`,{
                 params:{
                     id:tid
                 }
@@ -131,6 +138,12 @@
             //     console.log(res)
             // })
         },
+        mounted(){
+            this.$nextTick(()=>{
+                let pheight = this.$refs.wpic;
+                console.log(pheight)
+            })
+        },
         methods:{
             gowork(){
                 if(this.upStatus!='nowork'&&this.upStatus!=''){
@@ -157,8 +170,8 @@
     .voice-con .seconds {font-size: 2.4rem;color:#999;margin-left: 9rem;}
     .infor {background: #fff;border-radius:1.5rem;box-shadow:0 1.4rem 6rem rgba(3,15,39,0.14);width: 67rem;margin:0 auto;
     position: relative;min-height: 31rem;position: relative;top: 2rem;margin-bottom: 6rem;}
-    .infor-box {padding: 3rem;}
-    .infor-con {width: 34rem;display: flex;align-items: center;height: 100%;margin-top: 2rem;}
+    .infor-box {padding:0 3rem;}
+    .infor-con {width: 30rem;display: flex;align-items: center;height: 100%;margin-top: 5rem;}
     .infor .name {font-size: 3.4rem;color:#333;margin-bottom: 1rem;}
     .infor .s1 {font-size: 2.4rem;}
     .infor .s1 i{display: inline-block;width: 10rem;height: 3.8rem;line-height: 3.8rem;color:#fff;text-align: center;font-size: 2.4rem;
@@ -169,8 +182,13 @@
     .infor .s1 em{color:#999;margin-left: 1rem;display: inline-block;font-size: 2.8rem;}
     .infor .p2 {font-size: 2.4rem;color:#666;margin-top: 1rem;}
     .decorate {position: absolute;width: 26.2rem;right: 3rem;top: -1.2rem;}
-    .picbox {width: 20rem;display: flex;align-items: center;height: 100%;height: 25rem;overflow: hidden;}
-    .workpic {width: 100%;height: 100%;}
+
+    .wborder {border:0.7rem solid #fff;box-shadow:0 1rem 2.5rem rgba(3,15,39,0.14);margin:0 1.5rem;display: flex;align-items: center;}
+    .workbox {background: #fff;padding: 1.5rem;box-shadow:0 0 1.5rem 0.1rem rgba(0,0,0,0.3) inset;}
+    .picbox {width: 21rem;display: flex;align-items: center;height: 100%;overflow: hidden;height: 30rem;}
+    .picinner {max-height:20rem;overflow: hidden;}
+    .workpic {width: 100%;box-shadow:0 0 0 0.2rem rgba(0,0,0,0.2);vertical-align: middle;}
+
     .content {margin-top: 4rem;}
     .clist {width: 61rem;padding:3rem;background: #fff;border-radius:1.5rem;box-shadow:0 1.4rem 6rem rgba(3,15,39,0.14);
     margin:0 auto 4rem;}
@@ -183,5 +201,7 @@
     .clist .status .arrow1 {width: 1.5rem;margin-left: 1.2rem;}
     .bottom {font-size: 2.8rem;color:#666;margin-top: 4rem;}
     .bottom a{color:#fd7555;}
+    
+
 
 </style>

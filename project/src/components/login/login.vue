@@ -60,7 +60,7 @@
             sencode(){
                 var tk = sessionStorage.getItem('tk'); 
                 if(this.login1==='send1'){
-                    this.$axios.post(`${local}/actives/getPictureSayCode`, {
+                    this.$axios.post(`${panda}/actives/getPictureSayCode`, {
                         _token:tk,
                         mobile:this.phone
                     }).then((res)=> {
@@ -75,7 +75,7 @@
                     this.popoff();
                 }
                 if(this.login2==='send2'){
-                    this.$axios.post(`${local}/actives/signPictureSayCode`, {
+                    this.$axios.post(`${panda}/actives/signPictureSayCode`, {
                         _token:tk,
                         mobile:this.phone
                     }).then((res)=> {
@@ -128,7 +128,7 @@
 
         },
         created(){
-            this.$axios.get(`${local}/actives/getToken`,{
+            this.$axios.get(`${panda}/actives/getToken`,{
                 params:{
 
                 }

@@ -35,6 +35,7 @@
         <div class="pop4 popall" v-if="voiceupload===0">
             <div class="pop-con">
                 <h2 class="tc">作品上传成功</h2>
+                <h2 class="tc" v-if="fmsg==='fixed'">作品修改成功</h2>
                 <p class="p1">您还没有上传语音，请在规定时间内，在我的报名中上传</p>
                 <p class="p2">语音上传日期：2018-04-14～2018-06-08</p>
                 <img class="pic" src="../../public/images/success.png" alt="">
@@ -46,6 +47,7 @@
         <div class="pop5 popall" v-if="voiceupload===1">
             <div class="pop-con">
                 <h2 class="tc">作品上传成功</h2>
+                <h2 class="tc" v-if="fmsg==='fixed'">作品修改成功</h2>
                 <p class="p1">您已完成语音和作品的上传，尽情期待2018年童年画语杯大赛开启</p>
                 <img class="pic" src="../../public/images/success.png" alt="">
             </div>
@@ -64,7 +66,7 @@
                 notice:''
             }
         },
-        props:['tips','mask','voiceupload'],
+        props:['tips','mask','voiceupload','fmsg'],
         methods:{
             popclose(){
                 this.$emit('close');
@@ -76,20 +78,23 @@
                 // this.$emit('gosign');
                 this.$router.push('manage');
             }
+        },
+        created(){
+            console.log(this.fmsg)
         }
     }
 </script>
 
 <style scoped>
-    .popus .pop1 {position: fixed;z-index:200;width: 62rem;background: #fff;border-radius:1.5rem;left: 50%;top: 50%;margin:-15rem 0 0 -31rem;
+    .popus .pop1 {position: fixed;z-index:1000;width: 62rem;background: #fff;border-radius:1.5rem;left: 50%;top: 50%;margin:-15rem 0 0 -31rem;
     overflow: hidden;}
     .popus .pop1 .p1 {color:#333;font-size: 3.2rem;padding:4rem 0;margin:0 4rem;}
     .btn-group {display: flex;justify-content: center;border-radius:0 0 1.5rem 1.5rem;overflow: hidden;}
     .btn-group li{width: 50%;line-height: 10rem;text-align: center;font-size: 3.2rem;}
     .btn-group .cancle {color:#333;background: #f5f5f5;}
     .btn-group .ok {background: #34abf6;color:#fff;}
-    .mask {background:rgba(0,0,0,0.5);width: 100%;height: 100%;left: 0;top: 0;z-index:10;position: fixed;}
-    .popall {position: fixed;z-index:200;width: 62rem;background: #fff;border-radius:1.5rem;left: 50%;top: 50%;margin:-19rem 0 0 -31rem;}
+    .mask {background:rgba(0,0,0,0.5);width: 100%;height: 100%;left: 0;top: 0;z-index:999;position: fixed;}
+    .popall {position: fixed;z-index:1000;width: 62rem;background: #fff;border-radius:1.5rem;left: 50%;top: 50%;margin:-19rem 0 0 -31rem;}
     .popall .pop-con {padding:4rem 0;margin:0 4rem;position: relative;}
     .popall .pop-con .pic {position: absolute;width: 17.6rem;left: 50%;margin-left: -8.8rem;top: 0;margin-top: -8.8rem;}
     .popall h2{font-size: 3.2rem;color:#333;margin: 4.5rem 0 2rem 0;}

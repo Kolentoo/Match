@@ -19,8 +19,8 @@
                         </div>
                     </div>
                     <div class="file-box clearfix">
-                        <chart ref="chart1" class="fl" msg="上传参赛者照片" @gbs="gbs" :curl1="curl1"></chart>
-                        <chart ref="chart2" class="fr" msg="上传作品" @gbs2="gbs2" :curl2="curl2"></chart>
+                        <chart ref="chart1" class="fl" msg="上传参赛者照片" @gbs="gbs" :curl1="curl1" key="chart1"></chart>
+                        <chart ref="chart2" class="fr" msg="上传作品" @gbs2="gbs2" :curl2="curl2" key="chart2"></chart>
                     </div>
                     <p class="sure" @click="sure">确定</p> 
                 </div>
@@ -60,7 +60,7 @@
             <div slot="pop">{{msg}}</div>
         </pop>
         <img v-if="loading" class="loading" src="../public/images/loading.gif" alt="">
-        <popus :voiceupload="voiceupload" :mask="mask" @close="parentClose"></popus>
+        <popus :voiceupload="voiceupload" :mask="mask" @close="parentClose" :fmsg="fmsg"></popus>
     </div>
 </template>
 
@@ -74,7 +74,7 @@
     export default{
         data(){
             return{
-                on:false,
+                on:true,
                 photo:'上传参赛者照片',
                 work:'上传作品',
                 message:true,
@@ -90,7 +90,8 @@
                 mask:false,
                 curl1:'',
                 curl2:'',
-                fixed:''
+                fixed:'',
+                fmsg:''
             }
         },
         components:{
@@ -140,7 +141,7 @@
                     var tbase2 = '';
                 }
                 this.loading=true
-                this.$axios.post(`${local}/actives/pictureSayAdd`,{
+                this.$axios.post(`${panda}/actives/pictureSayAdd`,{
                     _token:tk,
                     id:tid,
                     head_img:tbase1,
@@ -150,7 +151,7 @@
                 }).then((res)=>{
                     this.loading=false
                     var tid = sessionStorage.getItem('tid'); 
-                    this.$axios.get(`${local}/actives/ParticipantInfo`,{
+                    this.$axios.get(`${panda}/actives/ParticipantInfo`,{
                         params:{
                             id:tid
                         }
@@ -170,6 +171,11 @@
                         this.popoff();
                     })
                 })
+                if(this.fixed===''){
+                    this.fmsg===''
+                }else{
+                    this.fmsg==='fixed'
+                }
             },
             popoff(){
                 let self = this;
@@ -190,17 +196,16 @@
             }
         },
         created(){
-            this.on = false
             if(this.fixed==='yes'){
-                this.on = true
-            }else{
                 this.on = false
+            }else{
+                this.on = true
             }
             let curl = window.location.href;
             if(curl.indexOf('fixed')>-1){
                 var tid = sessionStorage.getItem('tid'); 
                 this.fixed='yes'
-                this.$axios.get(`${local}/actives/ParticipantInfo`,{
+                this.$axios.get(`${panda}/actives/ParticipantInfo`,{
                     params:{
                         id:tid
                     }

@@ -24,6 +24,7 @@
                         :autoCropWidth="option.autoCropWidth"
                         :autoCropHeight="option.autoCropHeight"
                     ></vueCropper>
+                    <p class="tips tc">请将要展示的部分移至方框内</p>
                     <div class="cropper-group">
                         <p class="p1" @click="closecropper">取消</p>
                         <p class="p2" @click="surecropper">确定</p>
@@ -76,7 +77,7 @@
                     </label>
                 </div>
             </div>
-            <div :class="['show-preview',{picon:on}]" :style="{'width': previews.w + 'px', 'height': previews.h + 'px',  'overflow': 'hidden', 'margin': '5px'}">
+            <div  :class="['show-preview']" :style="{'width': previews.w + 'px', 'height': previews.h + 'px',  'overflow': 'hidden', 'margin': '5px'}">
                 <div :style="previews.div">
                     <img :src="previewsurl||curl1" :style="previews.img">
                 </div>
@@ -105,7 +106,7 @@
                 <label class="btn loadbtn" for="uploads2">upload</label>
             </div>
             <input type="file" id="uploads2" style="position:absolute; clip:rect(0 0 0 0);" accept="image/png, image/jpeg, image/gif, image/jpg" @change="uploadImg2($event, 1)">
-            <div :class="['show-preview',{picon:on}]" :style="{'width': previews.w + 'px', 'height': previews.h + 'px',  'overflow': 'hidden', 'margin': '5px'}">
+            <div :class="['show-preview']" :style="{'width': previews.w + 'px', 'height': previews.h + 'px',  'overflow': 'hidden', 'margin': '5px'}">
                 <div :style="previews.div">
                     <img :src="previewsurl2||curl2" :style="previews.img">
                 </div>
@@ -130,6 +131,8 @@
                 base1:'',
                 base2:'',
                 coff:true,
+                prevpic:'',
+                picdata:false,
                 lists: [
                     {
                         img: ''
@@ -149,8 +152,8 @@
                     canScale: false,
                     autoCrop: true,
                     // 只有自动截图开启 宽度高度才生效
-                    autoCropWidth: 400,
-                    autoCropHeight: 400,
+                    autoCropWidth: 500,
+                    autoCropHeight: 500,
                     // 开启宽度和高度比例
                     fixed: true,
                     fixedNumber: [1, 1]
@@ -160,8 +163,7 @@
                     img:'',
                     fixedBox: true
                 },
-                downImg: '#',
-                on:false
+                downImg: '#'
             }
         },
         methods: {
@@ -220,11 +222,9 @@
             uploadImg (e, num) {
                 //上传图片
                 // this.option.img
+                let curl3 = this.previewsurl||this.curl1;
+                this.prevpic=curl3
                 var file = e.target.files[0]
-                if (!/\.(gif|jpg|jpeg|png|bmp|GIF|JPG|PNG)$/.test(e.target.value)) {
-                    alert('图片类型必须是.gif,jpeg,jpg,png,bmp中的一种')
-                    return false
-                }
                 var reader = new FileReader()
                 reader.onload = (e) => {
                     let data
@@ -235,12 +235,15 @@
                     //     data = e.target.result
                     // }
                     data = e.target.result
-                    if (num === 1) {
-                        this.option.img = data
-                    } else if (num === 2) {
-                        this.example2.img = data
-                    }
+                    // if(this.picdata===true){
+                        if (num === 1) {
+                            this.option.img = data
+                        } else if (num === 2) {
+                            this.example2.img = data
+                        }
+                    // }
                     this.$emit('gbs',e.target.result);
+                    
                 }
                 // 转化为base64
                 // reader.readAsDataURL(file)
@@ -249,24 +252,26 @@
                 this.on=false
                 this.coff=false
                 this.option.autoCrop=true
+                
                 // this.getbase1();
             },
             // getbase1(){
             closecropper(){
                 this.coff=true
+                this.curl1=this.prevpic;
+                this.previewsurl=this.prevpic;
             },
             surecropper(){
                 this.$refs.cropper.getCropData((data) => {
                     this.previewsurl=data
                 })
-                this.coff=true
+                this.coff=true;
             },
 
             // },
             closepic(){
                 this.previewsurl='';
                 this.curl1='';
-                this.on=true
             },
 
 
@@ -337,7 +342,7 @@
                 // reader.readAsDataURL(file)
                 // 转化为blob
                 reader.readAsDataURL(file)
-                this.on=false
+                this.on2=false
             },
             // getbase2(){
 
@@ -345,20 +350,20 @@
             closepic2(){
                 this.previewsurl2='';
                 this.curl2='';
-                this.on=true
+                this.on2=true
             }
         },
         components: {
             vueCropper
         },
         created(){
-            console.log(this.curl1)
             if(this.curl1!=''){
                 this.previewsurl=this.curl1
             }
             if(this.curl2!=''){
                 this.previewsur2=this.curl2
             }
+
         }
     }
 </script>
@@ -369,8 +374,8 @@
     .zone img{width: 4rem;height: 4rem;text-align: center;display: block;margin:0 auto;padding-top: 7rem;}
     .zone .p1 {font-size: 2.8rem;text-align: center;color:#666;padding-top: 2rem;}
 
-    .sign {width: 24rem;height: 24rem;overflow: hidden;}
-    .wrapper {width: 24rem;height: 24rem;background: #f2f5f7;border-radius:1.2rem;overflow: hidden;}
+    .sign {width: 24rem;height: 24rem;overflow: hidden;;}
+    .wrapper {width: 24rem;height: 24rem;background: #f2f5f7;border-radius:1.2rem;overflow: hidden;;}
     .wrapper .cropper-box {position: fixed;width: 100%;height: 100%;z-index:1500;top: 0;left: 0;}
     .wrapper .cropperoff {z-index:-1;display: none;}
     .wrapper .vue-cropper {background: none;}  
@@ -382,8 +387,10 @@
     .cropper-box-canvas {opacity: 0;}
     .show-preview {position: absolute;width: 100%;height: 100%;top: 0;left: 0;z-index:5;}
     .show-preview img{width: 100%;min-height: 25rem;}
+    .show-preview img[src=""]{opacity: 0;}
     .btn {font-size: 3.6rem;}
     .tips {font-size: 4rem;}
     .base {font-size: 4rem;}
     .picon {opacity: 0;}
+    .tips {color:#fff;font-size: 2.8rem;z-index:500;position: relative;position: absolute;top: 5rem;left: 0;width: 100%;}
 </style>

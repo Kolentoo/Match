@@ -117,7 +117,7 @@
             login,pop,popus
         },
         created(){
-            this.$axios.get(`${local}/actives/getCity`, {
+            this.$axios.get(`${panda}/actives/getCity`, {
             }).then((res)=> {
                 this.cgroup=res.data.msg
                 this.cgroup.unshift({
@@ -198,7 +198,7 @@
             },
             submitInfo(){
                 var tk = sessionStorage.getItem('tk'); 
-                this.$axios.post(`${local}/actives/saveInfo`,{
+                this.$axios.post(`${panda}/actives/saveInfo`,{
                     _token:tk,
                     childname:this.name,
                     age:this.age,
@@ -231,7 +231,7 @@
             },
             submitInfo2(){
                 var tk = sessionStorage.getItem('tk'); 
-                this.$axios.post(`${local}/actives/SignIn`,{
+                this.$axios.post(`${panda}/actives/SignIn`,{
                     _token:tk,
                     mobile:this.$refs.login2.phone,
                     code:this.$refs.login2.code
