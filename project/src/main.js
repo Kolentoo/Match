@@ -8,8 +8,7 @@ import axios from 'axios'
 Vue.prototype.$axios = axios
 Vue.config.productionTip = false
 
-var local = ''
-var panda = ''
+
 
 /* eslint-disable no-new */
 new Vue({
@@ -18,3 +17,4 @@ new Vue({
   components: { App },
   template: '<App/>'
 })
+

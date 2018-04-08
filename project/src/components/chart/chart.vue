@@ -111,6 +111,8 @@
 
 <script>
     import vueCropper from 'vue-cropper'
+    var local = 'http://192.168.1.227:8081'
+    var panda = ''
     export default{
         props:['msg','curl1','curl2'],
         data(){

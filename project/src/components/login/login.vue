@@ -13,6 +13,8 @@
 </template>
 
 <script>
+    var local = 'http://192.168.1.227:8081'
+    var panda = ''
     import pop from '../pop'
     export default{
         props:['login1','login2'],
@@ -58,7 +60,7 @@
             sencode(){
                 var tk = sessionStorage.getItem('tk'); 
                 if(this.login1==='send1'){
-                    this.$axios.post(`/actives/getPictureSayCode`, {
+                    this.$axios.post(`${local}/actives/getPictureSayCode`, {
                         _token:tk,
                         mobile:this.phone
                     }).then((res)=> {
@@ -73,7 +75,7 @@
                     this.popoff();
                 }
                 if(this.login2==='send2'){
-                    this.$axios.post(`/actives/signPictureSayCode`, {
+                    this.$axios.post(`${local}/actives/signPictureSayCode`, {
                         _token:tk,
                         mobile:this.phone
                     }).then((res)=> {
@@ -126,7 +128,7 @@
 
         },
         created(){
-            this.$axios.get(`/actives/getToken`,{
+            this.$axios.get(`${local}/actives/getToken`,{
                 params:{
 
                 }

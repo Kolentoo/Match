@@ -68,10 +68,13 @@
     import chart from '../components/chart/chart'
     import popus from '../components/popus/popus'
     import pop from '../components/pop'
+
+    var local = 'http://192.168.1.227:8081'
+    var panda = ''
     export default{
         data(){
             return{
-                on:true,
+                on:false,
                 photo:'上传参赛者照片',
                 work:'上传作品',
                 message:true,
@@ -137,7 +140,7 @@
                     var tbase2 = '';
                 }
                 this.loading=true
-                this.$axios.post('/actives/pictureSayAdd',{
+                this.$axios.post(`${local}/actives/pictureSayAdd`,{
                     _token:tk,
                     id:tid,
                     head_img:tbase1,
@@ -147,7 +150,7 @@
                 }).then((res)=>{
                     this.loading=false
                     var tid = sessionStorage.getItem('tid'); 
-                    this.$axios.get(`/actives/ParticipantInfo`,{
+                    this.$axios.get(`${local}/actives/ParticipantInfo`,{
                         params:{
                             id:tid
                         }
@@ -187,16 +190,17 @@
             }
         },
         created(){
-            this.on = true
-            let first = localStorage.getItem("first");
-            if(first===1){
+            this.on = false
+            if(this.fixed==='yes'){
+                this.on = true
+            }else{
                 this.on = false
             }
             let curl = window.location.href;
             if(curl.indexOf('fixed')>-1){
                 var tid = sessionStorage.getItem('tid'); 
                 this.fixed='yes'
-                this.$axios.get(`/actives/ParticipantInfo`,{
+                this.$axios.get(`${local}/actives/ParticipantInfo`,{
                     params:{
                         id:tid
                     }
@@ -237,7 +241,7 @@
     margin: 6rem 3rem 0;;box-shadow:0 0.8rem 3rem rgba(49,170,246,0.5);}
     .photo-tips {width: 59rem;background: #fff;border-radius:1.2rem;position: fixed;left: 50%;top: 50%;margin:-55rem 0 0 -29rem;
     z-index:500;height: 104rem;}
-    .photo-tips .title {font-size: 3rem;text-align: center;border-bottom: 0.1rem solid #f5f5f5;line-height: 8rem;}
+    .photo-tips .title {font-size: 3rem;text-align: center;border-bottom: 0.1rem solid #ddd;line-height: 9rem;}
     .photo-tips .photo-inner {margin:0 4rem;}
     .photo-tips .imgbox {display:flex;justify-content: space-between;height: 16.7rem;}
     .photo-tips .ebox {margin-top: 4rem;}

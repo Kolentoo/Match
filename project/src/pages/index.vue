@@ -79,6 +79,9 @@
     import login from '../components/login/login'
     import pop from '../components/pop'
     import popus from '../components/popus/popus'
+
+    var local = 'http://192.168.1.227:8081'
+    var panda = ''
     export default{
         data(){
             return{
@@ -114,7 +117,7 @@
             login,pop,popus
         },
         created(){
-            this.$axios.get(`/actives/getCity`, {
+            this.$axios.get(`${local}/actives/getCity`, {
             }).then((res)=> {
                 this.cgroup=res.data.msg
                 this.cgroup.unshift({
@@ -195,7 +198,7 @@
             },
             submitInfo(){
                 var tk = sessionStorage.getItem('tk'); 
-                this.$axios.post(`/actives/saveInfo`,{
+                this.$axios.post(`${local}/actives/saveInfo`,{
                     _token:tk,
                     childname:this.name,
                     age:this.age,
@@ -228,7 +231,7 @@
             },
             submitInfo2(){
                 var tk = sessionStorage.getItem('tk'); 
-                this.$axios.post(`/actives/SignIn`,{
+                this.$axios.post(`${local}/actives/SignIn`,{
                     _token:tk,
                     mobile:this.$refs.login2.phone,
                     code:this.$refs.login2.code

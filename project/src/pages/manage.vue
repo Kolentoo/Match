@@ -78,6 +78,8 @@
 </template>
 
 <script>
+    var local = 'http://192.168.1.227:8081'
+    var panda = ''
     export default{
         data(){
             return{
@@ -93,7 +95,7 @@
         },
         created(){
             var tid = sessionStorage.getItem('tid'); 
-            this.$axios.get(`/actives/ParticipantInfo`,{
+            this.$axios.get(`${local}/actives/ParticipantInfo`,{
                 params:{
                     id:tid
                 }
