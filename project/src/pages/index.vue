@@ -302,13 +302,13 @@
 <style scoped>
     .sign {background: #31aaf6;padding-bottom: 4rem;}
     .sign-box {background: url('../public/images/banner.jpg') no-repeat;min-height: 120.7rem;background-size: 100%;}
-    .sign-time {font-size: 2.3rem;color:#fff;padding-top: 32rem;text-align: center;}
+    .sign-time {font-size: 2.3rem;color:#fff;padding-top: 42.8%;text-align: center;}
     .content {border-radius:1.5rem;background: #fff;box-shadow:0 0.8rem 4rem rgba(21,88,130,0.2);margin:5rem 4rem 0;overflow: hidden;
     padding-bottom: 6rem;}
     .tab-con {display: flex;}
     .tab-list {width: 50%;font-size: 3.2rem;color:#c5d1dc;background: #f5f5f5;text-align: center;line-height: 8rem;}
     .tabon {color:#31aaf6;background: #fff;}
-    .info-box {width: 59rem;margin:0 auto;}
+    .info-box {width: 88%;margin:0 auto;}
     .content select{line-height: 8rem;color:#333;font-size: 2.8rem;text-align: center;display: inline-block;
     border-radius:1.5rem;border:0.1rem solid #ccc;height: 8rem;text-indent: 0.5em;}
     .info-box .user-info .info {width: 47%;}
