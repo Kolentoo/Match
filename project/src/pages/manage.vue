@@ -2,9 +2,9 @@
     <div class="manage">
         <div class="manageTop">
             <h2 class="tc" v-if="upStatus===''">未上传作品、语音</h2>
-            <h2 class="tc" v-if="upStatus==='nowork'">未上传作品</h2>
+            <h2 class="tc" v-if="upStatus==='voiceok'">未上传作品</h2>
             <h2 class="tc" v-if="upStatus==='novoice'">未上传语音</h2>
-            <h2 class="tc" v-if="upStatus==='ok'">已完成上传，期待您的童年画语</h2>
+            <h2 class="tc" v-if="upStatus==='finished'">已完成上传，期待您的童年画语</h2>
             <div class="infor">
                 <div class="infor-box clearfix">
                     <div class="infor-con fl">
@@ -21,7 +21,7 @@
                         </div>
                     </div>
                     <img class="decorate" src="../public/images/decorate.png" alt="" v-if="picurl===''">
-                    <div class="picbox fr">
+                    <div class="picbox fr" v-if="picurl!=''">
                         <div class="wborder">
                             <div class="workbox">
                                 <div class="picinner">
@@ -42,10 +42,10 @@
         <div class="content">
             <ul class="con">
                 <li class="clist" @click="gowork">
-                    <h3 v-if="picurl===''" class="b">作品上传</h3>
-                    <h3 v-if="picurl!=''" class="b">作品修改</h3>
-                    <p v-if="picurl===''" class="p1">上传日期：2018-04-08～2018-06-10</p>
-                    <p v-if="picurl!=''" class="p1">截止日期：2018-06-10</p>
+                    <h3 v-if="upStatus==='voiceok'||upStatus===''" class="b">作品上传</h3>
+                    <h3 v-if="upStatus==='novoice'||upStatus==='finished'" class="b">作品修改</h3>
+                    <p v-if="upStatus==='voiceok'||upStatus===''" class="p1">上传日期：2018-04-08～2018-06-10</p>
+                    <p v-if="upStatus==='novoice'||upStatus==='finished'" class="p1">截止日期：2018-06-10</p>
                     <div class="status">
                         <span class="s2" v-if="work===1">未开始</span>
                         <span class="s2 s3" v-if="work===2">已开始</span>
@@ -54,9 +54,11 @@
                         <img v-if="work===2" class="arrow1" src="../public/images/arrow2.png" alt="">
                     </div>
                 </li>
-                <li class="clist">
-                    <h3 class="b">语音上传</h3>
-                    <p class="p1">上传日期：2018-04-15～2018-06-10</p>
+                <li class="clist" @click="goinfo">
+                    <h3 class="b" v-if="upStatus==='novoice'||upStatus===''">语音上传</h3>
+                    <h3 class="b" v-if="upStatus==='voiceok'||upStatus==='finished'">语音修改</h3>
+                    <p class="p1" v-if="upStatus==='novoice'||upStatus===''">上传日期：2018-04-15～2018-06-10</p>
+                    <p class="p1" v-if="upStatus==='voiceok'||upStatus==='finished'">截止日期：2018-06-10</p>
                     <div class="status">
                         <span class="s2" v-if="voice===1">未开始</span>
                         <span class="s2 s3" v-if="voice===2">已开始</span>
@@ -108,19 +110,15 @@
                 }
             }).then((res)=>{
                 this.info=res.data.content
-                if(res.data.content.works_img!=''){
+                if(res.data.content.works_img!=''&&res.data.content.works_voice===''){
                     this.picurl=res.data.content.works_img;
-                }else{
-                    this.upStatus='nowork'
-                }
-                if(res.data.content.works_voice!=''){
-                    this.upStatus='ok'
-                }else{
                     this.upStatus='novoice'
-                }
-
-                if(res.data.content.works_img===''&&res.data.content.works_voice===''){
+                }else if(res.data.content.works_img===''&&res.data.content.works_voice!=''){
+                    this.upStatus='voiceok'
+                }else if(res.data.content.works_img===''&&res.data.content.works_voice===''){
                     this.upStatus=''
+                }else{
+                    this.upStatus='finished'
                 }
 
 
@@ -133,6 +131,14 @@
                 }
 
             })
+
+            this.$axios.get(`${panda}/actives/limitTime`,{
+
+            }).then((res)=>{
+                this.work=res.data.msg.works.status
+                this.voice=res.data.msg.voice.status
+                this.look=res.data.msg.game.status
+            })
             // this.$axios.get(`/actives/limitTime`,{
             // }).then((res)=>{
             //     console.log(res)
@@ -141,17 +147,34 @@
         mounted(){
             this.$nextTick(()=>{
                 let pheight = this.$refs.wpic;
-                console.log(pheight)
             })
         },
         methods:{
             gowork(){
-                if(this.upStatus!='nowork'&&this.upStatus!=''){
+                if(this.upStatus==='novoice'||this.upStatus==='finished'){
                     this.$router.push('upload?fixed');
                 }else{
                     this.$router.push('upload');
                 }
                 
+            },
+            // test(){
+            //     if(this.voice===2){
+            //         if(this.upStatus==='voiceok'||this.upStatus==='finished'){
+            //             this.$router.push('voice?fixed');
+            //         }else{
+            //             this.$router.push('voice');
+            //         }
+            //     }
+            // },
+            goinfo(){
+                // if(this.voice===2){
+                //     if(this.upStatus==='voiceok'||this.upStatus==='finished'){
+                //         this.$router.push('voice?fixed');
+                //     }else{
+                //         this.$router.push('voice');
+                //     }
+                // }
             }
         }
     }
@@ -160,7 +183,7 @@
 <style scoped>
     body,html{background: #fff;}
     .manage {background: #fff;padding-bottom: 14rem;}
-    .manageTop {background:url('../public/images/bj1.jpg') no-repeat center center;background-size: 100%;min-height: 40.3rem;}
+    .manageTop {background:url('../public/images/bj1.jpg') no-repeat center center;background-size: 100%;min-height: 37.3rem;}
     .manageTop h2{font-size: 3.8rem;color:#fff;padding:1.5rem 0;position: relative;top: 1.5rem;font-weight:bold;}
     .voice {background: url('../public/images/decorate2.jpg') no-repeat center center;background-size: 100%;height: 7.9rem;
     border-radius:0 0 1.5rem 1.5rem;margin-top: 2rem;}
@@ -168,7 +191,7 @@
     align-items: center;}
     .voice-con .voice-icon {width: 2.3rem;margin-left: 2rem;}
     .voice-con .seconds {font-size: 2.4rem;color:#999;margin-left: 9rem;}
-    .infor {background: #fff;border-radius:1.5rem;box-shadow:0 1.4rem 6rem rgba(3,15,39,0.14);width: 67rem;margin:0 auto;
+    .infor {background: #fff;border-radius:1.5rem;box-shadow:0 1.4rem 6rem rgba(3,15,39,0.14);width: 90%;margin:0 auto;
     position: relative;min-height: 31rem;position: relative;top: 2rem;margin-bottom: 6rem;}
     .infor-box {padding:0 3rem;}
     .infor-con {width: 30rem;display: flex;align-items: center;height: 100%;margin-top: 5rem;}
@@ -190,9 +213,8 @@
     .workpic {width: 100%;box-shadow:0 0 0 0.2rem rgba(0,0,0,0.2);vertical-align: middle;}
 
     .content {margin-top: 4rem;}
-    .clist {width: 61rem;padding:3rem;background: #fff;border-radius:1.5rem;box-shadow:0 1.4rem 6rem rgba(3,15,39,0.14);
-    margin:0 auto 4rem;}
-    .clist {position: relative;}
+    .clist {width:81.4%;padding:3rem;background: #fff;border-radius:1.5rem;box-shadow:0 1.4rem 6rem rgba(3,15,39,0.14);
+    margin:0 auto 4rem;position: relative;}
     .clist h3{font-size: 3.8rem;color:#333;}
     .clist .p1 {font-size: 2.4rem;color:#999;margin-top: 0.5rem;}
     .clist .status {position: absolute;right: 2rem;top: 50%;margin-top: -1.3rem;}

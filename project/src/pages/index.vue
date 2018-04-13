@@ -9,6 +9,7 @@
                 </ul>
                 <div class="match-box" v-if="match==='未报名'">
                     <div class="info-box">
+                        <p class="special-tips" v-if="special">特殊组报名提示</p>
                         <input v-model="name" class="text ilist name" type="text" placeholder="输入参赛者真实姓名，确定后不能修改" maxlength="18">
                         <div class="user-info clearfix ilist">
                             <div class="age info fl">
@@ -32,7 +33,7 @@
                                 <option value="">选择比赛组别</option>
                                 <option value="0">幼儿组</option>
                                 <option value="1">少儿组</option>
-                                <option value="2">特别组</option>
+                                <!--<option value="2">特别组</option>-->
                             </select>
                             <img class="arrow" src="../public/images/arrow.png" alt="">
                         </div>
@@ -51,7 +52,7 @@
                             </div>
                         </div>
                         <input class="text ilist school" type="text" placeholder="输入所在机构名或学校" maxlength="25" v-model="school">
-                        <login ref="login" :login1="login1"></login>
+                        <login ref="login" :login1="login1" key="login1"></login>
                     </div>
                     <p class="sign-btn bgcolor" @click="signbtn">报名</p>
                 </div>
@@ -62,7 +63,7 @@
                         <p class="p1">语音上传日期：2018年4月15日-6月10日</p>
                     </div>
                     <div class="login-box">
-                        <login ref="login2" :login2="login2"></login>
+                        <login ref="login2" :login2="login2" key="login2"></login>
                     </div>
                     <p class="sign-btn bgcolor" @click="signbtn2">登录</p>
                 </div>
@@ -110,13 +111,18 @@
                 city2:0,
                 school:'',
                 login1:'send1',
-                login2:'send2'
+                login2:'send2',
+                special:false
             }
         },
         components:{
             login,pop,popus
         },
         created(){
+            let curl = window.location.href;
+            if(curl.indexOf('special')>-1){
+                this.special
+            }
             this.$axios.get(`${panda}/actives/getCity`, {
             }).then((res)=> {
                 this.cgroup=res.data.msg
@@ -331,5 +337,6 @@
     }
     .tips {color:#fd7555;font-size: 2.34rem;line-height: 4rem;margin:3.5rem 4rem 0;}
     .login-box {margin:3.5rem 4rem 0;}
+    .special-tips {font-size: 2.8rem;margin-top: 1.8rem;}
     
 </style>

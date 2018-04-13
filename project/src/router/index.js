@@ -4,6 +4,7 @@ import index from '../pages/index'
 import manage from '../pages/manage'
 import upload from '../pages/upload'
 import home from '../pages/home'
+import voice from '../pages/voice'
 
 Vue.use(Router)
 
@@ -28,6 +29,11 @@ export default new Router({
       path: '/home',
       name: 'home',
       component: home
+    },
+    {
+      path: '/voice',
+      name: 'voice',
+      component: voice
     }
   ]
 })

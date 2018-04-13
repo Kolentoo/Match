@@ -16,11 +16,14 @@
                             </div>
                             <textarea class="work-story" placeholder="输入我的作品故事，限100字以内" v-model="workstory" maxlength="100">
                             </textarea>
+                            <div class="input">
+                                <input class="teacher-name" type="text" placeholder="输入指导老师姓名" v-model="teacher">
+                            </div>
                         </div>
                     </div>
                     <div class="file-box clearfix">
-                        <chart ref="chart1" class="fl" msg="上传参赛者照片" @gbs="gbs" :curl1="curl1" key="chart1"></chart>
-                        <chart ref="chart2" class="fr" msg="上传作品" @gbs2="gbs2" :curl2="curl2" key="chart2"></chart>
+                        <chart ref="chart1" class="fl chart1" msg="上传参赛者照片" @gbs="gbs" :curl1="curl1" key="chart1"></chart>
+                        <chart ref="chart2" class="fr chart2" msg="上传作品" @gbs2="gbs2" :curl2="curl2" key="chart2"></chart>
                     </div>
                     <p class="sure" @click="sure">确定</p> 
                 </div>
@@ -91,7 +94,8 @@
                 curl1:'',
                 curl2:'',
                 fixed:'',
-                fmsg:''
+                fmsg:'',
+                teacher:''
             }
         },
         components:{
@@ -103,6 +107,9 @@
                 localStorage.setItem('first', 1);
             },
             sure(){
+                let sp = /^\s/;
+                let regName = /^([a-zA-Z ]+|[\u4e00-\u9fa5]+)$/;
+
                 if(this.workname===''){
                     this.message=false
                     this.msg='作品名字不能为空'
@@ -111,15 +118,27 @@
                         this.message=false;
                         this.msg='作品故事不能为空'
                     }else{
-                        if(this.$refs.chart1.previewsurl===''&&this.$refs.chart1.curl1===''){
+                        if(this.teacher===''){
                             this.message=false;
-                            this.msg='头像不能为空'
+                            this.msg='指导老师不能为空'
                         }else{
-                            if(this.$refs.chart2.previewsurl2===''&&this.$refs.chart2.curl2===''){
-                                this.message=false;
-                                this.msg='作品不能为空'
-                            }else{
-                                this.upinfo();
+                            if(!sp.test(this.teacher)){
+                                if (regName.test(this.teacher)) {
+                                    if(this.$refs.chart1.previewsurl===''&&this.$refs.chart1.curl1===''){
+                                        this.message=false;
+                                        this.msg='头像不能为空'
+                                    }else{
+                                        if(this.$refs.chart2.previewsurl2===''&&this.$refs.chart2.curl2===''){
+                                            this.message=false;
+                                            this.msg='作品不能为空'
+                                        }else{
+                                            this.upinfo();
+                                        }
+                                    }
+                                } else {
+                                    this.msg='姓名格式错误';
+                                    this.message=false;
+                                }
                             }
                         }
                     }
@@ -147,7 +166,8 @@
                     head_img:tbase1,
                     works_img:tbase2,
                     works_name:this.workname,
-                    works_det:this.workstory
+                    works_det:this.workstory,
+                    teacher:this.teacher
                 }).then((res)=>{
                     this.loading=false
                     var tid = sessionStorage.getItem('tid'); 
@@ -215,6 +235,7 @@
                     this.workstory=this.info.works_det
                     this.curl1=this.info.head_img;
                     this.curl2=this.info.works_img;
+                    this.teacher=this.info.teacher;
                 })
             }else{
                 this.fixed=''
@@ -225,9 +246,9 @@
 
 <style scoped>
     .upload {background: #31aaf6;padding-bottom: 10rem;}
-    .upload-box {background: url('../public/images/bj2.jpg') no-repeat center center;min-height:120.7rem;background-size: 100%;}
+    .upload-box {background: url('../public/images/bj2.jpg') no-repeat top center;min-height:120.7rem;background-size: 100%;}
     .load-inner {padding-top: 10rem;}
-    .load-con {background: #fff;border-radius:1.5rem;box-shadow:0 1.4rem 6rem rgba(3,15,39,0.14);margin:0 auto;width: 61rem;
+    .load-con {background: #fff;border-radius:1.5rem;box-shadow:0 1.4rem 6rem rgba(3,15,39,0.14);margin:0 auto;width:81.4%;
     padding:0 3rem 8rem;}
     .title {position: relative;border-bottom: 0.1rem solid #ccc;}
     .title .p1 {height: 8.4rem;line-height: 8.4rem;font-size: 3.6rem;color:#333;}
@@ -238,9 +259,10 @@
     .content .subtance {margin:0 2rem;}
     .content input {width: 97%;border-radius:1.5rem;border:0.1rem solid #ccc;text-indent: 0.5rem;font-size: 2.8rem;line-height: 8rem;
     padding:0 1.5%;}
-    .content .work-name {height: 8rem;margin-bottom: 3rem;}
-    .content .work-story {height: 25rem;width: 97%;font-size: 2.8rem;border-radius:1.5rem;border:0.1rem solid #ccc;
-    padding:1.5%;}
+    .content .input {margin-bottom: 3rem;}
+    .content .work-name {height: 8rem;}
+    .content .work-story {height: 20rem;width: 97%;font-size: 2.8rem;border-radius:1.5rem;border:0.1rem solid #ccc;
+    padding:1.5% 1.5% 0;margin-bottom: 3rem;}
     .file-box {margin:6rem 4rem 0;}
     .sure {height: 8rem;line-height: 8rem;border-radius:1.2rem;background: #31aaf6;font-size: 3.2rem;color:#fff;text-align: center;
     margin: 6rem 3rem 0;;box-shadow:0 0.8rem 3rem rgba(49,170,246,0.5);}
