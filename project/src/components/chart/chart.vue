@@ -369,13 +369,13 @@
 </script>
 
 <style scoped>
-    .chart {position: relative;width: 24rem;height: 24rem;}
-    .zone {width: 24rem;height: 24rem;background: #f2f5f7;border-radius:1.2rem;position: absolute;top: 0;left: 0;}
+    .chart {position: relative;width: 48.5%;height: 24rem;}
+    .zone {width: 100%;height: 24rem;background: #f2f5f7;border-radius:1.2rem;position: absolute;top: 0;left: 0;}
     .zone img{width: 4rem;height: 4rem;text-align: center;display: block;margin:0 auto;padding-top: 7rem;}
     .zone .p1 {font-size: 2.8rem;text-align: center;color:#666;padding-top: 2rem;}
 
-    .sign {width: 24rem;height: 24rem;overflow: hidden;;}
-    .wrapper {width: 24rem;height: 24rem;background: #f2f5f7;border-radius:1.2rem;overflow: hidden;;}
+    .sign {width: 100%;height: 24rem;overflow: hidden;;}
+    .wrapper {width: 100%;height: 24rem;background: #f2f5f7;border-radius:1.2rem;overflow: hidden;;}
     .wrapper .cropper-box {position: fixed;width: 100%;height: 100%;z-index:1500;top: 0;left: 0;}
     .wrapper .cropperoff {z-index:-1;display: none;}
     .wrapper .vue-cropper {background: none;}  

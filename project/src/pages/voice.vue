@@ -104,31 +104,32 @@
             var tid = sessionStorage.getItem('tid'); 
             if(curl.indexOf('fixed')>-1){
                 this.upload=true
-                this.$axios.get(`${panda}/actives/ParticipantInfo`,{
-                    params:{
-                        id:tid
-                    }
-                }).then((res)=>{
-                    this.mp3=res.data.content.works_voice;
-                    if(res.data.content.voice_second>58){
-                        this.voicesec=60
-                    }else{
-                        this.voicesec=res.data.content.voice_second
-                    }
-                    
-                    if(this.mp3!=''){
-                        // this.submit=true
-                    }
-                    this.info=res.data.content
-                    if(res.data.content.works_img!=''){
-                        this.upStatus=1
-                    }else{
-                        this.upStatus=2
-                    }
-                })
             }else{
                 this.upload=false
             }
+            this.$axios.get(`${panda}/actives/ParticipantInfo`,{
+                params:{
+                    id:tid
+                }
+            }).then((res)=>{
+                this.mp3=res.data.content.works_voice;
+                if(res.data.content.voice_second>58){
+                    this.voicesec=60
+                }else{
+                    this.voicesec=res.data.content.voice_second
+                }
+                
+                if(this.mp3!=''){
+                    // this.submit=true
+                }
+                this.info=res.data.content
+                if(res.data.content.works_img!=''){
+                    this.upStatus=1
+                }else{
+                    this.upStatus=2
+                }
+            })
+            
             this.$axios.get(`${panda}/actives/picWeixinConfig`,{
 
             }).then((res)=>{

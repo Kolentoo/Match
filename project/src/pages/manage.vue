@@ -1,10 +1,10 @@
 <template>
     <div class="manage">
         <div class="manageTop">
-            <h2 class="tc" v-if="upStatus===''">未上传作品、语音</h2>
-            <h2 class="tc" v-if="upStatus==='voiceok'">未上传作品</h2>
-            <h2 class="tc" v-if="upStatus==='novoice'">未上传语音</h2>
-            <h2 class="tc" v-if="upStatus==='finished'">已完成上传，期待您的童年画语</h2>
+            <h2 class="tc" v-if="picStatus==='no'&&upStatus==='novoice'">未上传作品、语音</h2>
+            <h2 class="tc" v-if="picStatus==='no'&&upStatus==='voiceok'">未上传作品</h2>
+            <h2 class="tc" v-if="upStatus==='novoice'&&picStatus==='yes'">未上传语音</h2>
+            <h2 class="tc" v-if="picStatus==='yes'&&upStatus==='voiceok'">已完成上传，期待您的童年画语</h2>
             <div class="infor">
                 <div class="infor-box clearfix">
                     <div class="infor-con fl">
@@ -42,10 +42,10 @@
         <div class="content">
             <ul class="con">
                 <li class="clist" @click="gowork">
-                    <h3 v-if="upStatus==='voiceok'||upStatus===''" class="b">作品上传</h3>
-                    <h3 v-if="upStatus==='novoice'||upStatus==='finished'" class="b">作品修改</h3>
-                    <p v-if="upStatus==='voiceok'||upStatus===''" class="p1">上传日期：2018-04-08～2018-06-10</p>
-                    <p v-if="upStatus==='novoice'||upStatus==='finished'" class="p1">截止日期：2018-06-10</p>
+                    <h3 v-if="picStatus==='no'" class="b">作品上传</h3>
+                    <h3 v-if="picStatus==='yes'" class="b">作品修改</h3>
+                    <p v-if="picStatus==='no'" class="p1">上传日期：2018-04-08～2018-06-10</p>
+                    <p v-if="picStatus==='yes'" class="p1">截止日期：2018-06-10</p>
                     <div class="status">
                         <span class="s2" v-if="work===1">未开始</span>
                         <span class="s2 s3" v-if="work===2">已开始</span>
@@ -55,10 +55,10 @@
                     </div>
                 </li>
                 <li class="clist" @click="goinfo">
-                    <h3 class="b" v-if="upStatus==='novoice'||upStatus===''">语音上传</h3>
-                    <h3 class="b" v-if="upStatus==='voiceok'||upStatus==='finished'">语音修改</h3>
-                    <p class="p1" v-if="upStatus==='novoice'||upStatus===''">上传日期：2018-04-15～2018-06-10</p>
-                    <p class="p1" v-if="upStatus==='voiceok'||upStatus==='finished'">截止日期：2018-06-10</p>
+                    <h3 class="b" v-if="upStatus==='novoice'">语音上传</h3>
+                    <h3 class="b" v-if="upStatus==='voiceok'">语音修改</h3>
+                    <p class="p1" v-if="upStatus==='novoice'">上传日期：2018-04-15～2018-06-10</p>
+                    <p class="p1" v-if="upStatus==='voiceok'">截止日期：2018-06-10</p>
                     <div class="status">
                         <span class="s2" v-if="voice===1">未开始</span>
                         <span class="s2 s3" v-if="voice===2">已开始</span>
@@ -69,7 +69,7 @@
                 </li>
                 <li class="clist">
                     <h3 class="b">我的线上个人画展</h3>
-                    <p class="p1">尽情期待</p>
+                    <p class="p1">敬请期待</p>
                     <div class="status">
                         <span class="s2" v-if="look===1">未开始</span>
                         <span class="s2 s3" v-if="look===2">已开始</span>
@@ -99,7 +99,8 @@
                 look:1,
                 info:'',
                 picurl:'',
-                upStatus:''
+                picStatus:'no',
+                upStatus:'novoice'
             }
         },
         created(){
@@ -110,15 +111,17 @@
                 }
             }).then((res)=>{
                 this.info=res.data.content
-                if(res.data.content.works_img!=''&&res.data.content.works_voice===''){
+                if(res.data.content.works_img!=''){
                     this.picurl=res.data.content.works_img;
-                    this.upStatus='novoice'
-                }else if(res.data.content.works_img===''&&res.data.content.works_voice!=''){
-                    this.upStatus='voiceok'
-                }else if(res.data.content.works_img===''&&res.data.content.works_voice===''){
-                    this.upStatus=''
+                    this.picStatus='yes'
                 }else{
-                    this.upStatus='finished'
+                    this.picStatus='no'
+                }
+
+                if(res.data.content.works_voice!=''){
+                    this.upStatus='voiceok'
+                }else{
+                    this.upStatus='novoice'
                 }
 
 
@@ -151,7 +154,7 @@
         },
         methods:{
             gowork(){
-                if(this.upStatus==='novoice'||this.upStatus==='finished'){
+                if(this.picStatus==='yes'){
                     this.$router.push('upload?fixed');
                 }else{
                     this.$router.push('upload');
@@ -168,13 +171,13 @@
             //     }
             // },
             goinfo(){
-                // if(this.voice===2){
-                //     if(this.upStatus==='voiceok'||this.upStatus==='finished'){
-                //         this.$router.push('voice?fixed');
-                //     }else{
-                //         this.$router.push('voice');
-                //     }
-                // }
+                if(this.voice===2){
+                    if(this.upStatus==='voiceok'){
+                        this.$router.push('voice?fixed');
+                    }else{
+                        this.$router.push('voice');
+                    }
+                }
             }
         }
     }

@@ -17,7 +17,7 @@
                             <textarea class="work-story" placeholder="输入我的作品故事，限100字以内" v-model="workstory" maxlength="100">
                             </textarea>
                             <div class="input">
-                                <input class="teacher-name" type="text" placeholder="输入指导老师姓名" v-model="teacher">
+                                <input class="teacher-name" type="text" placeholder="选填，输入指导老师姓名" v-model="teacher">
                             </div>
                         </div>
                     </div>
@@ -118,27 +118,15 @@
                         this.message=false;
                         this.msg='作品故事不能为空'
                     }else{
-                        if(this.teacher===''){
+                        if(this.$refs.chart1.previewsurl===''&&this.$refs.chart1.curl1===''){
                             this.message=false;
-                            this.msg='指导老师不能为空'
+                            this.msg='头像不能为空'
                         }else{
-                            if(!sp.test(this.teacher)){
-                                if (regName.test(this.teacher)) {
-                                    if(this.$refs.chart1.previewsurl===''&&this.$refs.chart1.curl1===''){
-                                        this.message=false;
-                                        this.msg='头像不能为空'
-                                    }else{
-                                        if(this.$refs.chart2.previewsurl2===''&&this.$refs.chart2.curl2===''){
-                                            this.message=false;
-                                            this.msg='作品不能为空'
-                                        }else{
-                                            this.upinfo();
-                                        }
-                                    }
-                                } else {
-                                    this.msg='姓名格式错误';
-                                    this.message=false;
-                                }
+                            if(this.$refs.chart2.previewsurl2===''&&this.$refs.chart2.curl2===''){
+                                this.message=false;
+                                this.msg='作品不能为空'
+                            }else{
+                                this.upinfo();
                             }
                         }
                     }
