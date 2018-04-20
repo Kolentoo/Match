@@ -1,5 +1,5 @@
 <template>
-    <div class="sign">
+    <div :class="['sign',{anzhuo:anzhuo}]">
         <div class="sign-box">
             <p class="sign-time">报名时间：2018年4月8日-6月10日</p>
             <div class="content">
@@ -112,13 +112,24 @@
                 school:'',
                 login1:'send1',
                 login2:'send2',
-                special:false
+                special:false,
+                anzhuo:false
             }
         },
         components:{
             login,pop,popus
         },
         created(){
+            
+            let u = navigator.userAgent;
+            let isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+            let isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+            if(isAndroid===true){
+                this.anzhuo=true
+            }else{
+                this.anzhuo=false
+            }
+
             let curl = window.location.href;
             if(curl.indexOf('special')>-1){
                 this.special

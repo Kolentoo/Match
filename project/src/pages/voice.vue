@@ -45,6 +45,7 @@
         <pop :message="message">
             <div slot="pop">{{msg}}</div>
         </pop>
+        <img v-if="loading" class="loading" src="../public/images/loading.gif" alt="">
     </div>
 </template>
 
@@ -82,7 +83,8 @@
                 upload:false,
                 btning:false,
                 upStatus:'',
-                info:''
+                info:'',
+                loading:false
             }
         },
         created(){
@@ -243,6 +245,7 @@
                 this.$router.push('manage');
             },
             voicego(){
+                this.loading=true
                 var tk = sessionStorage.getItem('tk'); 
                 var tid = sessionStorage.getItem('tid'); 
                 if(this.submit===true){
@@ -257,6 +260,7 @@
                                 _token:tk
                             }).then((res)=>{
                                 if(res.data.status==1){
+                                    this.loading=false
                                     this.mk=true
                                     this.voiceupload=this.upStatus
                                 }else{
@@ -268,6 +272,7 @@
                                 }
                             })
                         }
+                        
                     });
                 }
             },
@@ -333,5 +338,6 @@
     .vstart {width: 30rem;height: 30rem;background: #fff;border-radius:1.2rem;}
     * {-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;  
         -ms-user-select:none; user-select:none;}  
-        .ontap{font-size: 4rem;}
+    .ontap{font-size: 4rem;}
+    .loading {position: fixed;top: 50%;left: 50%;width: 18rem;height: 18rem;margin:-9rem 0 0 -9rem;z-index:999;}
 </style>

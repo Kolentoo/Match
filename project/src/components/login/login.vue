@@ -26,7 +26,7 @@
                 phone:'',
                 message:true,
                 msg:'',
-                code:''
+                code:'',
             }
         },
         methods:{
@@ -128,6 +128,14 @@
 
         },
         created(){
+            // let u = navigator.userAgent;
+            // let isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+            // let isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+            // if(isAndroid===true){
+            //     this.anzhuo=true
+            // }else{
+            //     this.anzhuo=false
+            // }
             this.$axios.get(`${panda}/actives/getToken`,{
                 params:{
 
@@ -147,7 +155,7 @@
     .ilist {margin-top: 3.5rem;}
     .phone-box {position: relative;}
     .phone-box .codebtn {position: absolute;width: 18rem;height: 5.6rem;line-height: 5.6rem;text-align: center;border-radius:0.8rem;
-    font-size: 2.4rem;color:#fff;right: 1.5rem;top: 1.5rem;
+    font-size: 2.4rem;color:#fff;right: 1.5rem;top: 15px;
     box-shadow:0 0.4rem 1.2rem rgba(49,170,246,0.5);
     }
     .phone-box .codesec {box-shadow:none;}
