@@ -97,7 +97,8 @@
                 wx.startRecord({ 
                     success: function(){ 
                         localStorage.rainAllowRecord = 'true'; 
-                        wx.stopRecord(); }, 
+                        wx.stopRecord(); 
+                    }, 
                     cancel: function () {
                         } 
                 }); 

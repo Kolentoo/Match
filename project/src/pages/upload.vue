@@ -62,6 +62,7 @@
         <pop :message="message">
             <div slot="pop">{{msg}}</div>
         </pop>
+        <div class="mk" v-if="mk"></div>
         <img v-if="loading" class="loading" src="../public/images/loading.gif" alt="">
         <popus :voiceupload="voiceupload" :mask="mask" @close="parentClose" :fmsg="fmsg"></popus>
     </div>
@@ -95,7 +96,8 @@
                 curl2:'',
                 fixed:'',
                 fmsg:'',
-                teacher:''
+                teacher:'',
+                mk:false
             }
         },
         components:{
@@ -109,6 +111,7 @@
             sure(){
                 let sp = /^\s/;
                 let regName = /^([a-zA-Z ]+|[\u4e00-\u9fa5]+)$/;
+                let maxsize = 5*1024*1024;//5M
 
                 if(this.workname===''){
                     this.message=false
@@ -147,42 +150,54 @@
                 }else{
                     var tbase2 = '';
                 }
-                this.loading=true
-                this.$axios.post(`${panda}/actives/pictureSayAdd`,{
-                    _token:tk,
-                    id:tid,
-                    head_img:tbase1,
-                    works_img:tbase2,
-                    works_name:this.workname,
-                    works_det:this.workstory,
-                    teacher:this.teacher
-                }).then((res)=>{
-                    this.loading=false
-                    var tid = sessionStorage.getItem('tid'); 
-                    this.$axios.get(`${panda}/actives/ParticipantInfo`,{
-                        params:{
-                            id:tid
-                        }
-                    }).then((res)=>{
-                        this.info=res.data.content
-                        if(res.data.status===1){
-                            if(res.data.content.works_voice===''){
-                                this.voiceupload=0
-                            }else{
-                                this.voiceupload=1
-                            }
-                            this.mask=true
-                        }else{
-                            this.msg=res.data.msg;
-                            this.message=false
-                        }
-                        this.popoff();
-                    })
-                })
-                if(this.fixed===''){
-                    this.fmsg===''
+
+                let max = 5*1024*1024
+                let img2 = document.getElementById('uploads2').files[0].size;;
+                if(img2>max){
+                    this.msg='图像不能大于5M';
+                    this.message=false
+                    this.popoff();
                 }else{
-                    this.fmsg==='fixed'
+
+                    this.mk=true
+                    this.loading=true
+                    this.$axios.post(`${panda}/actives/pictureSayAdd`,{
+                        _token:tk,
+                        id:tid,
+                        head_img:tbase1,
+                        works_img:tbase2,
+                        works_name:this.workname,
+                        works_det:this.workstory,
+                        teacher:this.teacher
+                    }).then((res)=>{
+                        this.mk=true
+                        this.loading=false
+                        var tid = sessionStorage.getItem('tid'); 
+                        this.$axios.get(`${panda}/actives/ParticipantInfo`,{
+                            params:{
+                                id:tid
+                            }
+                        }).then((res)=>{
+                            this.info=res.data.content
+                            if(res.data.status===1){
+                                if(res.data.content.works_voice===''){
+                                    this.voiceupload=0
+                                }else{
+                                    this.voiceupload=1
+                                }
+                                this.mask=true
+                            }else{
+                                this.msg=res.data.msg;
+                                this.message=false
+                            }
+                            this.popoff();
+                        })
+                    })
+                    if(this.fixed===''){
+                        this.fmsg===''
+                    }else{
+                        this.fmsg==='fixed'
+                    }
                 }
             },
             popoff(){
@@ -266,4 +281,5 @@
     line-height: 8rem;border-radius: 0 0 1.2rem 1.2rem;}
     .mask {background: rgba(0,0,0,0.5);position: fixed;width: 100%;height: 100%;top: 0;left: 0;}
     .loading {position: fixed;top: 50%;left: 50%;width: 18rem;height: 18rem;margin:-9rem 0 0 -9rem;z-index:999;}
+    .mk {background:rgba(0,0,0,0.5);width: 100%;height: 100%;left: 0;top: 0;z-index:800;position: fixed;}
 </style>

@@ -79,7 +79,7 @@
             </div>
             <div  :class="['show-preview']" :style="{'width': previews.w + 'px', 'height': previews.h + 'px',  'overflow': 'hidden', 'margin': '5px'}">
                 <div :style="previews.div">
-                    <img :src="previewsurl||curl1" :style="previews.img">
+                    <img id="img1" :src="previewsurl||curl1" :style="previews.img">
                 </div>
             </div>
             <img v-if="previewsurl!=''||curl1!=''" class="closepic" @click="closepic()" src="../../public/images/close.png" alt="">
@@ -108,7 +108,7 @@
             <input type="file" id="uploads2" style="position:absolute; clip:rect(0 0 0 0);" accept="image/png, image/jpeg, image/gif, image/jpg" @change="uploadImg2($event, 1)">
             <div :class="['show-preview']" :style="{'width': previews.w + 'px', 'height': previews.h + 'px',  'overflow': 'hidden', 'margin': '5px'}">
                 <div :style="previews.div">
-                    <img :src="previewsurl2||curl2" :style="previews.img">
+                    <img id="img2" :src="previewsurl2||curl2" :style="previews.img">
                 </div>
             </div>
             <img v-if="previewsurl2!=''||curl2!=''" class="closepic" @click="closepic2()" src="../../public/images/close.png" alt="">
@@ -357,6 +357,7 @@
             vueCropper
         },
         created(){
+
             if(this.curl1!=''){
                 this.previewsurl=this.curl1
             }
