@@ -13,8 +13,8 @@
             <div class="pop-con">
                 <h2 class="tc">报名成功</h2>
                 <p class="p1">请在规定日期内，在我的报名中，上传作品和语音</p>
-                <p class="p2">作品上传日期：2018-04-08～2018-06-08</p>
-                <p class="p2">语音上传日期：2018-04-15～2018-06-08</p>
+                <p class="p2">作品上传日期：2018-04~2018-06</p>
+                <p class="p2">语音上传日期：2018-04~2018-06</p>
                 <img class="pic" src="../../public/images/success.png" alt="">
             </div>
             <ul class="btn-group">
@@ -37,7 +37,7 @@
                 <h2 class="tc">作品上传成功</h2>
                 <h2 class="tc" v-if="fmsg==='fixed'">作品修改成功</h2>
                 <p class="p1">您还没有上传语音，请在规定时间内，在我的报名中上传</p>
-                <p class="p2">语音上传日期：2018-04-15～2018-06-08</p>
+                <p class="p2">语音上传日期：2018-04~2018-06</p>
                 <img class="pic" src="../../public/images/success.png" alt="">
             </div>
             <ul class="btn-group">
@@ -46,7 +46,7 @@
         </div>
         <div class="pop5 popall" v-if="voiceupload===1">
             <div class="pop-con">
-                <h2 class="tc">作品上传成功</h2>
+                <h2 class="tc">上传成功</h2>
                 <h2 class="tc" v-if="fmsg==='fixed'">作品修改成功</h2>
                 <p class="p1">您已完成语音和作品的上传，尽情期待2018年童年画语杯大赛开启</p>
                 <img class="pic" src="../../public/images/success.png" alt="">

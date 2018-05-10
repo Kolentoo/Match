@@ -44,8 +44,8 @@
                 <li class="clist" @click="gowork">
                     <h3 v-if="picStatus==='no'" class="b">作品上传</h3>
                     <h3 v-if="picStatus==='yes'" class="b">作品修改</h3>
-                    <p v-if="picStatus==='no'" class="p1">上传日期：2018-04-08～2018-06-10</p>
-                    <p v-if="picStatus==='yes'" class="p1">截止日期：2018-06-10</p>
+                    <p v-if="picStatus==='no'" class="p1">上传日期：2018-04～2018-06</p>
+                    <p v-if="picStatus==='yes'" class="p1">截止日期：2018-06</p>
                     <div class="status">
                         <span class="s2" v-if="work===1">未开始</span>
                         <span class="s2 s3" v-if="work===2">已开始</span>
@@ -57,8 +57,8 @@
                 <li class="clist" @click="goinfo">
                     <h3 class="b" v-if="upStatus==='novoice'">语音上传</h3>
                     <h3 class="b" v-if="upStatus==='voiceok'">语音修改</h3>
-                    <p class="p1" v-if="upStatus==='novoice'">上传日期：2018-04-15～2018-06-10</p>
-                    <p class="p1" v-if="upStatus==='voiceok'">截止日期：2018-06-10</p>
+                    <p class="p1" v-if="upStatus==='novoice'">上传日期：2018-04～2018-06</p>
+                    <p class="p1" v-if="upStatus==='voiceok'">截止日期：2018-06</p>
                     <div class="status">
                         <span class="s2" v-if="voice===1">未开始</span>
                         <span class="s2 s3" v-if="voice===2">已开始</span>
