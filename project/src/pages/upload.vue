@@ -1,5 +1,6 @@
 <template>
     <div class="upload">
+        <input type="text">
         <div class="upload-box">
             <div class="load-inner">
                 <div class="load-con">
@@ -151,54 +152,157 @@
                     var tbase2 = '';
                 }
 
-                let max = 5*1024*1024
-                let img2 = document.getElementById('uploads2').files[0].size;;
-                if(img2>max){
-                    this.msg='图像不能大于5M';
-                    this.message=false
-                    this.popoff();
-                }else{
-
-                    this.mk=true
-                    this.loading=true
-                    this.$axios.post(`${panda}/actives/pictureSayAdd`,{
-                        _token:tk,
-                        id:tid,
-                        head_img:tbase1,
-                        works_img:tbase2,
-                        works_name:this.workname,
-                        works_det:this.workstory,
-                        teacher:this.teacher
-                    }).then((res)=>{
                         this.mk=true
-                        this.loading=false
-                        var tid = sessionStorage.getItem('tid'); 
-                        this.$axios.get(`${panda}/actives/ParticipantInfo`,{
-                            params:{
-                                id:tid
-                            }
+                        this.loading=true
+                        this.$axios.post(`${panda}/actives/pictureSayAdd`,{
+                            _token:tk,
+                            id:tid,
+                            head_img:tbase1,
+                            works_img:tbase2,
+                            works_name:this.workname,
+                            works_det:this.workstory,
+                            teacher:this.teacher
                         }).then((res)=>{
-                            this.info=res.data.content
-                            if(res.data.status===1){
-                                if(res.data.content.works_voice===''){
-                                    this.voiceupload=0
-                                }else{
-                                    this.voiceupload=1
+                            this.mk=true
+                            this.loading=false
+                            var tid = sessionStorage.getItem('tid'); 
+                            this.$axios.get(`${panda}/actives/ParticipantInfo`,{
+                                params:{
+                                    id:tid
                                 }
-                                this.mask=true
-                            }else{
-                                this.msg=res.data.msg;
-                                this.message=false
-                            }
+                            }).then((res)=>{
+                                this.info=res.data.content
+                                if(res.data.status===1){
+                                    if(res.data.content.works_voice===''){
+                                        this.voiceupload=0
+                                    }else{
+                                        this.voiceupload=1
+                                    }
+                                    this.mask=true
+                                }else{
+                                    this.msg=res.data.msg;
+                                    this.message=false
+                                }
+                                this.popoff();
+                            })
+                        }).catch((error)=>{
+                            this.msg='服务器繁忙，请稍候再试'
+                            this.message=false
+                            this.loading=false
+                            this.mk=false
                             this.popoff();
                         })
-                    })
-                    if(this.fixed===''){
-                        this.fmsg===''
-                    }else{
-                        this.fmsg==='fixed'
-                    }
-                }
+                        if(this.fixed===''){
+                            this.fmsg===''
+                        }else{
+                            this.fmsg==='fixed'
+                        }
+
+                // let max = 5*1024*1024
+                // let img2 = document.getElementById('uploads2');
+                // if(img2.src===''){
+                //     let imgsize = img2.files[0].size;
+                //     if(imgsize>max){
+                //         this.msg='图像不能大于5M';
+                //         this.message=false
+                //         this.popoff();
+                //     }else{
+
+                //         this.mk=true
+                //         this.loading=true
+                //         this.$axios.post(`${panda}/actives/pictureSayAdd`,{
+                //             _token:tk,
+                //             id:tid,
+                //             head_img:tbase1,
+                //             works_img:tbase2,
+                //             works_name:this.workname,
+                //             works_det:this.workstory,
+                //             teacher:this.teacher
+                //         }).then((res)=>{
+                //             this.mk=true
+                //             this.loading=false
+                //             var tid = sessionStorage.getItem('tid'); 
+                //             this.$axios.get(`${panda}/actives/ParticipantInfo`,{
+                //                 params:{
+                //                     id:tid
+                //                 }
+                //             }).then((res)=>{
+                //                 this.info=res.data.content
+                //                 if(res.data.status===1){
+                //                     if(res.data.content.works_voice===''){
+                //                         this.voiceupload=0
+                //                     }else{
+                //                         this.voiceupload=1
+                //                     }
+                //                     this.mask=true
+                //                 }else{
+                //                     this.msg=res.data.msg;
+                //                     this.message=false
+                //                 }
+                //                 this.popoff();
+                //             })
+                //         }).catch((error)=>{
+                //             this.msg='服务器繁忙，请稍候再试'
+                //             this.message=false
+                //             this.loading=false
+                //             this.mk=false
+                //             this.popoff();
+                //         })
+                //         if(this.fixed===''){
+                //             this.fmsg===''
+                //         }else{
+                //             this.fmsg==='fixed'
+                //         }
+                //     }
+                // }else{
+                //         this.mk=true
+                //         this.loading=true
+                //         this.$axios.post(`${panda}/actives/pictureSayAdd`,{
+                //             _token:tk,
+                //             id:tid,
+                //             head_img:tbase1,
+                //             works_img:tbase2,
+                //             works_name:this.workname,
+                //             works_det:this.workstory,
+                //             teacher:this.teacher
+                //         }).then((res)=>{
+                //             this.mk=true
+                //             this.loading=false
+                //             var tid = sessionStorage.getItem('tid'); 
+                //             this.$axios.get(`${panda}/actives/ParticipantInfo`,{
+                //                 params:{
+                //                     id:tid
+                //                 }
+                //             }).then((res)=>{
+                //                 this.info=res.data.content
+                //                 if(res.data.status===1){
+                //                     if(res.data.content.works_voice===''){
+                //                         this.voiceupload=0
+                //                     }else{
+                //                         this.voiceupload=1
+                //                     }
+                //                     this.mask=true
+                //                 }else{
+                //                     this.msg=res.data.msg;
+                //                     this.message=false
+                //                 }
+                //                 this.popoff();
+                //             })
+                //         }).catch((error)=>{
+                //             this.msg='服务器繁忙，请稍候再试'
+                //             this.message=false
+                //             this.loading=false
+                //             this.mk=false
+                //             this.popoff();
+                //         })
+                //         if(this.fixed===''){
+                //             this.fmsg===''
+                //         }else{
+                //             this.fmsg==='fixed'
+                //         }
+                // }
+                
+
             },
             popoff(){
                 let self = this;

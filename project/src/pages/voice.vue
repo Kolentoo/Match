@@ -84,7 +84,8 @@
                 btning:false,
                 upStatus:'',
                 info:'',
-                loading:false
+                loading:false,
+                recordstatus:false
             }
         },
         created(){
@@ -167,6 +168,7 @@
                 }
             },
             recordvoice(){
+                this.recordstatus=true
                 this.mk=true
                 this.nd=new Date();
                 this.settime = setTimeout(()=> {
@@ -175,6 +177,7 @@
                     this.setinter = setInterval(this.add,1000);
                     wx.startRecord();
                 }, 300);
+                
             },
             over(){
                 // this.mk=false
@@ -195,21 +198,25 @@
                 //         }
                 //     });
                 // }
+                if(this.recordstatus===true){
+                    this.recordstatus=false
+                    if(this.sec2<59){
+                        wx.stopRecord({
+                            success:(res)=> {
+                                this.localId = res.localId;
+                            }
+                        });
+                        
+                    }
+                }
+                this.mp3=''
+                this.recording=false
+                this.mk=false
                 this.sec2=this.sec;
                 clearInterval(this.setinter);
                 this.sec=0;
-                this.recording=false
-                this.mk=false
                 this.record=true
                 this.submit=true
-                this.mp3=''
-                if(this.sec2<59){
-                    wx.stopRecord({
-                        success:(res)=> {
-                            this.localId = res.localId;
-                        }
-                    });
-                }
             },
             play(){
                 let myAudio = document.getElementById('audio');
@@ -246,6 +253,7 @@
                 this.$router.push('manage');
             },
             voicego(){
+                this.pauseaudo();
                 this.loading=true
                 var tk = sessionStorage.getItem('tk'); 
                 var tid = sessionStorage.getItem('tid'); 
@@ -279,6 +287,20 @@
             },
             parentClose(){
                 this.$router.push('manage')
+            },
+            pauseaudo(){
+                let myAudio = document.getElementById('audio');
+                if(this.mp3!=''){
+                    myAudio.pause();
+                    myAudio.currentTime = 0;
+                    this.audiostatus='stop'
+                    this.playstatus='noplay'
+                }else{
+                    wx.stopVoice({
+                        localId:this.localId // 需要停止的音频的本地ID，由stopRecord接口获得
+                    });
+                    this.playstatus='noplay'
+                }
             }
         },
         components:{
@@ -287,13 +309,17 @@
         watch:{
             'sec'(){
                 if(this.sec===58){
-                    this.sec2=60
-                    wx.stopRecord({
-                        success:(res)=> {
-                            this.localId = res.localId;
-                            // alert(this.localId)
-                        }
-                    });
+                    if(this.recordstatus===true){
+                        this.recordstatus=false;
+                        this.sec2=60
+                        wx.stopRecord({
+                            success:(res)=> {
+                                this.localId = res.localId;
+                                // alert(this.localId)
+                            }
+                        });
+                        
+                    }
                 }
             }
         }
