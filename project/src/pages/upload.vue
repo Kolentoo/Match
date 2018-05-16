@@ -1,6 +1,5 @@
 <template>
     <div class="upload">
-        <input type="text">
         <div class="upload-box">
             <div class="load-inner">
                 <div class="load-con">
@@ -75,7 +74,7 @@
     import pop from '../components/pop'
 
     var local = 'http://192.168.1.227:8081'
-    var panda = ''
+    var panda = 'http://student.dfth.com/'
     export default{
         data(){
             return{
@@ -317,9 +316,10 @@
                 this.base2=dbase
             },
             parentClose(){
+                var mid = sessionStorage.getItem('tid'); 
                 this.voiceupload='',
                 this.mask=false;
-                this.$router.push('manage');
+                this.$router.push(`manage?id=${mid}`);
             }
         },
         created(){

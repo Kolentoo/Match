@@ -54,7 +54,7 @@
                         <img v-if="work===2" class="arrow1" src="../public/images/arrow2.png" alt="">
                     </div>
                 </li>
-                <li class="clist" @click="goinfo">
+                <li class="clist" @click="goinfo"> 
                     <h3 class="b" v-if="upStatus==='novoice'">语音上传</h3>
                     <h3 class="b" v-if="upStatus==='voiceok'">语音修改</h3>
                     <p class="p1" v-if="upStatus==='novoice'">上传日期：2018-04～2018-06</p>
@@ -83,12 +83,13 @@
         <p class="bottom tc">
             如有疑问拨打客服电话：<a href="tel:400-895-6006">400-895-6006</a>
         </p>
+        <p class="hehe hide" @click="test()">test</p>
     </div>
 </template>
 
 <script>
     var local = 'http://192.168.1.227:8081'
-    var panda = ''
+    var panda = 'http://student.dfth.com/'
     export default{
         data(){
             return{
@@ -104,10 +105,13 @@
             }
         },
         created(){
-            var tid = sessionStorage.getItem('tid'); 
+            let curl = window.location.href;
+            let mid = curl.split('=')[1];
+            sessionStorage.setItem('tid',mid); 
+            // var mid = sessionStorage.getItem('tid'); 
             this.$axios.get(`${panda}/actives/ParticipantInfo`,{
                 params:{
-                    id:tid
+                    id:mid
                 }
             }).then((res)=>{
                 this.info=res.data.content
@@ -154,11 +158,14 @@
         },
         methods:{
             gowork(){
-                if(this.picStatus==='yes'){
-                    this.$router.push('upload?fixed');
-                }else{
-                    this.$router.push('upload');
-                }
+                // if(this.picStatus==='yes'){
+                //     this.$router.push('upload?fixed');
+                // }else{
+                //     this.$router.push('upload');
+                // }
+                let curl = window.location.href;
+                let mid = curl.split('=')[1];
+                window.location.href=`http://erp.dfth.com/index.php/Drawing/upload2.html?id=${mid}`
                 
             },
             // test(){
@@ -178,6 +185,10 @@
                         this.$router.push('voice');
                     }
                 }
+            },
+            test(){
+                var mid = sessionStorage.getItem('tid'); 
+                window.location.href=`http://erp.dfth.com/index.php/Drawing/upload2.html?id=${mid}`
             }
         }
     }
@@ -226,6 +237,7 @@
     .clist .status .arrow1 {width: 1.5rem;margin-left: 1.2rem;}
     .bottom {font-size: 2.8rem;color:#666;margin-top: 4rem;}
     .bottom a{color:#fd7555;}
+    .hehe {width: 100%;height: 5rem;border:0.1rem solid #000;}
     
 
 

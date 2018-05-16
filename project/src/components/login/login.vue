@@ -14,7 +14,9 @@
 
 <script>
     var local = 'http://192.168.1.227:8081'
-    var panda = ''
+    var panda = 'http://student.dfth.com/'     
+
+    
     import pop from '../pop'
     export default{
         props:['login1','login2'],

@@ -82,7 +82,7 @@
     import popus from '../components/popus/popus'
 
     var local = 'http://192.168.1.227:8081'
-    var panda = ''
+    var panda = 'http://student.dfth.com/'
     export default{
         data(){
             return{
@@ -254,7 +254,8 @@
                     code:this.$refs.login2.code
                 }).then(res=>{
                     if(res.data.status===1){
-                        this.$router.push('manage');
+                        let mid = res.data.content.id;
+                        this.$router.push(`manage?id=${mid}`);
                         sessionStorage.setItem('tid',res.data.content.id); 
                     }else{
                         this.message=false

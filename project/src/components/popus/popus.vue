@@ -18,7 +18,7 @@
                 <img class="pic" src="../../public/images/success.png" alt="">
             </div>
             <ul class="btn-group">
-                <li class="cancle" @click="goself">下次再传</li>
+                <li class="cancle" @click="gomanager">下次再传</li>
                 <li class="ok" @click="goself">上传作品</li>
             </ul>
         </div>
@@ -83,7 +83,13 @@
                 this.$emit('close');
             },
             goself(){
-                this.$router.push('upload');
+                // this.$router.push('upload');
+                var mid = sessionStorage.getItem('tid'); 
+                window.location.href=`http://erp.dfth.com/index.php/Drawing/upload2.html?id=${mid}`
+            },
+            gomanager(){
+                var mid = sessionStorage.getItem('tid'); 
+                this.$router.push(`manage?id=${mid}`);
             },
             gotab(){
                 // this.$emit('gosign');

@@ -119,7 +119,7 @@
 <script>
     import vueCropper from 'vue-cropper'
     var local = 'http://192.168.1.227:8081'
-    var panda = ''
+    var panda = 'http://student.dfth.com/'
     export default{
         props:['msg','curl1','curl2'],
         data(){

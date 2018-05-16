@@ -53,7 +53,7 @@
     import popus from '../components/popus/popus'
     import pop from '../components/pop'
     var local = 'http://192.168.1.227:8081'
-    var panda = ''
+    var panda = 'http://student.dfth.com/'
     export default{
         data(){
             return{
