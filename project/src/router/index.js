@@ -5,6 +5,10 @@ import manage from '../pages/manage'
 import upload from '../pages/upload'
 import home from '../pages/home'
 import voice from '../pages/voice'
+import integral from '../pages/integral'
+import work from '../pages/work'
+import acthome from '../pages/acthome'
+
 
 Vue.use(Router)
 
@@ -34,6 +38,21 @@ export default new Router({
       path: '/voice',
       name: 'voice',
       component: voice
+    },
+    {
+      path: '/integral',
+      name: 'integral',
+      component: integral
+    },
+    {
+      path: '/work',
+      name: 'work',
+      component: work
+    },
+    {
+      path: '/acthome',
+      name: 'acthome',
+      component: acthome
     }
   ]
 })
