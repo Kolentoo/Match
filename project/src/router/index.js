@@ -8,6 +8,7 @@ import voice from '../pages/voice'
 import integral from '../pages/integral'
 import work from '../pages/work'
 import acthome from '../pages/acthome'
+import gallery from '../pages/gallery'
 
 
 Vue.use(Router)
@@ -53,6 +54,11 @@ export default new Router({
       path: '/acthome',
       name: 'acthome',
       component: acthome
+    },
+    {
+      path: '/gallery',
+      name: 'gallery',
+      component: gallery
     }
   ]
 })
