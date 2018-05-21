@@ -42,6 +42,7 @@
 
 	var DOM = {};
 	// The loader.
+
 	DOM.loader = document.querySelector('.overlay--loader');
 	// The room wrapper. This will be the element to be transformed in order to move around.
 	DOM.scroller = document.querySelector('.container > .scroller');

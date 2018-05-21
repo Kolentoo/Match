@@ -1,5 +1,5 @@
 <template>
-    <div class="gallery">
+    <div class="gallery" id="gallery">
         <div class="top">
             <img class="indexbtn vm" src="../public/images/indexbtn.png" alt="">
             <img class="rankingbtn vm" src="../public/images/rankingbtn.png" alt="">
@@ -45,11 +45,106 @@
                     </div>
                     <div class="sendwakeup fr">
                         <img class="wakeupbtn vm g10" src="../public/images/sendpresent.png" alt="">
-                        <p class="p3">送礼物</p>
+                        <p class="p3" @click="sendpresent()">送礼物</p>
+                    </div>
+                </div>
+            </div>
+            <div :class="['presentbox',{'preon':preon}]">
+                <ul class="precon">
+                    <li class="prelist">
+                        <img class="vm presentpic" src="../public/images/bigpresent1.png" alt="">
+                        <p class="p1">粉色爱心</p>
+                        <div class="price">
+                            <em>10</em>
+                            <img class="moneypic vm" src="../public/images/money.png" alt="">
+                        </div>
+                    </li>
+                    <li class="prelist">
+                        <img class="vm presentpic" src="../public/images/bigpresent2.png" alt="">
+                        <p class="p1">粉色爱心</p>
+                        <div class="price">
+                            <em>10</em>
+                            <img class="moneypic vm" src="../public/images/money.png" alt="">
+                        </div>
+                    </li>
+                    <li class="prelist">
+                        <img class="vm presentpic" src="../public/images/bigpresnet3.png" alt="">
+                        <p class="p1">粉色爱心</p>
+                        <div class="price">
+                            <em>10</em>
+                            <img class="moneypic vm" src="../public/images/money.png" alt="">
+                        </div>
+                    </li>
+                </ul>
+                <div class="option clearfix">
+                    <p class="yourmoney fl">
+                        <em>余额：1123</em>
+                        <img class="moneypic vm" src="../public/images/money.png" alt="">
+                    </p>
+                    <div class="btngroup fr">
+                        <div class="btn1 btn">
+                            <img class="btnpic1 vm" src="../public/images/getjf.png" alt="">
+                            <p class="p1">如何赚积分</p>
+                        </div>
+                        <div class="btn2 btn">
+                            <img class="btnpic1 vm" src="../public/images/sendpresent.png" alt="">
+                            <p class="p1">送出</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="popbox">
+            <div class="pop1 pop" v-if="pop1">
+                <div class="popinner">
+                    <p class="poptitle">资料详情</p>
+                    <div class="popcon">
+                        <img class="userpic vm" src="../public/images/woman.jpg" alt="">
+                        <p class="username tc">王学华</p>
+                        <p class="grouptype tc">少儿组</p>
+                        <p class="ages tc">13岁，女</p>
+                        <dl>
+                            <dd><em>指导老师：</em>王菲</dd>
+                            <dd><em>所在区域：</em>上海市浦东新区</dd>
+                            <dd><em>所属机构或校区：</em>东方童画徐汇校区</dd>
+                        </dl>
+                        <div class="desc">
+                            <h2 class="tc">四年是一种名的创作故事</h2>
+                            <div class="shape"></div>
+                            <p class="desctxt">
+                                可能是在遥远的未来，用太阳能充电，世界上
+                                再没有堵车，不用电梯，只需一个传送机，不
+                                需戒备森严，只要一个电力机器人，树上也可
+                                以变成美丽的房子。
+                            </p>
+                        </div>
+                    </div>
+                    <img class="vm close" src="../public/images/popclose.png" alt="">
+                </div>
+            </div>
+            <div class="pop2 pop" v-if="pop2">
+                <div class="popinner">
+                    <p class="poptitle">如何赚积分</p>
+                    <div class="popcon">
+                        <p class="p1">1. 每日首次登陆奖励25积分。</p>
+                        <p class="p1">2. 分享活动页面至朋友圈，每次可获得5积分。（每日限3次）</p>
+                        <p class="p1">3. 分享活动页面至好友或微信群，每次可获得5积分。（每日限10次）</p>
+                    </div>
+                    <img class="vm close" src="../public/images/popclose.png" alt="">
+                </div>
+            </div>
+            <div class="pop3 tc" v-if="pop3">
+                <div class="popinner">
+                    <img class="vm endpic" src="../public/images/end.png" alt="">
+                    <p class="p2 tc">线上评选活动已结束</p>
+                    <img class="lookbtn vm" src="../public/images/resultbtn.png" alt="">
+                    <img class="vm close" src="../public/images/popclose2.png" alt="">
+                </div>
+            </div>
+        </div>
+
+        <div class="mask" v-if="mk"></div>
 
         <svg class="hidden">
         <symbol id="icon-arrow" viewBox="0 0 24 24">
@@ -160,7 +255,7 @@
 
     </div>
     <!-- /container -->
-    <div class="content">
+    <div class="content" @click="popcancel()">
     <header class="codrops-header hide">
         <h1 class="codrops-header__title"></h1>
         <button class="btn btn--info btn--toggle"> <svg class="icon icon--info">
@@ -241,6 +336,9 @@
     </div>
     </div>
 
+    <iframe src="" frameborder="0" id="source">
+
+    </iframe>
 
     </div>
 </template>
@@ -249,27 +347,49 @@
     export default{
         data(){
             return{
-                enter:false
+                enter:false,
+                pop1:false,
+                pop2:false,
+                pop3:false,
+                mk:false,
+                preon:false
             }
         },
         created(){
             
         },
         mounted(){
+            let source = document.getElementById('source');
+            let sourceGroup = document.createElement('script')
+            sourceGroup.src='../../static/js/main.js'
+            source.appendChild(sourceGroup);
+
             document.documentElement.className = 'js'
             setTimeout(()=> {
                 this.enter=true
             }, 1000);
+
+
+        },
+        methods:{
+            sendpresent(){
+                this.preon=true
+            },
+            popcancel(){
+                this.preon=false
+            }
         }
     }
 </script>
 
+
 <style scoped>
     /*画框*/
     body,html {overflow-y:hidden}
+    #source {display: none;}
     .wborder {border:1.7rem solid #fff;box-shadow:0 1rem 2.5rem rgba(3,15,39,0.14);margin:0 1.5rem;display: flex;align-items: center;}
     .workbox {background: #fff;padding: 3rem;box-shadow:0 0 1.5rem 0.1rem rgba(0,0,0,0.3) inset;}
-    .picbox {width: 100%;align-items: center;height: 100%;overflow: hidden;margin-top: -5vh;display:flex;}
+    .picbox {width: 80%;align-items: center;height: 100%;overflow: hidden;margin: -5vh auto 0;display:flex;}
     .picinner {max-height:100rem;overflow: hidden;}
     .workpic {width: 100%;box-shadow:0 0 0 0.2rem rgba(0,0,0,0.2);vertical-align: middle;}
 
@@ -313,7 +433,60 @@
     .send-con .jfbox {color:#c58500;}
     .send-con .jfbox .p1 {font-size: 2.8rem;margin-top: 0.4rem;}
     .send-con .jfbox .p2 {font-size: 2.4rem;margin-top: 0.6rem;}
-    .send-con .sendwakeup {width: 15.6rem;position: relative;text-align: center;line-height: 8rem;}
-    .send-con .p3 {font-size: 2.6rem;position: absolute;width: 100%;color:#fff;top: 0;left: 0;}
+    .send-con .sendwakeup {width: 15.6rem;position: relative;text-align: center;line-height: 8rem;top: 0.4rem;}
+    .send-con .p3 {font-size: 2.6rem;position: absolute;width: 100%;color:#fff;top: 0.4rem;left: 0;}
 
+    .presentbox {border-radius:2.1rem;overflow: hidden;background: #fff;box-shadow:0 1.8rem 6.8rem rgba(0,0,0,0.18);margin-top: 2rem;
+    transition:all ease 0.5s;position: fixed;bottom: -100%;width: 92%;left: 4%;opacity: 0;z-index:-1;}
+    .preon {opacity: 1;z-index:400;bottom: 3rem;}
+    .presentbox .precon {background: #f5f5f5;display: flex;justify-content: center;align-items: center;}
+    .presentbox .prelist {text-align: center;width: 33.333%;padding:1.5rem 0 0.5rem 0;border:1rem solid #f5f5f5;}
+    .presentbox .prelist:nth-child(1) {border-radius:2rem 0 0 0;}
+    .presentbox .prelist:nth-child(3) {border-radius:0 2rem 0 0;}
+    .presentbox .prelist .presentpic {height: 9rem;}
+    .presentbox .prelist .p1 {font-size: 2.8rem;margin-top: 1rem;}
+    .presentbox .prelist em{font-size: 2.4rem;color:#999;position: relative;top: 0.5rem;}
+    .presentbox .prelist .moneypic {width: 5rem;}
+    .presentbox .option {height: 11rem;padding:0 2rem;}
+    .presentbox .option .yourmoney {color:#c58500;font-size: 2.8rem;line-height: 11rem;}
+    .presentbox .option .yourmoney .moneypic {margin-top: -0.3rem;}
+    .btngroup .btn {width: 15rem;margin:1.5rem 0 0 2rem;position: relative;text-align: center;}
+    .btngroup .btn .p1 {font-size: 2.6rem;color:#fff;text-shadow:0.2rem 0.4rem 0.4rem rgba(43,21,0,0.2);width: 100%;height: 100%;
+    top:2rem;left: 0;position: absolute;}
+    .btngroup .btn .btnpic1 {width: 100%;}
+
+    .pop {background: #fff;border-radius:2rem;box-shadow:0 0.6rem 5rem rgba(0,0,0,0.12);position: fixed;top: 50%;left: 50%
+    ;z-index:1000;}
+    .pop1 {width: 84%;height: 80rem;margin:-40rem 0 0 -42%;}
+    .pop1 .popinner {position: relative;}
+    .pop1 .popcon {height: 69rem;overflow: scroll;}
+    .pop .poptitle {height: 9rem;line-height: 9rem;text-align: center;font-size: 3.6rem;text-align: center;border-bottom: 0.1rem solid #e6e6e6;}
+    .pop1 .userpic {width: 14rem;height: 14rem;border-radius:50%;margin:3.5rem auto 1rem;display: block;}
+    .pop1 .username {font-size: 3.2rem;color:#333;}
+    .pop1 .grouptype {height: 3.6rem;line-height: 3.6rem;color:#fff;background: #31aaf6;padding:0 1rem;width: 11rem;margin:0.5rem auto;
+    font-size: 2.4rem;}
+    .pop1 .ages {font-size: 2.4rem;color:#999;}
+    .pop1 dl{width: 80%;margin:2rem auto 0;font-size: 2.4rem;color:#666;border-bottom: 0.1rem solid #e6e6e6;padding:0 3rem 3rem;}
+    .pop1 dd{line-height: 4.4rem;}
+    .pop1 dl em{width: 21rem;display: inline-block;}
+    .pop1 h2{font-size: 3.2rem;color:#333;font-weight:bold;}
+    .pop1 .desc {margin-top: 3rem;}
+    .pop1 .shape {width: 6rem;height: 0.5rem;background: #ffd15a;margin:1.5rem auto;}
+    .pop1 .desctxt {font-size: 2.8rem;color:#999;width: 80%;margin:0 auto;padding-bottom: 1rem;}
+    .pop .close {width: 3rem;position: absolute;top: 3rem;right: 3rem;}
+
+    .pop2 {width: 68%;height: 44rem;margin:-22rem 0 0 -34%;}
+    .pop2 .popcon {margin:0 2rem;font-size: 2.6rem;color:#666;}
+    .pop2 .popcon .p1 {margin-top: 4rem;}
+
+
+    .pop3 {width: 70%;height: 50rem;margin:-25rem 0 0 -35%;position: fixed;top: 50%;left: 50%
+    ;z-index:1000;}
+    .pop3 .popinner {position: relative;}
+    .pop3 .endpic {width: 29.7rem;height: 29.7rem;}
+    .pop3 .p2 {color:#fff;font-size: 4rem;margin-top: 2rem;}
+    .pop3 .lookbtn {width: 25rem;margin:2rem auto 0;}
+    .pop3 .close {position: absolute;width: 3rem;top: 2rem;right: 3rem;}
+
+    .mask {background: rgba(0,0,0,0.5);width: 100%;height: 100%;z-index:900;position: fixed;top: 0;left: 0;}
 </style>

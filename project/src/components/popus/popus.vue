@@ -93,7 +93,8 @@
             },
             gotab(){
                 // this.$emit('gosign');
-                this.$router.push('manage');
+                var mid = sessionStorage.getItem('tid'); 
+                this.$router.push(`manage?id=${mid}`);
             }
         },
         created(){

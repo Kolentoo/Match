@@ -108,6 +108,7 @@
             let curl = window.location.href;
             let mid = curl.split('=')[1];
             sessionStorage.setItem('tid',mid); 
+            // let newid = sessionStorage.getItem('tid'); 
             // var mid = sessionStorage.getItem('tid'); 
             this.$axios.get(`${panda}/actives/ParticipantInfo`,{
                 params:{
