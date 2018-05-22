@@ -2,7 +2,7 @@
     <div class="integral">
         <div class="bj">
             <div class="jfbox tc">
-                <p class="currentjf b">888</p>
+                <p class="currentjf b">{{myjf}}</p>
                 <p class="txt">当前积分</p>
             </div>
         </div>
@@ -25,14 +25,38 @@
 
 <script>
     import menubox from '../components/menubox/menubox'
+    var local = 'http://192.168.1.227:8081'
+    var panda = 'http://student.dfth.com'
     export default{
         data(){
             return{
-                position:'me'
+                position:'me',
+                myjf:''
             }
         },
         created(){
+            var curl = window.location.href;
+            
+            if(curl.indexOf('openid')>-1){
+                var oid = curl.split('=')[1];
+                localStorage.setItem('oid',oid);
+            }else{
+                var urlvalue = curl.split('8080/#/')[1]
+                window.location.href='http://erp.dfth.com/index.php/Weixin/getWebOpenid?backurl='+urlvalue;
+            }
 
+            
+            
+            var localoid = localStorage.getItem('oid');
+
+            this.$axios.get(`${local}/actives/joinerInt`, {
+                params:{
+                    openid:localoid
+                }
+            }).then((res)=> {
+                this.myjf=res.data.content.total;
+                console.log(this.myjf)
+            })
         },
         components:{
             menubox

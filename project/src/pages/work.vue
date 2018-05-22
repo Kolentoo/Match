@@ -8,8 +8,8 @@
             <img class="numberbj vm g10" src="../public/images/bj6.jpg" alt="">
             <div class="number-box">
                 <div class="number-con clearfix">
-                    <span class="s1 fl">112453</span>
-                    <span class="s2 fr">112453</span>
+                    <span class="s1 fl">{{number.flow}}</span>
+                    <span class="s2 fr">{{number.people}}</span>
                 </div>
             </div>
         </div>
@@ -106,6 +106,10 @@
 <script>
     import {Waterfall, WaterfallItem} from 'vue2-waterfall';
     import menubox from '../components/menubox/menubox'
+
+    var test = 'http://studenttest.dfth.com'
+    var local = 'http://192.168.1.227:8081'
+    var panda = 'http://student.dfth.com'
     export default{
         data(){
             return{
@@ -117,10 +121,15 @@
                 fixed:false,
                 position:'work',
                 loading:false,
-                words:''
+                words:'',
+                number:'',
+                playlist:''
+
             }
         },
         created(){
+
+
             let swidth = document.documentElement.clientWidth; 
             let widthgroup = swidth-24*3
             this.waterwidth = widthgroup/2
@@ -132,6 +141,19 @@
                     self.fixed=false
                 }
             } 
+
+            this.$axios.get(`${test}/actives/totalNum`, {
+            }).then((res)=> {
+                this.number=res.data.content;
+            })
+
+            this.$axios.get(`${test}/actives/picSayList`, {
+            }).then((res)=> {
+                this.playlist=res.data;
+                console.log(this.playlist)
+            })
+
+
         },
         components:{
             Waterfall,WaterfallItem,menubox
@@ -146,6 +168,7 @@
 </script>
 
 <style scoped>
+    .work {padding-bottom: 12rem;}
     .search-box {background: url('../public/images/bj5.png') no-repeat center center;background-size: 100% 100%;
     position: absolute;width: 100%;left: 0;top: 0;z-index:100;}
     .searchfix {position: fixed;width: 100%;left: 0;top: 0;z-index:100;}
@@ -160,7 +183,7 @@
     display: inline-block;width: 40%;text-align: center;}
     .worksearch {padding-top: 14rem;}
 
-    .waterfall {margin:0 24px;padding-bottom: 12rem;transition:all ease 0.5s;}
+    .waterfall {margin:0 24px;transition:all ease 0.5s;}
     .waterlist {border:0.1rem solid #e6e6e6;border-radius:1rem;overflow: hidden;}
     .waterfall-item .info {position: relative;height: 12.9rem;overflow: hidden;}
     .waterfall-item .info img{height: 12.9rem;}

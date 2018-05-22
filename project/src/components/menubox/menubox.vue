@@ -1,21 +1,21 @@
 <template>
     <div class="menubox">
         <ul class="menu-con">
-            <li :class="['menu-list',location==='index'?'liston':'']">
+            <li :class="['menu-list',location==='index'?'liston':'']" @click="indexgo()">
                 <img class="menuicon menuicon1" src="../../public/images/homeicon1.png" alt="">
                 <img class="menuicon menuicon2" src="../../public/images/homeicon2.png" alt="">
                 <p class="menu-txt">比赛首页</p>
             </li>
-            <li :class="['menu-list',location==='work'?'liston':'']">
+            <li :class="['menu-list',location==='work'?'liston':'']" @click="workgo()">
                 <img class="menuicon menuicon1" src="../../public/images/workicon1.png" alt="">
                 <img class="menuicon menuicon2" src="../../public/images/workicon2.png" alt="">
                 <p class="menu-txt">作品展示</p>
             </li>
-            <li :class="['menu-list',location==='lesson'?'liston':'']">
+            <li :class="['menu-list',location==='lesson'?'liston':'']" @click="lessongo()">
                 <img class="menuicon menuicon1" src="../../public/images/lessonicon1.png" alt="">
                 <p class="menu-txt">预约课程</p>
             </li>
-            <li :class="['menu-list',location==='me'?'liston':'']">
+            <li :class="['menu-list',location==='me'?'liston':'']" @click="jfgo()">
                 <img class="menuicon menuicon1" src="../../public/images/meicon1.png" alt="">
                 <img class="menuicon menuicon2" src="../../public/images/meicon2.png" alt="">
                 <p class="menu-txt">我的积分</p>
@@ -34,6 +34,20 @@
         },
         cteated(){
 
+        },
+        methods:{
+            indexgo(){
+                this.$router.push('acthome')
+            },
+            workgo(){
+                this.$router.push('work')
+            },
+            lessongo(){
+                
+            },
+            jfgo(){
+                this.$router.push('integral')
+            }
         }
     }
 </script>

@@ -20,25 +20,25 @@
 	};
 
 	// from http://www.quirksmode.org/js/events_properties.html#position
-	function getMousePos(e) {
-		var posx = 0;
-		var posy = 0;
-		if (!e) var e = window.event;
-		if (e.pageX || e.pageY) 	{
-			posx = e.pageX;
-			posy = e.pageY;
-		}
-		else if (e.clientX || e.clientY) 	{
-			posx = e.clientX + document.body.scrollLeft
-				+ document.documentElement.scrollLeft;
-			posy = e.clientY + document.body.scrollTop
-				+ document.documentElement.scrollTop;
-		}
-		return {
-			x : posx,
-			y : posy
-		}
-	}
+	// function getMousePos(e) {
+	// 	var posx = 0;
+	// 	var posy = 0;
+	// 	if (!e) var e = window.event;
+	// 	if (e.pageX || e.pageY) 	{
+	// 		posx = e.pageX;
+	// 		posy = e.pageY;
+	// 	}
+	// 	else if (e.clientX || e.clientY) 	{
+	// 		posx = e.clientX + document.body.scrollLeft
+	// 			+ document.documentElement.scrollLeft;
+	// 		posy = e.clientY + document.body.scrollTop
+	// 			+ document.documentElement.scrollTop;
+	// 	}
+	// 	return {
+	// 		x : posx,
+	// 		y : posy
+	// 	}
+	// }
 
 	var DOM = {};
 	// The loader.
@@ -164,20 +164,20 @@
 					if( !tilt ) return false;
 
 
-					var mousepos = getMousePos(ev),
-						// transform values
-						rotX = tiltRotation.rotateX ? initTransform.rotateX -  (2 * tiltRotation.rotateX / win.height * mousepos.y - tiltRotation.rotateX) : 0,
-						rotY = tiltRotation.rotateY ? initTransform.rotateY -  (2 * tiltRotation.rotateY / win.width * mousepos.x - tiltRotation.rotateY) : 0;
-			
+						// var mousepos = getMousePos(ev),
+						// 	// transform values
+						// 	rotX = tiltRotation.rotateX ? initTransform.rotateX -  (2 * tiltRotation.rotateX / win.height * mousepos.y - tiltRotation.rotateX) : 0,
+						// 	rotY = tiltRotation.rotateY ? initTransform.rotateY -  (2 * tiltRotation.rotateY / win.width * mousepos.x - tiltRotation.rotateY) : 0;
+				
 					// apply transform
-					applyRoomTransform({
-						'translateX' : initTransform.translateX, 
-						'translateY' : initTransform.translateY, 
-						'translateZ' : initTransform.translateZ, 
-						'rotateX' : rotX + 'deg', 
-						'rotateY' : rotY + 'deg',
-						'rotateZ' : initTransform.rotateZ
-					});
+					// applyRoomTransform({
+					// 	'translateX' : initTransform.translateX, 
+					// 	'translateY' : initTransform.translateY, 
+					// 	'translateZ' : initTransform.translateZ, 
+					// 	'rotateX' : rotX + 'deg', 
+					// 	'rotateY' : rotY + 'deg',
+					// 	'rotateZ' : initTransform.rotateZ
+					// });
 				});
 			},
 			// Window resize.

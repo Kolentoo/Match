@@ -6,15 +6,15 @@
         </div>
         <div class="navigation">
             <ul class="nav-con">
-                <li class="nav-list">
+                <li class="nav-list" @click="rulego()">
                     <img class="vm g10" src="../public/images/indexicon1.png" alt="">
                     <p class="p1">比赛规则</p>
                 </li>
-                <li class="nav-list">
+                <li class="nav-list" @click="prizego()">
                     <img class="vm g10" src="../public/images/indexicon2.png" alt="">
                     <p class="p1">奖项设置</p>
                 </li>
-                <li class="nav-list">
+                <li class="nav-list" @click="workgo()">
                     <img class="vm g10" src="../public/images/indexicon3.png" alt="">
                     <p class="p1">比赛作品</p>
                 </li>
@@ -147,8 +147,9 @@
                     myAudio.pause();
                     this.play=false
                 }
-
-                
+            },
+            workgo(){
+                this.$router.push('work');
             }
         }
     }
@@ -189,8 +190,8 @@
         margin-top: 4.5rem;box-shadow:0 1.9rem 6rem rgba(0,0,0,0.12);}
     .activity #bottom .swiper-slide {height: 28rem;overflow: hidden;}
     .activity #bottom .swiper-slide img{width: 100%;height: 100%;}
-    .activity #bottom .spagination2 {background: rgba(0,0,0,0.7);border-radius:10rem;z-index:500;height: 2.8rem;padding:0 0.8rem;width: 11rem;
-    left: 50%;margin-left: -5.5rem;bottom: 2rem;}
+    .activity #bottom .spagination2 {background: rgba(0,0,0,0.7);border-radius:10rem;z-index:500;height: 2.8rem;padding:0 0.8rem;
+    left: 38%;bottom: 2rem;width: 24%;}
     .activity #bottom .spagination2 .swiper-pagination-bullet {width: 1.2rem;height: 1.2rem;border-radius:50%;background: #757575;margin:0 1rem;
     margin-top: 0.7rem;opacity: 1;}
     .activity #bottom .spagination2 .swiper-pagination-bullet-active {background: #fff;opacity: 1;}

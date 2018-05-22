@@ -1,18 +1,18 @@
 <template>
     <div class="gallery" id="gallery">
         <div class="top">
-            <img class="indexbtn vm" src="../public/images/indexbtn.png" alt="">
-            <img class="rankingbtn vm" src="../public/images/rankingbtn.png" alt="">
-            <img class="musicbtn vm" src="../public/images/music.png" alt="">
-        </div>
+            <img :class="['indexbtn vm',{'action1':action1}]" @click="indexgo()" src="../public/images/indexbtn.png" alt="">
+            <img :class="['rankingbtn vm',{'action2':action2}]" @click="rankgo()" src="../public/images/rankingbtn.png" alt="">
+            <img :class="['musicbtn vm',{'musicon':play},{'action3':action3}]" @click="musiccontrols()" src="../public/images/music.png" alt="">
+        </div> 
 
-        <div class="gallery-bottom">
+        <div :class="['gallery-bottom',{'action4':action4}]">
             <div class="presentshow">
                 <div class="showcon">
                     <div class="presentscroll">
-                        <p class="p1"><em>山鬼自风流</em>送<i>蓝色星球</i><img class="present-small vm" src="../public/images/present2.png" alt=""></p>
-                        <p class="p1"><em>山鬼自风流</em>送<i>蓝色星球</i><img class="present-small vm" src="../public/images/present2.png" alt=""></p>
-                        <p class="p1"><em>山鬼自风流</em>送<i>蓝色星球</i><img class="present-small vm" src="../public/images/present2.png" alt=""></p>
+                        <vue-seamless-scroll :data="listData" :class-option="classOption">
+                            <p v-for="(list,idx) in listData" :key="idx" class="p1"><em>{{list.name}}</em>送<i>{{list.present}}</i><img class="present-small vm" :src="list.imgUrl" alt=""></p>
+                        </vue-seamless-scroll>
                     </div>
                     <div class="presentall">
                         <div class="alltitle tc">
@@ -51,27 +51,11 @@
             </div>
             <div :class="['presentbox',{'preon':preon}]">
                 <ul class="precon">
-                    <li class="prelist">
-                        <img class="vm presentpic" src="../public/images/bigpresent1.png" alt="">
-                        <p class="p1">粉色爱心</p>
+                    <li :class="['prelist',{'liston':item.on}]" v-for="(item,idx) in items" :key="idx" @click="chooose(item,idx)">
+                        <img class="vm presentpic" :src="item.img" alt="">
+                        <p class="p1">{{item.name}}</p>
                         <div class="price">
-                            <em>10</em>
-                            <img class="moneypic vm" src="../public/images/money.png" alt="">
-                        </div>
-                    </li>
-                    <li class="prelist">
-                        <img class="vm presentpic" src="../public/images/bigpresent2.png" alt="">
-                        <p class="p1">粉色爱心</p>
-                        <div class="price">
-                            <em>10</em>
-                            <img class="moneypic vm" src="../public/images/money.png" alt="">
-                        </div>
-                    </li>
-                    <li class="prelist">
-                        <img class="vm presentpic" src="../public/images/bigpresnet3.png" alt="">
-                        <p class="p1">粉色爱心</p>
-                        <div class="price">
-                            <em>10</em>
+                            <em>{{item.money}}</em>
                             <img class="moneypic vm" src="../public/images/money.png" alt="">
                         </div>
                     </li>
@@ -81,12 +65,12 @@
                         <em>余额：1123</em>
                         <img class="moneypic vm" src="../public/images/money.png" alt="">
                     </p>
-                    <div class="btngroup fr">
-                        <div class="btn1 btn">
+                    <div class="btngroup fr" >
+                        <div class="btn1 btn" @click="makemoney()">
                             <img class="btnpic1 vm" src="../public/images/getjf.png" alt="">
                             <p class="p1">如何赚积分</p>
                         </div>
-                        <div class="btn2 btn">
+                        <div class="btn2 btn" @click="popcancel()">
                             <img class="btnpic1 vm" src="../public/images/sendpresent.png" alt="">
                             <p class="p1">送出</p>
                         </div>
@@ -120,7 +104,7 @@
                             </p>
                         </div>
                     </div>
-                    <img class="vm close" src="../public/images/popclose.png" alt="">
+                    <img @click="closepop1()" class="vm close" src="../public/images/popclose.png" alt="">
                 </div>
             </div>
             <div class="pop2 pop" v-if="pop2">
@@ -131,7 +115,7 @@
                         <p class="p1">2. 分享活动页面至朋友圈，每次可获得5积分。（每日限3次）</p>
                         <p class="p1">3. 分享活动页面至好友或微信群，每次可获得5积分。（每日限10次）</p>
                     </div>
-                    <img class="vm close" src="../public/images/popclose.png" alt="">
+                    <img class="vm close" @click="closepop2()" src="../public/images/popclose.png" alt="">
                 </div>
             </div>
             <div class="pop3 tc" v-if="pop3">
@@ -139,10 +123,14 @@
                     <img class="vm endpic" src="../public/images/end.png" alt="">
                     <p class="p2 tc">线上评选活动已结束</p>
                     <img class="lookbtn vm" src="../public/images/resultbtn.png" alt="">
-                    <img class="vm close" src="../public/images/popclose2.png" alt="">
+                    <img @click="closepop3()" class="vm close" src="../public/images/popclose2.png" alt="">
                 </div>
             </div>
         </div>
+
+        <audio id="audio" src="/static/audio/music.mp3" loop="loop" autoplay="autoplay"></audio>
+
+        <audio v-if="hasvoice" id="user-audio" src="http://p6c1w0z8o.bkt.clouddn.com/psayVoice_20180522113237_90096.mp3" autoplay="autoplay" ></audio>
 
         <div class="mask" v-if="mk"></div>
 
@@ -188,13 +176,14 @@
                         <div class="work-name">思念是一种病思念是一种病</div>
                         <div class="userbox">
                             <div class="user-info clearfix">
-                                <div class="user-txt fl">
+                                <div class="user-txt fl" @click="information()">
                                     <img class="userpic vm" src="../public/images/woman.jpg" alt="">
                                     <span class="username">王大锤哈</span>
                                     <img class="arrow vm" src="../public/images/arrowright.png" alt="">
                                 </div>
-                                <div class="user-voice fr">
-                                    <img class="voicepic vm" src="../public/images/voice.png" alt="">
+                                <div class="user-voice fr" v-if="hasvoice" @click="uservoice()">
+                                    <img v-if="!voiceplay" class="voicepic vm" src="../public/images/voice.png" alt="">
+                                    <img v-if="voiceplay" class="voicepic vm" src="../public/images/voice.gif" alt="">
                                     <span class="time">11s</span>
                                 </div>
                             </div>
@@ -253,9 +242,11 @@
             <!-- /room --> 
         </div>
 
+        
+
     </div>
     <!-- /container -->
-    <div class="content" @click="popcancel()">
+    <div id="content" :class="['content',{'action5':action5}]" @click="popcancel()">
     <header class="codrops-header hide">
         <h1 class="codrops-header__title"></h1>
         <button class="btn btn--info btn--toggle"> <svg class="icon icon--info">
@@ -335,6 +326,7 @@
         <div></div>
     </div>
     </div>
+    
 
     <iframe src="" frameborder="0" id="source">
 
@@ -344,21 +336,110 @@
 </template>
 
 <script>
+    import vueSeamlessScroll from 'vue-seamless-scroll'
     export default{
         data(){
             return{
+                action1:false,
+                action2:false,
+                action3:false,
+                action4:false,
+                action5:false,
+                play:true,
                 enter:false,
                 pop1:false,
                 pop2:false,
                 pop3:false,
                 mk:false,
-                preon:false
+                preon:false,
+                hasvoice:true,
+                voiceplay:false,
+                items:[
+                    {
+                        money:'10',
+                        name:'粉色爱心',
+                        img:'../../static/img/bigpresent1.png',
+                        on:false
+                    },
+                    {
+                        money:'30',
+                        name:'蓝色星球',
+                        img:'../../static/img/bigpresent2.png',
+                        on:false
+                    },
+                    {
+                        money:'50',
+                        name:'阿特比心',
+                        img:'../../static/img/bigpresent3.png',
+                        on:false
+                    }
+                ],
+                listData:[
+                    {
+                        name:'xxxxx',
+                        present:'哈哈哈哈哈',
+                        imgUrl:'../../static/img/present1.png'
+                    },
+                    {
+                        name:'xxxxx',
+                        present:'xxxxx',
+                        imgUrl:'../../static/img/present2.png'
+                    },
+                    {
+                        name:'xxxxx',
+                        present:'哈哈哈哈哈',
+                        imgUrl:'../../static/img/present3.png'
+                    },
+                    {
+                        name:'xxxxx',
+                        present:'哈哈哈哈哈',
+                        imgUrl:'../../static/img/present1.png'
+                    },
+                    {
+                        name:'xxxxx',
+                        present:'哈哈哈哈哈',
+                        imgUrl:'../../static/img/present1.png'
+                    }
+                ],
+                classOption:{
+                    step: 0.6, //步长 越大滚动速度越快
+                    limitMoveNum: 3, //启动无缝滚动最小数据量 this.dataList.length
+                    hoverStop: true, //是否启用鼠标hover控制
+                    direction: 1, //1 往上 0 往下
+                    openWatch: true, //开启data实时监听
+                    singleHeight: 0, //单条数据高度有值hoverStop关闭
+                    waitTime: 1000, //单步停止等待时间
+                    autoplay:true
+                }
+                
             }
         },
         created(){
-            
+
         },
         mounted(){
+            let bheight = document.body.clientHeight;
+            document.getElementById('gallery').style.height=bheight+'px'
+
+            setTimeout(()=> {
+                this.action3=true;
+            }, 3200);            
+            setTimeout(()=> {
+                this.action1=true;
+                this.action2=true;
+            }, 3500);
+            setTimeout(()=> {
+                this.action5=true;
+            }, 3800);
+            setTimeout(()=> {
+                this.action4=true;
+            }, 4200);
+
+            let content = document.getElementById('content');
+            content.addEventListener('click',()=>{
+                console.log(123)
+            });
+
             let source = document.getElementById('source');
             let sourceGroup = document.createElement('script')
             sourceGroup.src='../../static/js/main.js'
@@ -369,6 +450,21 @@
                 this.enter=true
             }, 1000);
 
+            let audio =document.getElementById('audio');
+            let useraudio = document.getElementById('user-audio')
+
+            if(useraudio){
+                useraudio.addEventListener('ended', ()=> {  
+                    audio.play();
+                    this.play=true
+                }, false);
+            }
+
+            if(this.hasvoice=true){
+                this.play=false
+                audio.pause();
+            }
+
 
         },
         methods:{
@@ -377,7 +473,69 @@
             },
             popcancel(){
                 this.preon=false
+            },
+            chooose(item,idx){
+                this.items.forEach((current,index,arr)=> {
+                    if(idx===index){
+                        current.on=true
+                    }else{
+                        current.on=false
+                    }
+                }, this);
+                
+            },
+            makemoney(){
+                this.pop2=true;
+                this.mk=true;
+            },
+            closepop1(){
+                this.pop1=false;
+                this.mk=false;
+            },
+            closepop2(){
+                this.pop2=false;
+                this.mk=false;
+            },
+            closepop3(){
+                this.pop3=false;
+                this.mk=false;
+            },
+            musiccontrols(){
+                let myAudio = document.getElementById('audio');
+                let useraudio = document.getElementById('user-audio');
+                if(myAudio.paused){
+                    useraudio.pause();
+                    myAudio.play();
+                    this.play=true
+                }else{
+                    myAudio.pause();
+                    this.play=false
+                }
+            },
+            information(){
+                this.pop1=true;
+                this.mk=true
+            },
+            uservoice(){
+                let myAudio = document.getElementById('audio');
+                let useraudio = document.getElementById('user-audio');
+                if(useraudio.paused){
+                    myAudio.pause();
+                    this.play=false;
+                    useraudio.play();
+                }else{
+                    useraudio.pause();
+                }
+            },
+            indexgo(){
+                this.$router.push('acthome')
+            },
+            rankgo(){
+                this.$router.push('work')
             }
+        },
+        components:{
+            vueSeamlessScroll
         }
     }
 </script>
@@ -385,11 +543,14 @@
 
 <style scoped>
     /*画框*/
-    body,html {overflow-y:hidden}
+    .gallery {overflow-y:hidden;}
+    .content {opacity: 0;position: relative;top: -3rem;transition:all ease 0.8s;}
+    .action5 {opacity: 1;top: 0;}
     #source {display: none;}
+    .gallery .entering {z-index:100;}
     .wborder {border:1.7rem solid #fff;box-shadow:0 1rem 2.5rem rgba(3,15,39,0.14);margin:0 1.5rem;display: flex;align-items: center;}
     .workbox {background: #fff;padding: 3rem;box-shadow:0 0 1.5rem 0.1rem rgba(0,0,0,0.3) inset;}
-    .picbox {width: 80%;align-items: center;height: 100%;overflow: hidden;margin: -5vh auto 0;display:flex;}
+    .picbox {width: 80%;align-items: center;height: 100%;overflow: hidden;margin: -16vh auto 0;display:flex;}
     .picinner {max-height:100rem;overflow: hidden;}
     .workpic {width: 100%;box-shadow:0 0 0 0.2rem rgba(0,0,0,0.2);vertical-align: middle;}
 
@@ -397,24 +558,39 @@
     .gallery .btn-right {position: fixed;top: 45%;right: 2rem;}
     .nav .btn {width: 8rem;height: 8rem;background: none;}
 
-    .gallery .top .indexbtn {width: 10.4rem;height: 10.4rem;border-radius:50%;position: fixed;top: 3rem;left: 2rem;z-index:200;}
-    .gallery .top .rankingbtn {width: 10.4rem;height: 10.4rem;border-radius:50%;position: fixed;top: 14rem;left: 2rem;z-index:200;}
-    .gallery .top .musicbtn {width: 8rem;height: 8rem;border-radius:50%;position: fixed;top: 3rem;right: 3rem;z-index:200;}
-    .information .work-name {font-size: 4.4rem;color:#333;width: 28rem;text-align: center;margin:2rem auto 0;}
-    .information .user-info {background: #000;padding:1rem 0;border-radius:10rem;display: flex;justify-content: center;margin-top: 2rem;}
-    .information .user-info .userpic {width: 7rem;height: 7rem;border-radius:50%;margin-left: 2rem;margin-top: -0.5rem;}
-    .information .user-info .user-txt {font-size: 3.8rem;color:#fff;line-height: 9rem;}
+    .gallery .top .indexbtn {width: 10.4rem;height: 10.4rem;border-radius:50%;position: fixed;top: 3rem;left:0;z-index:400;
+    transition:all ease 0.8s;opacity: 0;}
+    .gallery .top .rankingbtn {width: 10.4rem;height: 10.4rem;border-radius:50%;position: fixed;top: 14rem;left: -1rem;z-index:400;
+    transition:all ease 0.8s;opacity: 0;}
+    .gallery .top .musicbtn {width: 8rem;height: 8rem;border-radius:50%;position: fixed;top: 3rem;right: -1rem;z-index:400;
+    transition:all ease 0.8s;opacity: 0;}
+
+    .gallery .top .action1 {opacity: 1;left: 2rem;}
+    .gallery .top .action2 {opacity: 1;left: 2rem;}
+    .gallery .top .action3 {opacity: 1;right:3rem;}
+
+    @keyframes music {
+        0%{transform:rotate(0deg);}
+        50%{transform:rotate(180deg);}
+        100%{transform:rotate(360deg);}
+    }
+    .gallery .top .musicon {animation: music linear 2s infinite;}
+    .information .work-name {font-size: 4rem;color:#333;width: 28rem;text-align: center;margin:1rem auto 0;}
+    .information .user-info {background: #000;padding:1rem 0;border-radius:10rem;display: flex;justify-content: center;margin-top: 1rem;}
+    .information .user-info .userpic {width: 5rem;height: 5rem;border-radius:50%;margin-left: 2rem;margin-top: -0.5rem;}
+    .information .user-info .user-txt {font-size: 3.8rem;color:#fff;line-height: 7rem;}
     .information .user-info .user-txt .username {margin:0 1rem;}
     .information .user-info .arrow {width: 2rem;margin-top: -0.5rem;}
     .information .user-voice {margin-right: 2rem;margin-left: 3rem;border-left: 0.1rem solid #999;}
-    .information .user-voice .voicepic {width: 4rem;margin:-2.5rem 1.5rem 0 2rem;}
-    .information .user-voice .time {font-size: 4.8rem;color:#999;line-height: 9rem;}
+    .information .user-voice .voicepic {width:3rem;margin:-2.5rem 1.5rem 0 2rem;}
+    .information .user-voice .time {font-size: 4rem;color:#999;line-height: 7rem;}
 
-    .gallery-bottom {position: fixed;bottom: 3rem;width: 92%;left: 4%;z-index:300;}
+    .gallery-bottom {position: fixed;bottom: -20%;width: 92%;left: 4%;z-index:300;transition: all ease 0.6s;opacity: 0;}
+    .action4 {bottom: 3rem;opacity: 1;}
     .gallery-bottom .presentshow {width: 100%;background: rgba(255,255,255,0.5);height: 18rem;border-radius:2rem;
     box-shadow:0 1.8rem 6.8rem rgba(0,0,0,0.18);}
     .presentshow .showcon {padding:1rem 5%;}
-    .presentscroll {height: 7rem;overflow: hidden;}
+    .presentscroll {height: 6rem;overflow: hidden;}
     .presentshow .p1 {font-size: 2.4rem;margin-bottom: 1rem;}
     .presentshow .p1 em{color:#333;}
     .presentshow .p1 i{color:#c58500;}
@@ -427,7 +603,7 @@
     .presentnumber .present-pic {height: 3.2rem;margin-top: -1.2rem;}
     .presentnumber em{color:#c58500;font-size: 2.8rem;margin-left: 1rem;}
 
-    .send {width: 100%;background: rgba(255,255,255,0.5);height: 11rem;border-radius:2rem;
+    .send {width: 100%;background: rgba(255,255,255,1);height: 11rem;border-radius:2rem;
     box-shadow:0 1.8rem 6.8rem rgba(0,0,0,0.18);margin-top: 2rem;}
     .send-con {padding:1rem 5%;}
     .send-con .jfbox {color:#c58500;}
@@ -441,6 +617,7 @@
     .preon {opacity: 1;z-index:400;bottom: 3rem;}
     .presentbox .precon {background: #f5f5f5;display: flex;justify-content: center;align-items: center;}
     .presentbox .prelist {text-align: center;width: 33.333%;padding:1.5rem 0 0.5rem 0;border:1rem solid #f5f5f5;}
+    .presentbox .liston {border-color:rgb(255,205,83);}
     .presentbox .prelist:nth-child(1) {border-radius:2rem 0 0 0;}
     .presentbox .prelist:nth-child(3) {border-radius:0 2rem 0 0;}
     .presentbox .prelist .presentpic {height: 9rem;}
@@ -489,4 +666,5 @@
     .pop3 .close {position: absolute;width: 3rem;top: 2rem;right: 3rem;}
 
     .mask {background: rgba(0,0,0,0.5);width: 100%;height: 100%;z-index:900;position: fixed;top: 0;left: 0;}
+    .nav {z-index:500;}
 </style>
