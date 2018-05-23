@@ -1,11 +1,11 @@
 <template>
     <div class="login">
         <div class="phone-box ilist">
-            <input v-model="phone" class="text phone" type="text" placeholder="输入手机号码" maxlength="11">
+            <input v-model="phone" class="text phone" type="number" placeholder="输入手机号码" maxlength="11">
             <p :class="['codebtn bgcolor',{hide:hide}]" @click="phoneCheck()">获取验证码</p>
             <p :class="['timeCatch codebtn codesec',{hide:show}]" ref="seconds">{{seconds}}s</p>
         </div>
-        <input class="text code ilist" type="text" placeholder="输入验证码" maxlength="4" v-model="code">
+        <input class="text code ilist" type="number" placeholder="输入验证码" maxlength="4" v-model="code">
         <pop :message="message">
             <div slot="pop">{{msg}}</div>
         </pop>  

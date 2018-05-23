@@ -105,8 +105,14 @@
             }
         },
         created(){
+            
             let curl = window.location.href;
-            let mid = curl.split('=')[1];
+            if(curl.indexOf('id=')>0){
+                var mid = curl.split('id=')[1];
+            }else{
+                var mid = sessionStorage.getItem('tid'); 
+            }
+            
             sessionStorage.setItem('tid',mid); 
             // let newid = sessionStorage.getItem('tid'); 
             // var mid = sessionStorage.getItem('tid'); 
@@ -165,7 +171,7 @@
                 //     this.$router.push('upload');
                 // }
                 let curl = window.location.href;
-                let mid = curl.split('=')[1];
+                let mid = curl.split('id=')[1];
                 window.location.href=`http://erp.dfth.com/index.php/Drawing/upload2.html?id=${mid}`
                 
             },
