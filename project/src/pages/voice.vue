@@ -53,7 +53,7 @@
     import popus from '../components/popus/popus'
     import pop from '../components/pop'
     var local = 'http://192.168.1.227:8081'
-    var panda = 'http://student.dfth.com/'
+    var panda = 'http://student.dfth.com'
     export default{
         data(){
             return{
@@ -85,7 +85,8 @@
                 upStatus:'',
                 info:'',
                 loading:false,
-                recordstatus:false
+                recordstatus:false,
+                kolento:false
             }
         },
         created(){
@@ -105,7 +106,9 @@
                 }); 
             }
             let curl = window.location.href;
+            let xurl = curl.replace('#','');
             var tid = sessionStorage.getItem('tid'); 
+            console.log(xurl)
             if(curl.indexOf('fixed')>-1){
                 this.upload=true
             }else{
@@ -133,9 +136,16 @@
                     this.upStatus=2
                 }
             })
-            
-            this.$axios.get(`${panda}/actives/picWeixinConfig`,{
 
+            if(tid==1498){
+                this.kolento=true
+            }else{
+                this.kolento=false
+            }
+
+            this.$axios.get(`${panda}/actives/picWeixinConfig`,{
+                params:{
+                }
             }).then((res)=>{
                 if(res.data.status==1){
                     let rdata = res.data.msg;
@@ -146,12 +156,12 @@
                 }
             }).then(()=>{
                 wx.config({
-                    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                    debug: this.kolento, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
                     appId: this.appid, // 必填，公众号的唯一标识
                     timestamp: this.timestamp, // 必填，生成签名的时间戳
                     nonceStr: this.noncestr, // 必填，生成签名的随机串
                     signature: this.signature,// 必填，签名
-                    jsApiList: ['startRecord','stopRecord','playVoice','pauseVoice','stopVoice','uploadVoice'] // 必填，需要使用的JS接口列表
+                    jsApiList: ['onMenuShareAppMessage','onMenuShareTimeline','startRecord','stopRecord','playVoice','pauseVoice','stopVoice','uploadVoice'] // 必填，需要使用的JS接口列表
                 });
                 wx.ready(function(){
                     // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页
@@ -263,17 +273,22 @@
                         localId: this.localId, // 需要上传的音频的本地ID，由stopRecord接口获得
                         isShowProgressTips: 1, // 默认为1，显示进度提示
                         success:(res)=> {
+                            console.log(res)
                             this.serverId = res.serverId; // 返回音频的服务器端ID
                             this.$axios.post(`${panda}/actives/pictureSayAddVoice`,{
                                 media_id:this.serverId,
                                 id:tid,
                                 _token:tk
                             }).then((res)=>{
+                                console.log(res.data)
                                 if(res.data.status==1){
+                                    console.log(12)
                                     this.loading=false
                                     this.mk=true
                                     this.voiceupload=this.upStatus
+                                    console.log(34)
                                 }else{
+                                    console.log(56)
                                     this.msg=res.data.msg
                                     this.message=false
                                     setTimeout(()=> {

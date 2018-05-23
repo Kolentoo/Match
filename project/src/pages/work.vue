@@ -1,10 +1,10 @@
 <template>
     <div :class="['work',loading?'worksearch':'']">
-        <div :class="['search-box',fixed?'searchfix':'']">
+        <div :class="['search-box',{'searchfix':fixed}]">
             <input type="text" placeholder="输入要搜索的参赛者名字或作品名" class="search" id="search" v-model="words" @keyup.enter="searchwords(words)">
-            <label for="search" @tap="searchwords(words)">搜索</label>
+            <label for="search" @click="searchwords(words)">搜索</label>
         </div>
-        <div class="number" v-if="!loading">
+        <div class="number" v-if="!searching">
             <img class="numberbj vm g10" src="../public/images/bj6.jpg" alt="">
             <div class="number-box">
                 <div class="number-con clearfix">
@@ -13,89 +13,34 @@
                 </div>
             </div>
         </div>
-        <Waterfall :gutterWidth="gwidth" :gutterHeight="gheight" :minCol="minCol" :maxCol="maxCol">
-            <WaterfallItem :width="waterwidth">
-                <div class="waterlist">
-                    <img class="vm g10" src="../public/images/pic2.jpg" alt="">
-                    <div class="info">
-                        <img class="vm g10" src="../public/images/bj7.png" alt="">
-                        <div class="infor-con">
-                            <p class="p1">NO.1</p>
-                            <p class="p2">积分：12345</p>
-                            <p class="p3">Ta 的有声故事</p>
+            
+        <div :class="['listbox',{'searchbox':searching}]">
+            <Waterfall :gutterWidth="gwidth" :gutterHeight="gheight" :minCol="minCol" :maxCol="maxCol" v-if="playlist.length!=0">
+                <WaterfallItem :width="waterwidth" v-for="(list,idx) in playlist" :key="idx">
+                    <div class="waterlist" @click="gogallery(list.id)">
+                        <img class="vm g10" :src="list.works_img" alt="">
+                        <div :class="['info',list.voice_second==0?'infonovoice':'']">
+                            <img class="vm g10" src="../public/images/bj7.png" alt="">
+                            <div class="infor-con">
+                                <p class="p1">NO.{{list.rank}}</p>
+                                <p class="p2">积分：{{list.total_vote}}</p>
+                                <p class="p3" v-if="list.voice_second!=0">Ta 的有声故事</p>
+                            </div>
+                        </div>
+                        <div class="author">
+                            <p class="p4">{{list.works_name}}</p>
+                            <div class="user">
+                                <img class="vm userpic" :src="list.head_img" alt="">
+                                <span class="name">{{list.childname}}</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="author">
-                        <p class="p4">哈哈哈哈哈哈哈哈哈啊哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈啊哈哈哈哈哈哈哈哈哈哈哈哈</p>
-                        <div class="user">
-                            <img class="vm userpic" src="../public/images/banner.jpg" alt="">
-                            <span class="name">超级测试</span>
-                        </div>
-                    </div>
-                </div>
-            </WaterfallItem>
-            <WaterfallItem :width="waterwidth">
-                <div class="waterlist">
-                    <img class="vm g10" src="../public/images/pic1.jpg" alt="">
-                    <div class="info">
-                        <img class="vm g10" src="../public/images/bj7.png" alt="">
-                        <div class="infor-con">
-                            <p class="p1">NO.1</p>
-                            <p class="p2">积分：12345</p>
-                            <p class="p3">Ta 的有声故事</p>
-                        </div>
-                    </div>
-                    <div class="author">
-                        <p class="p4">哈哈哈哈哈哈哈哈哈啊哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈啊哈哈哈哈哈哈哈哈哈哈哈哈</p>
-                        <div class="user">
-                            <img class="vm userpic" src="../public/images/banner.jpg" alt="">
-                            <span class="name">超级测试</span>
-                        </div>
-                    </div>
-                </div>
-            </WaterfallItem>
-            <WaterfallItem :width="waterwidth">
-                <div class="waterlist">
-                    <img class="vm g10" src="../public/images/pic2.jpg" alt="">
-                    <div class="info">
-                        <img class="vm g10" src="../public/images/bj7.png" alt="">
-                        <div class="infor-con">
-                            <p class="p1">NO.1</p>
-                            <p class="p2">积分：12345</p>
-                            <p class="p3">Ta 的有声故事</p>
-                        </div>
-                    </div>
-                    <div class="author">
-                        <p class="p4">哈哈哈哈哈哈哈哈哈啊哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈啊哈哈哈哈哈哈哈哈哈哈哈哈</p>
-                        <div class="user">
-                            <img class="vm userpic" src="../public/images/banner.jpg" alt="">
-                            <span class="name">超级测试</span>
-                        </div>
-                    </div>
-                </div>
-            </WaterfallItem>
-            <WaterfallItem :width="waterwidth">
-                <div class="waterlist">
-                    <img class="vm g10" src="../public/images/pic2.jpg" alt="">
-                    <div class="info">
-                        <img class="vm g10" src="../public/images/bj7.png" alt="">
-                        <div class="infor-con">
-                            <p class="p1">NO.1</p>
-                            <p class="p2">积分：12345</p>
-                            <p class="p3">Ta 的有声故事</p>
-                        </div>
-                    </div>
-                    <div class="author">
-                        <p class="p4">哈哈哈哈哈哈哈哈哈啊哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈啊哈哈哈哈哈哈哈哈哈哈哈哈</p>
-                        <div class="user">
-                            <img class="vm userpic" src="../public/images/banner.jpg" alt="">
-                            <span class="name">超级测试</span>
-                        </div>
-                    </div>
-                </div>
-            </WaterfallItem>
+                </WaterfallItem>
 
-        </Waterfall>
+            </Waterfall>
+            <p class="noresult" v-if="playlist.length===0">没有搜索结果</p>
+        </div>
+
         <menubox :location="position"></menubox>
         <div class="loading" v-if="loading">
             <img class="loadingpic g10 vm" src="../public/images/loading.gif" alt="">
@@ -123,7 +68,12 @@
                 loading:false,
                 words:'',
                 number:'',
-                playlist:''
+                playlist:[],
+                page:1,
+                spage:2,
+                searching:false,
+                listdata:true,
+                searchdata:true
 
             }
         },
@@ -134,6 +84,7 @@
             let widthgroup = swidth-24*3
             this.waterwidth = widthgroup/2
             let self = this
+
             window.onscroll = function() { 
                 if (window.scrollY >= 300) {
                     self.fixed=true
@@ -147,13 +98,21 @@
                 this.number=res.data.content;
             })
 
-            this.$axios.get(`${test}/actives/picSayList`, {
-            }).then((res)=> {
-                this.playlist=res.data;
-                console.log(this.playlist)
-            })
+            this.newlist();
 
 
+        },
+        mounted(){
+            let self = this;
+            window.onscroll = function(){
+            　　if(self.getScrollTop() + self.getWindowHeight() == self.getScrollHeight()){
+                    if(self.searching===false){
+                        self.newlist();
+                    }else{
+                        self.searchlist();
+                    }
+            　　}
+            };
         },
         components:{
             Waterfall,WaterfallItem,menubox
@@ -161,7 +120,100 @@
         methods:{
             searchwords(words){
                 this.words===''
+                this.playlist=''
                 this.loading=true
+                this.searching=true
+                this.$axios.get(`${test}/actives/picSayList`, {
+                    params:{
+                        page:1,
+                        name:this.words
+                    }
+                }).then((res)=> {
+                    this.playlist = res.data.content.data
+                    this.loading=false
+                })
+            },
+            searchlist(){
+                if(this.searchdata===true){
+                    this.$axios.get(`${test}/actives/picSayList`, {
+                        params:{
+                            page:this.spage,
+                            name:this.words
+                        }
+                    }).then((res)=> {
+                        if(this.spage>1){
+                            this.playlist = this.playlist.concat(res.data.content.data)
+                        }else{
+                            this.playlist = res.data.content.data
+                        }
+                        this.loading=false
+                        console.log()
+                        if(res.data.content.data.length>0){
+                            this.spage+=1
+                        }else{
+                            this.searchdata=false
+                        }
+                    })
+                }
+            },
+            getScrollTop(){
+                //滚动条在Y轴上的滚动距离
+            　　var scrollTop = 0, bodyScrollTop = 0, documentScrollTop = 0;
+            　　if(document.body){
+            　　　　bodyScrollTop = document.body.scrollTop;
+            　　}
+            　　if(document.documentElement){
+            　　　　documentScrollTop = document.documentElement.scrollTop;
+            　　}
+            　　scrollTop = (bodyScrollTop - documentScrollTop > 0) ? bodyScrollTop : documentScrollTop;
+            　　return scrollTop;
+            },
+            getScrollHeight(){
+                //文档的总高度
+            　　var scrollHeight = 0, bodyScrollHeight = 0, documentScrollHeight = 0;
+            　　if(document.body){
+            　　　　bodyScrollHeight = document.body.scrollHeight;
+            　　}
+            　　if(document.documentElement){
+            　　　　documentScrollHeight = document.documentElement.scrollHeight;
+            　　}
+            　　scrollHeight = (bodyScrollHeight - documentScrollHeight > 0) ? bodyScrollHeight : documentScrollHeight;
+            　　return scrollHeight;
+            },
+            getWindowHeight(){
+                //浏览器视口的高度
+            　　var windowHeight = 0;
+            　　if(document.compatMode == "CSS1Compat"){
+            　　　　windowHeight = document.documentElement.clientHeight;
+            　　}else{
+            　　　　windowHeight = document.body.clientHeight;
+            　　}
+            　　return windowHeight;
+            },
+            newlist(){
+                if(this.listdata===true){
+                    this.$axios.get(`${test}/actives/picSayList`, {
+                        params:{
+                            page:this.page
+                        }
+                    }).then((res)=> {
+                        // this.playlist.push(res.data.content.data)
+                        if(this.page>1){
+                            this.playlist = this.playlist.concat(res.data.content.data)
+                        }else{
+                            this.playlist = res.data.content.data
+                        }
+                        if(res.data.content.data.length>0){
+                            this.page+=1
+                        }else{
+                            this.listdata=false
+                        }
+                        
+                    })
+                }
+            },
+            gogallery(lid){
+                this.$router.push('gallery?lid='+lid)
             }
         }
     }
@@ -170,7 +222,7 @@
 <style scoped>
     .work {padding-bottom: 12rem;}
     .search-box {background: url('../public/images/bj5.png') no-repeat center center;background-size: 100% 100%;
-    position: absolute;width: 100%;left: 0;top: 0;z-index:100;}
+    position: fixed;width: 100%;left: 0;top: 0;z-index:100;}
     .searchfix {position: fixed;width: 100%;left: 0;top: 0;z-index:100;}
     .search-box .search {height: 6rem;background: #fff;border-radius:1rem;width: 76%;font-size: 2.8rem;
     box-shadow:0 0.2rem 1rem rgba(0,142,196,0.29);border:none;margin-left: 3.5%;text-indent: 1em;position: relative;top: -0.2rem;}
@@ -184,8 +236,10 @@
     .worksearch {padding-top: 14rem;}
 
     .waterfall {margin:0 24px;transition:all ease 0.5s;}
+    .searchbox {padding-top: 12rem;}
     .waterlist {border:0.1rem solid #e6e6e6;border-radius:1rem;overflow: hidden;}
     .waterfall-item .info {position: relative;height: 12.9rem;overflow: hidden;}
+    .waterfall-item .infonovoice {height: 7.9rem;}
     .waterfall-item .info img{height: 12.9rem;}
     .waterfall-item .infor-con {position: absolute;top: 0;left: 0;width: 100%;text-align: center;color:#9c4c12;}
 
@@ -197,5 +251,7 @@
     .author .userpic {width: 3.2rem;height: 3.2rem;border-radius:50%;}
     .author .name {font-size: 2.4rem;color:#999;margin-left: 1rem;position: relative;top: 0.6rem;}
     .loading {position: fixed;width: 180px;height: 180px;left: 50%;top: 50%;margin:-90px 0 0 -90px;z-index:600;}
+    .noresult {color:#666;font-size: 3.2rem;text-align: center;margin-top: 50%;}
+
 
 </style>

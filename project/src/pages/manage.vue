@@ -157,11 +157,13 @@
             // }).then((res)=>{
             //     console.log(res)
             // })
+
         },
         mounted(){
             this.$nextTick(()=>{
                 let pheight = this.$refs.wpic;
             })
+            
         },
         methods:{
             gowork(){
@@ -187,9 +189,11 @@
             goinfo(){
                 if(this.voice===2){
                     if(this.upStatus==='voiceok'){
-                        this.$router.push('voice?fixed');
+                        window.location.href='http://student.dfth.com/market/index.html#/voice?fixed'
+                        // this.$router.push('voice?fixed');
                     }else{
-                        this.$router.push('voice');
+                        window.location.href='http://student.dfth.com/market/index.html#/voice'
+                        // this.$router.push('voice');
                     }
                 }
             },

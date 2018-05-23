@@ -26,6 +26,7 @@
 <script>
     import menubox from '../components/menubox/menubox'
     var local = 'http://192.168.1.227:8081'
+    var test = 'http://studenttest.dfth.com'
     var panda = 'http://student.dfth.com'
     export default{
         data(){
@@ -49,13 +50,12 @@
             
             var localoid = localStorage.getItem('oid');
 
-            this.$axios.get(`${local}/actives/joinerInt`, {
+            this.$axios.get(`${test}/actives/joinerInt`, {
                 params:{
                     openid:localoid
                 }
             }).then((res)=> {
                 this.myjf=res.data.content.total;
-                console.log(this.myjf)
             })
         },
         components:{
@@ -65,7 +65,7 @@
 </script>
 
 <style scoped>
-    .bj {background: url('../public/images/bj4.jpg') no-repeat center center;background-size: 100%;height: 57.7rem;display: flex;
+    .bj {background: url('../public/images/bj4.jpg') no-repeat center center;background-size: cover;height: 57.7rem;display: flex;
     align-items: center;color:#9c4c12;}
     .bj .jfbox {width: 100%;}
     .bj .currentjf {font-size: 11rem;line-height: 11rem;margin-top: 2rem;}
