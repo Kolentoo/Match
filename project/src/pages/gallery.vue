@@ -10,9 +10,18 @@
             <div class="presentshow">
                 <div class="showcon">
                     <div class="presentscroll">
-                        <vue-seamless-scroll :data="listData" :class-option="classOption">
-                            <p v-for="(list,idx) in listData" :key="idx" class="p1"><em>{{list.name}}</em>送<i>{{list.present}}</i><img class="present-small vm" :src="list.imgUrl" alt=""></p>
+                        <vue-seamless-scroll :data="presentrecord" :class-option="classOption" v-if="presentrecord.length>0">
+                            <p v-for="(list,idx) in presentrecord" :key="idx" class="p1">
+                                <em>{{list.wx_name}}</em>送
+                                <i v-if="list.inte_lev==='1'">粉色爱心</i>
+                                <i v-if="list.inte_lev==='2'">蓝色星球</i>
+                                <i v-if="list.inte_lev==='3'">阿特比心</i>
+                            <img v-if="list.inte_lev==='1'" class="present-small vm" src="../public/images/present1.png" alt="">
+                            <img v-if="list.inte_lev==='2'" class="present-small vm" src="../public/images/present2.png" alt="">
+                            <img v-if="list.inte_lev==='3'" class="present-small vm" src="../public/images/present3.png" alt="">
+                            </p>
                         </vue-seamless-scroll>
+                        <p class="nopresent" v-if="presentrecord.length===0">还没有收到任何礼物哦</p>
                     </div>
                     <div class="presentall">
                         <div class="alltitle tc">
@@ -23,15 +32,15 @@
                         <ul class="presentnumber">
                             <li class="present">
                                 <img class="present-pic vm" src="../public/images/present1.png" alt="">
-                                <em>999</em>
+                                <em>{{presentnum[0].tot}}</em>
                             </li>
                             <li class="present">
                                 <img class="present-pic vm" src="../public/images/present2.png" alt="">
-                                <em>999</em>
+                                <em>{{presentnum[1].tot}}</em>
                             </li>
                             <li class="present">
                                 <img class="present-pic vm" src="../public/images/present3.png" alt="">
-                                <em>999</em>
+                                <em>{{presentnum[2].tot}}</em>
                             </li>
                         </ul>
                     </div>
@@ -39,9 +48,13 @@
             </div>
             <div class="send">
                 <div class="send-con clearfix">
-                    <div class="jfbox fl">
-                        <p class="p1">NO.1</p>
-                        <P class="p2">积分：<em>11232222</em></P>
+                    <div class="jfbox fl" v-if="!change">
+                        <p class="p1">NO.{{rank}}</p>
+                        <P class="p2">积分：<em>{{currentjf}}</em></P>
+                    </div>
+                    <div class="jfbox fl" v-if="change">
+                        <p class="p1">NO.{{author.rank}}</p>
+                        <P class="p2">积分：<em>{{author.total_vote}}</em></P>
                     </div>
                     <div class="sendwakeup fr">
                         <img class="wakeupbtn vm g10" src="../public/images/sendpresent.png" alt="">
@@ -158,88 +171,44 @@
         <path d="M10,0C4.5,0,0,4.5,0,10s4.5,10,10,10s10-4.5,10-10S15.5,0,10,0z M10,18.6c-4.7,0-8.6-3.9-8.6-8.6S5.3,1.4,10,1.4s8.6,3.9,8.6,8.6S14.7,18.6,10,18.6z M10.7,5C10.9,5.2,11,5.5,11,5.7s-0.1,0.5-0.3,0.7c-0.2,0.2-0.4,0.3-0.7,0.3c-0.3,0-0.5-0.1-0.7-0.3C9.1,6.2,9,6,9,5.7S9.1,5.2,9.3,5C9.5,4.8,9.7,4.7,10,4.7C10.3,4.7,10.5,4.8,10.7,5z M9.3,8.3h1.4v7.2H9.3V8.3z"/>
         </symbol>
         </svg>
-        <div :class="['container',{'entering':enter}]">
+        <div :class="['container',{'entering':enter}]" @click="popcancel()">
         <div class="scroller">
-            <div class="room room--current">
-            <div class="room__side room__side--back"> 
-                <div class="workwrapper">
-                    <div class="picbox">
-                        <div class="wborder g10">
-                            <div class="workbox g10">
-                                <div class="picinner g10">
-                                    <img ref="wpic" class="workpic vm g10" src="../public/images/work1.jpg" alt="">
+            <div :class="['room',worknumber-1===idx?'room--current':'']" v-for="(room,idx) in playlist" :key="idx">
+                <p class="recorddata">{{room.id}}</p>
+                <div class="room__side room__side--back"> 
+                    <div class="workwrapper">
+                        <div class="picbox">
+                            <div class="wborder g10">
+                                <div class="workbox g10">
+                                    <div class="picinner g10">
+                                        <img ref="wpic" class="workpic vm g10" :src="room.works_img" alt="">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="information">
-                        <div class="work-name">思念是一种病思念是一种病</div>
-                        <div class="userbox">
-                            <div class="user-info clearfix">
-                                <div class="user-txt fl" @click="information()">
-                                    <img class="userpic vm" src="../public/images/woman.jpg" alt="">
-                                    <span class="username">王大锤哈</span>
-                                    <img class="arrow vm" src="../public/images/arrowright.png" alt="">
-                                </div>
-                                <div class="user-voice fr" v-if="hasvoice" @click="uservoice()">
-                                    <img v-if="!voiceplay" class="voicepic vm" src="../public/images/voice.png" alt="">
-                                    <img v-if="voiceplay" class="voicepic vm" src="../public/images/voice.gif" alt="">
-                                    <span class="time">11s</span>
+                        <div class="information">
+                            <div class="work-name">{{room.works_name}}</div>
+                            <div class="userbox" @click="information()">
+                                <div class="user-info clearfix">
+                                    <div class="user-txt fl" >
+                                        <img class="userpic vm" :src="room.head_img" alt="">
+                                        <span class="username">{{room.childname}}</span>
+                                        <img class="arrow vm" src="../public/images/arrowright.png" alt="">
+                                    </div>
+                                    <div class="user-voice fr" v-if="hasvoice" @click="uservoice()">
+                                        <img v-if="!voiceplay" class="voicepic vm" src="../public/images/voice.png" alt="">
+                                        <img v-if="voiceplay" class="voicepic vm" src="../public/images/voice2.gif" alt="">
+                                        <span class="time">{{room.voice_second}}s</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="room__side room__side--left"></div>
+                <div class="room__side room__side--right"></div>
+                <div class="room__side room__side--bottom"></div>
             </div>
-            <div class="room__side room__side--left"></div>
-            <div class="room__side room__side--right"></div>
-            <div class="room__side room__side--bottom"></div>
-            </div>
-            <!-- /room -->
-            <div class="room">
-            <div class="room__side room__side--back">
-                <div class="picbox">
-                    <div class="wborder g10">
-                        <div class="workbox g10">
-                            <div class="picinner g10">
-                                <img ref="wpic" class="workpic vm g10" src="../public/images/work2.jpg" alt="">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="room__side room__side--left"></div>
-            <div class="room__side room__side--right"></div>
-            <div class="room__side room__side--bottom"></div>
-            </div>
-            <!-- /room -->
-            <div class="room">
-            <div class="room__side room__side--back">
-                <img class="room__img" src="../public/images/set3/1.jpg" alt="Some image"/> 
-            </div>
-            <div class="room__side room__side--left"></div>
-            <div class="room__side room__side--right"></div>
-            <div class="room__side room__side--bottom"></div>
-            </div>
-            <!-- /room -->
-            <div class="room">
-            <div class="room__side room__side--back">
-                <img class="room__img" src="../public/images/set1/6.jpg" alt="Some image"/> 
-            </div>
-            <div class="room__side room__side--left"></div>
-            <div class="room__side room__side--right"></div>
-            <div class="room__side room__side--bottom"></div>
-            </div>
-            <!-- /room -->
-            <div class="room">
-            <div class="room__side room__side--back">
-                <img class="room__img" src="../public/images/set5/5.jpg" alt="Some image"/> 
-            </div>
-            <div class="room__side room__side--left"></div>
-            <div class="room__side room__side--right"></div>
-            <div class="room__side room__side--bottom"></div>
-            </div>
-            <!-- /room --> 
         </div>
 
         
@@ -261,10 +230,10 @@
         </svg> </button>
         <div class="overlay overlay--menu">
         <ul class="menu">
-            <li class="menu__item menu__item--current"><a class="menu__link" href="#">Exhibitions</a></li>
-            <li class="menu__item"><a class="menu__link" href="#">Discover</a></li>
-            <li class="menu__item"><a class="menu__link" href="#">Visit us</a></li>
-            <li class="menu__item"><a class="menu__link" href="#">Shop</a></li>
+            <li class="menu__item menu__item--current"><a class="menu__link" href="#"></a></li>
+            <li class="menu__item"><a class="menu__link" href="#"></a></li>
+            <li class="menu__item"><a class="menu__link" href="#"></a></li>
+            <li class="menu__item"><a class="menu__link" href="#"></a></li>
         </ul>
         </div>
         <div class="overlay overlay--info">
@@ -310,10 +279,10 @@
         </div>
     </div>
     <nav class="nav">
-        <button class="btn btn--nav btn--nav-left btn-left">
+        <button class="btn btn--nav btn--nav-left btn-left" @click="prev()">
             <img class="btnpic vm g10" src="../public/images/prev.png" alt="">
         </button>
-        <button class="btn btn--nav btn--nav-right btn-right">
+        <button class="btn btn--nav btn--nav-right btn-right" @click="next()">
             <img class="btnpic vm g10" src="../public/images/next.png" alt="">
         </button>
     </nav>
@@ -336,6 +305,9 @@
 </template>
 
 <script>
+    var test = 'http://studenttest.dfth.com'
+    var local = 'http://192.168.1.227:8081'
+    var panda = 'http://student.dfth.com'
     import vueSeamlessScroll from 'vue-seamless-scroll'
     export default{
         data(){
@@ -352,7 +324,7 @@
                 pop3:false,
                 mk:false,
                 preon:false,
-                hasvoice:true,
+                hasvoice:false,
                 voiceplay:false,
                 items:[
                     {
@@ -374,50 +346,130 @@
                         on:false
                     }
                 ],
-                listData:[
-                    {
-                        name:'xxxxx',
-                        present:'哈哈哈哈哈',
-                        imgUrl:'../../static/img/present1.png'
-                    },
-                    {
-                        name:'xxxxx',
-                        present:'xxxxx',
-                        imgUrl:'../../static/img/present2.png'
-                    },
-                    {
-                        name:'xxxxx',
-                        present:'哈哈哈哈哈',
-                        imgUrl:'../../static/img/present3.png'
-                    },
-                    {
-                        name:'xxxxx',
-                        present:'哈哈哈哈哈',
-                        imgUrl:'../../static/img/present1.png'
-                    },
-                    {
-                        name:'xxxxx',
-                        present:'哈哈哈哈哈',
-                        imgUrl:'../../static/img/present1.png'
-                    }
-                ],
                 classOption:{
                     step: 0.6, //步长 越大滚动速度越快
-                    limitMoveNum: 3, //启动无缝滚动最小数据量 this.dataList.length
+                    limitMoveNum: 2, //启动无缝滚动最小数据量 this.dataList.length
                     hoverStop: true, //是否启用鼠标hover控制
                     direction: 1, //1 往上 0 往下
                     openWatch: true, //开启data实时监听
                     singleHeight: 0, //单条数据高度有值hoverStop关闭
                     waitTime: 1000, //单步停止等待时间
                     autoplay:true
-                }
+                },
+                gallerypage:1,
+                playlist:[
+                    {
+                        "childname":"",
+                        "head_img":"",
+                        "works_img":"",
+                        "works_name":"",
+                        "voice_second":""
+                    },
+                    {
+                        "childname":"",
+                        "head_img":"",
+                        "works_img":"",
+                        "works_name":"",
+                        "voice_second":""
+                    }
+                ],
+                alllist:'',
+                worknumber:1,
+                presentnum:[
+                    {
+                        'inte_lev': '',
+                        'tot': ''
+                    },
+                    {
+                        'inte_lev': '',
+                        'tot': ''
+                    },
+                    {
+                        'inte_lev': '',
+                        'tot': ''
+                    }
+                ],
+                presentrecord:[],
+                lid:'',
+                rank:'',
+                currentjf:0,
+                newid:'',
+                change:false,
+                author:'',
+                firstchange:true
                 
             }
         },
         created(){
+            var curl = window.location.href;
+            let localoid =localStorage.getItem('oid');
+            if(localoid){
+                var oid=localoid
+            }else{
+                if(curl.indexOf('openid')>-1){
+                    var oid = curl.split('=')[1];
+                    localStorage.setItem('oid',oid);
+                }else{
+                    var urlvalue = curl.split('#/')[1]
+                    window.location.href='http://erp.dfth.com/index.php/Weixin/getWebOpenid?backurl='+urlvalue;
+                }
+            }
+
+
+            let curlSplit = curl.split('?')[1];
+            // let dataGroup1 = curlSplit.split('with')[0];
+            // let dataGroup2 = curlSplit.split('with')[1];
+
+            this.lid = curlSplit.split('with')[0];
+            this.rank = curlSplit.split('with')[1].split('end')[0];
+            console.log(this.lid)
+            console.log(this.rank)
+            // this.lid = dataGroup1.split('=')[1];
+            // this.rank = dataGroup2.split('=')[1];
+
+            if(this.rank.length===1){
+                this.gallerypage=1
+                this.worknumber = parseInt(this.rank);
+            }else{
+                this.gallerypage = parseInt(this.rank.charAt(0))+1;
+                this.worknumber = parseInt(this.rank.charAt(1));
+            }
+
+            this.$axios.get(`${test}/actives/picSayList`, {
+                params:{
+                    page:this.gallerypage
+                }
+            }).then((res)=> {
+                this.alllist = res.data.content.data;
+                this.playlist = res.data.content.data.slice(this.worknumber-2,this.worknumber+1);
+
+                this.playlist.map((value,index,arr)=>{
+                    if(this.worknumber-1===index){
+                        this.currentjf = value.total_vote
+                        if(value.voice_second==='0'){
+                            this.hasvoice=false
+                        }else{
+                            this.hasvoice=true
+                        }
+                    }
+                })
+                
+            })
+
+            this.$axios.get(`${test}/actives/voteList`, {
+                params:{
+                    uid:this.lid
+                }
+            }).then((res)=> {
+                this.presentnum = res.data.content.total;
+                this.presentrecord = res.data.content.list;
+            })
+
+            
 
         },
         mounted(){
+
             let bheight = document.body.clientHeight;
             document.getElementById('gallery').style.height=bheight+'px'
 
@@ -435,16 +487,6 @@
                 this.action4=true;
             }, 4200);
 
-            let content = document.getElementById('content');
-            content.addEventListener('click',()=>{
-                console.log(123)
-            });
-
-            let source = document.getElementById('source');
-            let sourceGroup = document.createElement('script')
-            sourceGroup.src='../../static/js/main.js'
-            source.appendChild(sourceGroup);
-
             document.documentElement.className = 'js'
             setTimeout(()=> {
                 this.enter=true
@@ -460,10 +502,17 @@
                 }, false);
             }
 
-            if(this.hasvoice=true){
+            if(this.hasvoice===true){
                 this.play=false
                 audio.pause();
             }
+
+            setTimeout(()=> {
+                let source = document.getElementById('source');
+                let sourceGroup = document.createElement('script')
+                sourceGroup.src='../../static/js/main.js'
+                source.appendChild(sourceGroup);
+            }, 500);
 
 
         },
@@ -532,6 +581,60 @@
             },
             rankgo(){
                 this.$router.push('work')
+            },
+            prev(){
+                // this.playlist = '';
+                this.playlist = this.alllist
+                if(this.firstchange===true){
+                    his.firstchange=false
+                }else{
+                    this.worknumber-=1
+                }
+                
+                setTimeout(()=> {
+                    this.roomchange();
+                    this.presentdata();
+                    this.authorjf();
+                }, 200);
+            },
+            next(){
+                // this.playlist = '';
+                this.playlist = this.alllist
+                if(this.firstchange===true){
+                    his.firstchange=false
+                }else{
+                    this.worknumber+=1
+                }
+                setTimeout(()=> {
+                    this.roomchange();
+                    this.presentdata();
+                    this.authorjf();
+                }, 200);
+            },
+            roomchange(){
+                
+                let nowroom =document.querySelector(".room--current").querySelector(".recorddata").innerHTML;
+                this.newid = nowroom;
+                this.change=true
+            },
+            presentdata(){
+                this.$axios.get(`${test}/actives/voteList`, {
+                    params:{
+                        uid:this.newid
+                    }
+                }).then((res)=> {
+                    this.presentnum = res.data.content.total;
+                    this.presentrecord = res.data.content.list;
+                })
+            },
+            authorjf(){
+                this.$axios.get(`${test}/actives/ParticipantInfo`, {
+                    params:{
+                        id:this.newid
+                    }
+                }).then((res)=> {
+                    this.author = res.data.content
+                })
             }
         },
         components:{
@@ -544,6 +647,7 @@
 <style scoped>
     /*画框*/
     .gallery {overflow-y:hidden;}
+    .recorddata {opacity: 0;z-index:-1;}
     .content {opacity: 0;position: relative;top: -3rem;transition:all ease 0.8s;}
     .action5 {opacity: 1;top: 0;}
     #source {display: none;}
@@ -575,7 +679,8 @@
         100%{transform:rotate(360deg);}
     }
     .gallery .top .musicon {animation: music linear 2s infinite;}
-    .information .work-name {font-size: 4rem;color:#333;width: 28rem;text-align: center;margin:1rem auto 0;}
+    .user-box {z-index:500;position: relative;}
+    .information .work-name {font-size: 4rem;color:#333;width: 28rem;text-align: center;margin:1rem auto 0;overflow: hidden;height: 12rem;}
     .information .user-info {background: #000;padding:1rem 0;border-radius:10rem;display: flex;justify-content: center;margin-top: 1rem;}
     .information .user-info .userpic {width: 5rem;height: 5rem;border-radius:50%;margin-left: 2rem;margin-top: -0.5rem;}
     .information .user-info .user-txt {font-size: 3.8rem;color:#fff;line-height: 7rem;}
@@ -667,4 +772,5 @@
 
     .mask {background: rgba(0,0,0,0.5);width: 100%;height: 100%;z-index:900;position: fixed;top: 0;left: 0;}
     .nav {z-index:500;}
+    .nopresent {font-size: 3.2rem;margin-top: 1rem;color:#666;}
 </style>

@@ -260,6 +260,7 @@
 	}
 
 	function navigate(dir) {
+		
 		if( isMoving || isNavigating ) {
 			return false;
 		}
@@ -283,7 +284,8 @@
 		// Position the next room.
 		var nextRoom = DOM.rooms[currentRoom];
 		nextRoom.style.transform = 'translate3d(' + (dir === 'next' ? 100 : -100) + '%,0,0) translate3d(' + (dir === 'next' ? 1 : -1) + 'px,0,0)' ;
-		nextRoom.style.opacity = 1;
+		nextRoom.style.opacity = 1;			
+
 		
 		// Move back.
 		move({transition: roomTransition, transform: resetTransform})
@@ -315,6 +317,7 @@
 			}, 60);
 			isNavigating = false;
 		});
+
 	}
 
 	function toggleMenu() {

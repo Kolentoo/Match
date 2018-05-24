@@ -38,21 +38,25 @@
         created(){
             var curl = window.location.href;
             
-            if(curl.indexOf('openid')>-1){
-                var oid = curl.split('=')[1];
-                localStorage.setItem('oid',oid);
+            let localoid =localStorage.getItem('oid');
+            if(localoid){
+                var oid=localoid
             }else{
-                var urlvalue = curl.split('8080/#/')[1]
-                window.location.href='http://erp.dfth.com/index.php/Weixin/getWebOpenid?backurl='+urlvalue;
+                if(curl.indexOf('openid')>-1){
+                    var oid = curl.split('openid=')[1];
+                    localStorage.setItem('oid',oid);
+                }else{
+                    var urlvalue = curl.split('#/')[1]
+                    window.location.href='http://erp.dfth.com/index.php/Weixin/getWebOpenid?backurl='+urlvalue;
+                }
             }
-
+ 
             
             
-            var localoid = localStorage.getItem('oid');
 
             this.$axios.get(`${test}/actives/joinerInt`, {
                 params:{
-                    openid:localoid
+                    openid:oid
                 }
             }).then((res)=> {
                 this.myjf=res.data.content.total;

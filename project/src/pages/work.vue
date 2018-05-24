@@ -17,7 +17,7 @@
         <div :class="['listbox',{'searchbox':searching}]">
             <Waterfall :gutterWidth="gwidth" :gutterHeight="gheight" :minCol="minCol" :maxCol="maxCol" v-if="playlist.length!=0">
                 <WaterfallItem :width="waterwidth" v-for="(list,idx) in playlist" :key="idx">
-                    <div class="waterlist" @click="gogallery(list.id)">
+                    <div class="waterlist" @click="gogallery(list.id,list.rank)">
                         <img class="vm g10" :src="list.works_img" alt="">
                         <div :class="['info',list.voice_second==0?'infonovoice':'']">
                             <img class="vm g10" src="../public/images/bj7.png" alt="">
@@ -212,8 +212,8 @@
                     })
                 }
             },
-            gogallery(lid){
-                this.$router.push('gallery?lid='+lid)
+            gogallery(lid,rank){
+                this.$router.push(`gallery?${lid}with${rank}end`);
             }
         }
     }
