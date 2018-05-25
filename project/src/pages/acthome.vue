@@ -98,12 +98,16 @@
             </div>
         </div>
         <menubox :location="position"></menubox>
-        <audio id="audio" src="/static/audio/music.mp3" loop="loop" autoplay="autoplay"></audio>
+        <tips :msg="tipsmsg"></tips>
     </div>
 </template>
 
 <script>
+    var test = 'http://studenttest.dfth.com'
+    var local = 'http://192.168.1.227:8081'
+    var panda = 'http://student.dfth.com'
     import menubox from '../components/menubox/menubox'
+    import tips from '../components/tips/tips'
     export default{
         data(){
             return{
@@ -118,7 +122,9 @@
                     pagination: {
                         el: '.spagination2'
                     }
-                }
+                },
+                myAudio:'',
+                tipsmsg:''
             }
         },
         created(){
@@ -135,6 +141,63 @@
                     window.location.href='http://erp.dfth.com/index.php/Weixin/getWebOpenid?backurl='+urlvalue;
                 }
             }
+
+            this.$axios.get(`${test}/actives/dayAdd`,{
+                params:{
+                    openid:localoid
+                }
+            }).then((res)=>{
+                if(res.data.status===1){
+                    this.tipsmsg='首次登陆成功'
+                }
+            })
+
+            wx.ready(()=>{
+                this.myAudio = new Audio();
+                this.myAudio.src='/static/audio/music.mp3';
+                this.myAudio.play();
+
+                wx.onMenuShareTimeline({
+                    title: '绘画比赛-东方童画', // 分享标题
+                    link: curl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    imgUrl: '', // 分享图标
+                    success:  ()=> {
+                        this.$axios.get(`${test}/actives/timelineAdd`,{
+                            params:{
+                                openid:localoid
+                            }
+                        }).then((res)=>{
+                            if(res.data.status===1){
+                                this.tipsmsg='分享成功'
+                            }
+                        })
+                    
+                    // 用户点击了分享后执行的回调函数
+                }
+                });
+
+                wx.onMenuShareAppMessage({
+                title: '绘画比赛-东方童画', // 分享标题
+                desc: '东方童画绘画比赛', // 分享描述
+                link: curl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                imgUrl: '', // 分享图标
+                type: '', // 分享类型,music、video或link，不填默认为link
+                dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+                success: ()=> {
+                    this.$axios.get(`${test}/actives/shareAppAdd`,{
+                        params:{
+                            openid:localoid
+                        }
+                    }).then((res)=>{
+                        if(res.data.status===1){
+                            this.tipsmsg='分享成功'
+                        }
+                    })
+                // 用户点击了分享后执行的回调函数
+                }
+                });
+            });
+
         },
         mounted() {
             // current swiper instance
@@ -148,16 +211,15 @@
             }
         },
         components:{
-            menubox
+            menubox,tips
         },
         methods:{
             musiccontrols(){
-                let myAudio = document.getElementById('audio');
-                if(myAudio.paused){
-                    myAudio.play();
+                if(this.myAudio.paused){
+                    this.myAudio.play();
                     this.play=true
                 }else{
-                    myAudio.pause();
+                    this.myAudio.pause();
                     this.play=false
                 }
             },

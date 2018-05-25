@@ -114,6 +114,60 @@
             this.newlist();
 
 
+            this.$axios.get(`${test}/actives/dayAdd`,{
+                params:{
+                    openid:localoid
+                }
+            }).then((res)=>{
+                if(res.data.status===1){
+                    this.tipsmsg='首次登陆成功'
+                }
+            })
+
+            wx.ready(()=>{
+
+                wx.onMenuShareTimeline({
+                    title: '绘画比赛-东方童画', // 分享标题
+                    link: curl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    imgUrl: '', // 分享图标
+                    success:  ()=> {
+                        this.$axios.get(`${test}/actives/timelineAdd`,{
+                            params:{
+                                openid:localoid
+                            }
+                        }).then((res)=>{
+                            if(res.data.status===1){
+                                this.tipsmsg='分享成功'
+                            }
+                        })
+                    
+                    // 用户点击了分享后执行的回调函数
+                }
+                });
+
+                wx.onMenuShareAppMessage({
+                title: '绘画比赛-东方童画', // 分享标题
+                desc: '东方童画绘画比赛', // 分享描述
+                link: curl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                imgUrl: '', // 分享图标
+                type: '', // 分享类型,music、video或link，不填默认为link
+                dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+                success: ()=> {
+                    this.$axios.get(`${test}/actives/shareAppAdd`,{
+                        params:{
+                            openid:localoid
+                        }
+                    }).then((res)=>{
+                        if(res.data.status===1){
+                            this.tipsmsg='分享成功'
+                        }
+                    })
+                // 用户点击了分享后执行的回调函数
+                }
+                });
+            });
+
+
         },
         mounted(){
             let self = this;

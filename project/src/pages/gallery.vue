@@ -147,11 +147,6 @@
             </div>
         </div>
 
-        <audio ref="myAudio" id="audio" src="/static/audio/music.mp3" loop="loop" autoplay="autoplay"></audio>
-
-        <audio id="user-audio" src="http://p6c1w0z8o.bkt.clouddn.com/psayVoice_20180522113237_90096.mp3" autoplay="autoplay" ></audio>
-        <!--<audio v-if="hasvoice" id="user-audio" src="http://p6c1w0z8o.bkt.clouddn.com/psayVoice_20180522113237_90096.mp3" autoplay="autoplay" ></audio>-->
-
         <div class="mask" v-if="mk"></div>
 
         <svg class="hidden">
@@ -413,7 +408,10 @@
                 firstchange:true,
                 tpperson:0,
                 sendstatus:false,
-                listlength:10
+                listlength:10,
+                bj:'',
+                myaudio:'',
+                myvoice:''
                 
             }
         },
@@ -466,10 +464,12 @@
                 }
 
                 
-                
-                setTimeout(()=> {
-                this.playlist=res.data.content.data;
-                }, 2000);
+                this.$nextTick(()=>{
+                    setTimeout(()=> {
+                        this.playlist=res.data.content.data;
+                    }, 5000);
+                })
+
                 this.playlist.map((value,index,arr)=>{
                     if(this.worknumber-1===index){
                         this.currentjf = value.total_vote
@@ -501,6 +501,24 @@
             }).then((res)=> {
                 this.tpperson=res.data.content;
             })
+
+            
+            this.bj = new Audio();
+            this.myaudio = new Audio();
+            wx.ready(()=>{ 
+                if(this.hasvoice===false){
+                    this.bj.src='/static/audio/music.mp3';
+                    this.bj.play();
+                    this.play=true
+                }else{
+                    this.myaudio.src=this.myvoice;
+                    this.myaudio.play();
+                    this.play=false
+                }
+            })
+
+            this.roomchange();
+            this.voicedata();
             
 
         },
@@ -528,21 +546,6 @@
                 this.enter=true
             }, 1000);
 
-            let audio =document.getElementById('audio');
-            let useraudio = document.getElementById('user-audio')
-
-            if(useraudio){
-                useraudio.addEventListener('ended', ()=> {  
-                    audio.play();
-                    this.play=true
-                }, false);
-            }
-
-            if(this.hasvoice===true){
-                this.play=false
-                audio.pause();
-            }
-
             setTimeout(()=> {
                 let source = document.getElementById('source');
                 let sourceGroup = document.createElement('script')
@@ -553,14 +556,6 @@
             if(this.rank=='1'){
                 document.getElementById('btnleft').style.visibility="hidden";
             }
-
-            let myAudio = new Audio();
-            wx.ready(()=>{ 
-                myAudio.src='http://p6c1w0z8o.bkt.clouddn.com/psayVoice_20180522113237_90096.mp3';
-                myAudio.play();
-            })
-
-
 
         },
         methods:{
@@ -627,29 +622,12 @@
                 this.mk=false;
             },
             musiccontrols(){
-                    let myAudio = document.getElementById('audio');
-                    // let myAudio = this.$refs.myAudio;
-                    myAudio.src='http://p6c1w0z8o.bkt.clouddn.com/psayVoice_20180522113237_90096.mp3';
-                    // myAudio.src='/static/audio/music.mp3'
-                    setTimeout(function() {
-                        myAudio.play();
-                    }, 200);
-   
-                    // this.$nextTick(()=>{
-                    // myAudio.play();
-                    // alert(myAudio.networkState);
-                    // })
-                
-                // let useraudio = document.getElementById('user-audio');
-                if(myAudio.paused){
-                    // useraudio.pause();
-
- 
-                    
+                if(this.bj.paused){
+                    this.bj.play();
                     this.play=true
                 }else{
-                    // myAudio.pause();
-                    // this.play=false
+                    this.bj.pause();
+                    this.play=false
                 }
             },
             information(){
@@ -657,14 +635,10 @@
                 this.mk=true
             },
             uservoice(){
-                let myAudio = document.getElementById('audio');
-                let useraudio = document.getElementById('user-audio');
-                if(useraudio.paused){
-                    myAudio.pause();
-                    this.play=false;
-                    useraudio.play();
+                if(this.myaudio.paused){
+                    this.myaudio.play();
                 }else{
-                    useraudio.pause();
+                    this.myaudio.pause();
                 }
             },
             indexgo(){
@@ -702,6 +676,7 @@
                     this.roomchange();
                     this.presentdata();
                     this.authorjf();
+                    this.voicedata();
                 }, 200);
             },
             prevgroup(){
@@ -758,18 +733,18 @@
                     this.workmany+=1
                     this.worknumber+=1
                 }
-            
                 
                 setTimeout(()=> {
                     this.roomchange();
                     this.presentdata();
                     this.authorjf();
+                    this.voicedata();
                 }, 200);
             },
             nextgroup(){
                 this.$axios.get(`${test}/actives/picSayList`, {
                     params:{
-                        page:96
+                        page:this.gallerypage
                     }
                 }).then((res)=> {
                     this.workmany=1
@@ -792,7 +767,6 @@
                 })
             },
             roomchange(){
-                
                 let nowroom =document.querySelector(".room--current .recorddata");
                 if(nowroom){
                     let nowinner = nowroom.innerHTML
@@ -817,6 +791,7 @@
                     }
                 }).then((res)=> {
                     this.author = res.data.content
+                    this.myvoice = res.data.content
                 })
             },
             calculatejf(){
@@ -831,6 +806,15 @@
                     }
                 }, 100);
 
+            },
+            voicedata(){
+                this.$axios.get(`${test}/actives/ParticipantInfo`, {
+                    params:{
+                        id:this.newid
+                    }
+                }).then((res)=> {
+                    this.myvoice = res.data.content.works_voice
+                })
             }
         },
         components:{
