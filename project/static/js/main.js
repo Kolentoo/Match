@@ -214,16 +214,16 @@
 	function toggleSlide(dir, delay) {
 		var slide = DOM.slides[currentRoom],
 			// Slide's name.
-			name = slide.querySelector('.slide__name'),
-			// Slide's title and date elements.
-			title = slide.querySelector('.slide__title'),
-			date = slide.querySelector('.slide__date');
+			// name = slide.querySelector('.slide__name'),
+			// // Slide's title and date elements.
+			// title = slide.querySelector('.slide__title'),
+			// date = slide.querySelector('.slide__date');
 
 		delay = delay !== undefined ? delay : 0;
 
-		anime.remove([name, title, date]);
+		// anime.remove([name, title, date]);
 		var animeOpts = {
-			targets: [name, title, date],
+			targets: [],
 			duration: dir === 'in' ? 400 : 400,
 			//delay: 0,//dir === 'in' ? 150 : 0,
 			delay: function(t, i, c) {
@@ -240,12 +240,12 @@
 		};
 		if( dir === 'in' ) {
 			animeOpts.begin = function() {
-				slide.classList.add('slide--current');
+				// slide.classList.add('slide--current');
 			};
 		}
 		else {
 			animeOpts.complete = function() {
-				slide.classList.remove('slide--current');
+				// slide.classList.remove('slide--current');
 			};
 		}
 		anime(animeOpts);

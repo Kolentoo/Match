@@ -64,7 +64,7 @@
             </div>
             <div :class="['presentbox',{'preon':preon}]">
                 <ul class="precon">
-                    <li :class="['prelist',{'liston':item.on}]" v-for="(item,idx) in items" :key="idx" @click="chooose(item,idx)">
+                    <li :class="['prelist',{'liston':item.on}]" v-for="(item,idx) in items" :key="idx" @click="choose(item,idx)">
                         <img class="vm presentpic" :src="item.img" alt="">
                         <p class="p1">{{item.name}}</p>
                         <div class="price">
@@ -75,7 +75,8 @@
                 </ul>
                 <div class="option clearfix">
                     <p class="yourmoney fl">
-                        <em>余额：1123</em>
+                        余额：<em>{{tpperson.total}}</em>
+                        
                         <img class="moneypic vm" src="../public/images/money.png" alt="">
                     </p>
                     <div class="btngroup fr" >
@@ -83,14 +84,19 @@
                             <img class="btnpic1 vm" src="../public/images/getjf.png" alt="">
                             <p class="p1">如何赚积分</p>
                         </div>
-                        <div class="btn2 btn" @click="popcancel()">
-                            <img class="btnpic1 vm" src="../public/images/sendpresent.png" alt="">
+                        <div class="btn2 btn" @click="sendgift()">
+                            <img class="btnpic1 vm" v-if="sendstatus" src="../public/images/sendpresent.png" alt="">
+                            <img class="btnpic1 vm" v-if="!sendstatus" src="../public/images/notsend.png" alt="">
                             <p class="p1">送出</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!--<div class="giftbox">
+            <img id="sending" class="vm" src="../public/images/gift1.gif?1235666" alt="">
+        </div>-->
 
         <div class="popbox">
             <div class="pop1 pop" v-if="pop1">
@@ -141,9 +147,10 @@
             </div>
         </div>
 
-        <audio id="audio" src="/static/audio/music.mp3" loop="loop" autoplay="autoplay"></audio>
+        <audio ref="myAudio" id="audio" src="/static/audio/music.mp3" loop="loop" autoplay="autoplay"></audio>
 
-        <audio v-if="hasvoice" id="user-audio" src="http://p6c1w0z8o.bkt.clouddn.com/psayVoice_20180522113237_90096.mp3" autoplay="autoplay" ></audio>
+        <audio id="user-audio" src="http://p6c1w0z8o.bkt.clouddn.com/psayVoice_20180522113237_90096.mp3" autoplay="autoplay" ></audio>
+        <!--<audio v-if="hasvoice" id="user-audio" src="http://p6c1w0z8o.bkt.clouddn.com/psayVoice_20180522113237_90096.mp3" autoplay="autoplay" ></audio>-->
 
         <div class="mask" v-if="mk"></div>
 
@@ -172,7 +179,7 @@
         </symbol>
         </svg>
         <div :class="['container',{'entering':enter}]" @click="popcancel()">
-        <div class="scroller">
+        <div class="scroller" id="scroller">
             <div :class="['room',worknumber-1===idx?'room--current':'']" v-for="(room,idx) in playlist" :key="idx">
                 <p class="recorddata">{{room.id}}</p>
                 <div class="room__side room__side--back"> 
@@ -237,10 +244,8 @@
         </ul>
         </div>
         <div class="overlay overlay--info">
-        <!--<p class="info">&ldquo;3D炫酷房间</p>-->
         </div>
     </header>
-    <!--<h4 class="location">Mirai Art Gallery &amp; Exhibition Center, Sapporo, Japan</h4>-->
     <div class="slides">
         <div class="slide">
         <h2 class="slide__name"></h2>
@@ -279,10 +284,10 @@
         </div>
     </div>
     <nav class="nav">
-        <button class="btn btn--nav btn--nav-left btn-left" @click="prev()">
+        <button class="btn btn--nav btn--nav-left btn-left" id="btnleft" @click="prev()">
             <img class="btnpic vm g10" src="../public/images/prev.png" alt="">
         </button>
-        <button class="btn btn--nav btn--nav-right btn-right" @click="next()">
+        <button class="btn btn--nav btn--nav-right btn-right" id="btnright" @click="next()">
             <img class="btnpic vm g10" src="../public/images/next.png" alt="">
         </button>
     </nav>
@@ -312,6 +317,7 @@
     export default{
         data(){
             return{
+                oid:'',
                 action1:false,
                 action2:false,
                 action3:false,
@@ -331,7 +337,7 @@
                         money:'10',
                         name:'粉色爱心',
                         img:'../../static/img/bigpresent1.png',
-                        on:false
+                        on:true
                     },
                     {
                         money:'30',
@@ -371,10 +377,18 @@
                         "works_img":"",
                         "works_name":"",
                         "voice_second":""
+                    },
+                    {
+                        "childname":"",
+                        "head_img":"",
+                        "works_img":"",
+                        "works_name":"",
+                        "voice_second":""
                     }
                 ],
                 alllist:'',
                 worknumber:1,
+                workmany:1,
                 presentnum:[
                     {
                         'inte_lev': '',
@@ -396,7 +410,10 @@
                 newid:'',
                 change:false,
                 author:'',
-                firstchange:true
+                firstchange:true,
+                tpperson:0,
+                sendstatus:false,
+                listlength:10
                 
             }
         },
@@ -404,11 +421,11 @@
             var curl = window.location.href;
             let localoid =localStorage.getItem('oid');
             if(localoid){
-                var oid=localoid
+                this.oid=localoid
             }else{
                 if(curl.indexOf('openid')>-1){
-                    var oid = curl.split('=')[1];
-                    localStorage.setItem('oid',oid);
+                    this.oid = curl.split('=')[1];
+                    localStorage.setItem('oid',this.oid);
                 }else{
                     var urlvalue = curl.split('#/')[1]
                     window.location.href='http://erp.dfth.com/index.php/Weixin/getWebOpenid?backurl='+urlvalue;
@@ -417,15 +434,10 @@
 
 
             let curlSplit = curl.split('?')[1];
-            // let dataGroup1 = curlSplit.split('with')[0];
-            // let dataGroup2 = curlSplit.split('with')[1];
 
             this.lid = curlSplit.split('with')[0];
             this.rank = curlSplit.split('with')[1].split('end')[0];
-            console.log(this.lid)
-            console.log(this.rank)
-            // this.lid = dataGroup1.split('=')[1];
-            // this.rank = dataGroup2.split('=')[1];
+
 
             if(this.rank.length===1){
                 this.gallerypage=1
@@ -435,18 +447,33 @@
                 this.worknumber = parseInt(this.rank.charAt(1));
             }
 
+            // 列表
             this.$axios.get(`${test}/actives/picSayList`, {
                 params:{
                     page:this.gallerypage
                 }
             }).then((res)=> {
                 this.alllist = res.data.content.data;
-                this.playlist = res.data.content.data.slice(this.worknumber-2,this.worknumber+1);
+                this.workmany = this.worknumber
+                if(this.worknumber===1){
+                    this.playlist = res.data.content.data.slice(this.worknumber-1,this.worknumber+2);
+                }else if(this.worknumber>9){
+                    this.playlist = res.data.content.data.slice(this.worknumber-3,this.worknumber);
+                }else{
+                    
+                    this.worknumber=2;
+                    this.playlist = res.data.content.data.slice(this.worknumber-2,this.worknumber+1);
+                }
 
+                
+                
+                setTimeout(()=> {
+                this.playlist=res.data.content.data;
+                }, 2000);
                 this.playlist.map((value,index,arr)=>{
                     if(this.worknumber-1===index){
                         this.currentjf = value.total_vote
-                        if(value.voice_second==='0'){
+                        if(value.voice_second=='0'){
                             this.hasvoice=false
                         }else{
                             this.hasvoice=true
@@ -456,6 +483,7 @@
                 
             })
 
+            // 礼物列表
             this.$axios.get(`${test}/actives/voteList`, {
                 params:{
                     uid:this.lid
@@ -465,6 +493,14 @@
                 this.presentrecord = res.data.content.list;
             })
 
+            // 投票人积分
+            this.$axios.get(`${test}/actives/joinerInt`, {
+                params:{
+                    openid:this.oid
+                }
+            }).then((res)=> {
+                this.tpperson=res.data.content;
+            })
             
 
         },
@@ -514,16 +550,56 @@
                 source.appendChild(sourceGroup);
             }, 500);
 
+            if(this.rank=='1'){
+                document.getElementById('btnleft').style.visibility="hidden";
+            }
+
+            let myAudio = new Audio();
+            wx.ready(()=>{ 
+                myAudio.src='http://p6c1w0z8o.bkt.clouddn.com/psayVoice_20180522113237_90096.mp3';
+                myAudio.play();
+            })
+
+
 
         },
         methods:{
             sendpresent(){
                 this.preon=true
+                this.calculatejf();
+            },
+            sendgift(){
+                this.preon=false
+                let presentjfstr =document.querySelector(".liston").querySelector("em").innerHTML;
+                let presentjfnum = parseInt(presentjfstr);
+                let myjfnum = parseInt(this.tpperson.total);
+                if(presentjfnum===10){
+                    var presenttype=1;
+                }else if(presentjfnum===30){
+                    var presenttype=2;
+                }else{
+                    var presenttype=3;
+                }
+
+                this.$axios.get(`${test}/api/actives/voteUser`, {
+                    params:{
+                        uid:this.lid,
+                        openid:this.oid,
+                        vote_type:presenttype,
+                        vote:presentjfnum
+                    }
+                }).then((res)=> {
+                    if(res.data.status===1){
+                        console.log('ok')
+
+                        this.tpperson.total=myjfnum-presentjfnum
+                    }
+                })
             },
             popcancel(){
                 this.preon=false
             },
-            chooose(item,idx){
+            choose(item,idx){
                 this.items.forEach((current,index,arr)=> {
                     if(idx===index){
                         current.on=true
@@ -531,6 +607,7 @@
                         current.on=false
                     }
                 }, this);
+                this.calculatejf();
                 
             },
             makemoney(){
@@ -550,15 +627,29 @@
                 this.mk=false;
             },
             musiccontrols(){
-                let myAudio = document.getElementById('audio');
-                let useraudio = document.getElementById('user-audio');
+                    let myAudio = document.getElementById('audio');
+                    // let myAudio = this.$refs.myAudio;
+                    myAudio.src='http://p6c1w0z8o.bkt.clouddn.com/psayVoice_20180522113237_90096.mp3';
+                    // myAudio.src='/static/audio/music.mp3'
+                    setTimeout(function() {
+                        myAudio.play();
+                    }, 200);
+   
+                    // this.$nextTick(()=>{
+                    // myAudio.play();
+                    // alert(myAudio.networkState);
+                    // })
+                
+                // let useraudio = document.getElementById('user-audio');
                 if(myAudio.paused){
-                    useraudio.pause();
-                    myAudio.play();
+                    // useraudio.pause();
+
+ 
+                    
                     this.play=true
                 }else{
-                    myAudio.pause();
-                    this.play=false
+                    // myAudio.pause();
+                    // this.play=false
                 }
             },
             information(){
@@ -583,13 +674,29 @@
                 this.$router.push('work')
             },
             prev(){
-                // this.playlist = '';
+                document.getElementById('btnright').style.visibility="visible";
+                this.worknumber=this.workmany
+                
+                if( document.querySelector(".room--current")){
+                    document.querySelector(".room--current").className='room';
+                }
                 this.playlist = this.alllist
-                if(this.firstchange===true){
-                    his.firstchange=false
-                }else{
+
+                if(this.gallerypage===1&&this.worknumber===2){
+                    document.getElementById('btnleft').style.visibility="hidden";
+                }
+
+                if(this.worknumber===1){
+                    this.gallerypage-=1   
+                    this.prevgroup();
+                }
+                console.log(this.worknumber)
+
+                if(this.worknumber>1){
+                    this.workmany-=1
                     this.worknumber-=1
                 }
+
                 
                 setTimeout(()=> {
                     this.roomchange();
@@ -597,25 +704,101 @@
                     this.authorjf();
                 }, 200);
             },
+            prevgroup(){
+                this.$axios.get(`${test}/actives/picSayList`, {
+                    params:{
+                        page:this.gallerypage
+                    }
+                }).then((res)=> {
+                    this.workmany=10
+                    this.worknumber=10
+                    this.alllist = res.data.content.data;
+                    this.playlist = res.data.content.data;
+
+                    this.playlist.map((value,index,arr)=>{
+                        if(this.worknumber-1===index){
+                            this.currentjf = value.total_vote
+                            if(value.voice_second==='0'){
+                                this.hasvoice=false
+                            }else{
+                                this.hasvoice=true
+                            }
+                        }
+                    })
+                    
+                })
+            },
             next(){
-                // this.playlist = '';
+                // this.worknumber+=1
+                // this.playlist = this.alllist
+
+                // if(this.firstchange===true){
+                //     this.firstchange=false
+                // }else{
+                //     this.worknumber+=1
+                // }
+                this.worknumber = this.workmany;
+                if(document.querySelector(".room--current")){
+                    document.querySelector(".room--current").className='room';
+                }
                 this.playlist = this.alllist
-                if(this.firstchange===true){
-                    his.firstchange=false
-                }else{
+                document.getElementById('btnleft').style.visibility="visible";
+
+                if(this.worknumber===10){
+                    this.gallerypage+=1   
+                    this.nextgroup();
+                }
+                console.log(this.worknumber)
+            
+                if(this.listlength<10&&this.listlength===this.worknumber-1){
+                    document.getElementById('btnright').style.visibility="hidden";
+                }
+                
+                if(this.worknumber<10){
+                    this.workmany+=1
                     this.worknumber+=1
                 }
+            
+                
                 setTimeout(()=> {
                     this.roomchange();
                     this.presentdata();
                     this.authorjf();
                 }, 200);
+            },
+            nextgroup(){
+                this.$axios.get(`${test}/actives/picSayList`, {
+                    params:{
+                        page:96
+                    }
+                }).then((res)=> {
+                    this.workmany=1
+                    this.worknumber=1
+                    this.alllist = res.data.content.data;
+                    this.playlist = res.data.content.data;
+                    this.listlength = this.playlist.length
+
+                    this.playlist.map((value,index,arr)=>{
+                        if(this.worknumber-1===index){
+                            this.currentjf = value.total_vote
+                            if(value.voice_second==='0'){
+                                this.hasvoice=false
+                            }else{
+                                this.hasvoice=true
+                            }
+                        }
+                    })
+                    
+                })
             },
             roomchange(){
                 
-                let nowroom =document.querySelector(".room--current").querySelector(".recorddata").innerHTML;
-                this.newid = nowroom;
-                this.change=true
+                let nowroom =document.querySelector(".room--current .recorddata");
+                if(nowroom){
+                    let nowinner = nowroom.innerHTML
+                    this.newid = nowinner;
+                    this.change=true
+                }
             },
             presentdata(){
                 this.$axios.get(`${test}/actives/voteList`, {
@@ -635,6 +818,19 @@
                 }).then((res)=> {
                     this.author = res.data.content
                 })
+            },
+            calculatejf(){
+                setTimeout(()=> {
+                    let presentjfstr =document.querySelector(".liston").querySelector("em").innerHTML;
+                    let presentjfnum = parseInt(presentjfstr);
+                    let myjfnum = parseInt(this.tpperson.total);
+                    if(myjfnum<presentjfnum){
+                        this.sendstatus=false;
+                    }else{
+                        this.sendstatus=true;
+                    }
+                }, 100);
+
             }
         },
         components:{
@@ -680,7 +876,7 @@
     }
     .gallery .top .musicon {animation: music linear 2s infinite;}
     .user-box {z-index:500;position: relative;}
-    .information .work-name {font-size: 4rem;color:#333;width: 28rem;text-align: center;margin:1rem auto 0;overflow: hidden;height: 12rem;}
+    .information .work-name {font-size: 4rem;color:#333;width: 28rem;text-align: center;margin:1rem auto 0;overflow: hidden;height: 10rem;}
     .information .user-info {background: #000;padding:1rem 0;border-radius:10rem;display: flex;justify-content: center;margin-top: 1rem;}
     .information .user-info .userpic {width: 5rem;height: 5rem;border-radius:50%;margin-left: 2rem;margin-top: -0.5rem;}
     .information .user-info .user-txt {font-size: 3.8rem;color:#fff;line-height: 7rem;}
@@ -732,7 +928,7 @@
     .presentbox .option {height: 11rem;padding:0 2rem;}
     .presentbox .option .yourmoney {color:#c58500;font-size: 2.8rem;line-height: 11rem;}
     .presentbox .option .yourmoney .moneypic {margin-top: -0.3rem;}
-    .btngroup .btn {width: 15rem;margin:1.5rem 0 0 2rem;position: relative;text-align: center;}
+    .btngroup .btn {width: 15rem;margin:1rem 0 0 1rem;position: relative;text-align: center;}
     .btngroup .btn .p1 {font-size: 2.6rem;color:#fff;text-shadow:0.2rem 0.4rem 0.4rem rgba(43,21,0,0.2);width: 100%;height: 100%;
     top:2rem;left: 0;position: absolute;}
     .btngroup .btn .btnpic1 {width: 100%;}
@@ -773,4 +969,7 @@
     .mask {background: rgba(0,0,0,0.5);width: 100%;height: 100%;z-index:900;position: fixed;top: 0;left: 0;}
     .nav {z-index:500;}
     .nopresent {font-size: 3.2rem;margin-top: 1rem;color:#666;}
+    .giftbox {position: fixed;z-index:6000;width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;top: 0;
+    left: 0;}
+    .giftbox img{height: 60.4rem;z-index:6000;position: relative;}
 </style>

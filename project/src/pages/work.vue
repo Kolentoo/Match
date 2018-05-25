@@ -78,6 +78,19 @@
             }
         },
         created(){
+            var curl = window.location.href;
+            let localoid =localStorage.getItem('oid');
+            if(localoid){
+                this.oid=localoid
+            }else{
+                if(curl.indexOf('openid')>-1){
+                    this.oid = curl.split('=')[1];
+                    localStorage.setItem('oid',this.oid);
+                }else{
+                    var urlvalue = curl.split('#/')[1]
+                    window.location.href='http://erp.dfth.com/index.php/Weixin/getWebOpenid?backurl='+urlvalue;
+                }
+            }
 
 
             let swidth = document.documentElement.clientWidth; 
