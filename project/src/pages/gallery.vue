@@ -50,7 +50,7 @@
                 <div class="send-con clearfix">
                     <div class="jfbox fl" v-if="!change">
                         <p class="p1">NO.{{rank}}</p>
-                        <P class="p2">积分：<em>{{currentjf}}</em></P>
+                        <P class="p2">积分：<em>{{author.total_vote}}</em></P>
                     </div>
                     <div class="jfbox fl" v-if="change">
                         <p class="p1">NO.{{author.rank}}</p>
@@ -94,32 +94,44 @@
             </div>
         </div>
 
-        <!--<div class="giftbox">
-            <img id="sending" class="vm" src="../public/images/gift1.gif?1235666" alt="">
-        </div>-->
+        <div :class="['userbox',{'voiceshow':hasvoice},{'usershow':usershow}]" >
+            <div class="user-info clearfix">
+                <div class="user-txt fl" @click="information(author.id)">
+                    <img class="userpic vm" :src="author.head_img" alt="">
+                    <span class="username">{{author.childname}}</span>
+                    <img class="arrow vm" src="../public/images/arrowright.png" alt="">
+                </div>
+                <div class="user-voice fr" v-if="hasvoice" @click="uservoice()">
+                    <img v-if="!voiceplay" class="voicepic vm" src="../public/images/voice.png" alt="">
+                    <img v-if="voiceplay" class="voicepic2 vm" src="../public/images/voice2.gif" alt="">
+                    <span class="time">{{author.voice_second}}s</span>
+                </div>
+            </div>
+        </div>
+
+        <div :class="['giftbox',{'giftsend':giftsend}]">
+            <img id="sending" class="vm" src="" alt="">
+        </div>
 
         <div class="popbox">
             <div class="pop1 pop" v-if="pop1">
                 <div class="popinner">
                     <p class="poptitle">资料详情</p>
                     <div class="popcon">
-                        <img class="userpic vm" src="../public/images/woman.jpg" alt="">
-                        <p class="username tc">王学华</p>
-                        <p class="grouptype tc">少儿组</p>
-                        <p class="ages tc">13岁，女</p>
+                        <img class="userpic vm" :src="userpopinner.head_img" alt="">
+                        <p class="username tc">{{userpopinner.childname}}</p>
+                        <p class="grouptype tc">{{userpopinner.group_type}}</p>
+                        <p class="ages tc">{{userpopinner.age}}岁，{{userpopinner.sex}}</p>
                         <dl>
-                            <dd><em>指导老师：</em>王菲</dd>
-                            <dd><em>所在区域：</em>上海市浦东新区</dd>
-                            <dd><em>所属机构或校区：</em>东方童画徐汇校区</dd>
+                            <dd><em>指导老师：</em>{{userpopinner.teacher}}</dd>
+                            <dd><em>所在区域：</em>{{userpopinner.province}}{{userpopinner.city}}</dd>
+                            <dd><em>所属机构或校区：</em>{{userpopinner.organization}}</dd>
                         </dl>
                         <div class="desc">
-                            <h2 class="tc">四年是一种名的创作故事</h2>
+                            <h2 class="tc">{{userpopinner.works_name}}</h2>
                             <div class="shape"></div>
                             <p class="desctxt">
-                                可能是在遥远的未来，用太阳能充电，世界上
-                                再没有堵车，不用电梯，只需一个传送机，不
-                                需戒备森严，只要一个电力机器人，树上也可
-                                以变成美丽的房子。
+                                {{userpopinner.works_det}}
                             </p>
                         </div>
                     </div>
@@ -175,6 +187,13 @@
         </svg>
         <div :class="['container',{'entering':enter}]" @click="popcancel()">
         <div class="scroller" id="scroller">
+            <div class="room" v-if="">
+                <div class="room__side room__side--back"> 
+                </div>
+                <div class="room__side room__side--left"></div>
+                <div class="room__side room__side--right"></div>
+                <div class="room__side room__side--bottom"></div>
+            </div>
             <div :class="['room',worknumber-1===idx?'room--current':'']" v-for="(room,idx) in playlist" :key="idx">
                 <p class="recorddata">{{room.id}}</p>
                 <div class="room__side room__side--back"> 
@@ -190,20 +209,6 @@
                         </div>
                         <div class="information">
                             <div class="work-name">{{room.works_name}}</div>
-                            <div class="userbox" @click="information()">
-                                <div class="user-info clearfix">
-                                    <div class="user-txt fl" >
-                                        <img class="userpic vm" :src="room.head_img" alt="">
-                                        <span class="username">{{room.childname}}</span>
-                                        <img class="arrow vm" src="../public/images/arrowright.png" alt="">
-                                    </div>
-                                    <div class="user-voice fr" v-if="hasvoice" @click="uservoice()">
-                                        <img v-if="!voiceplay" class="voicepic vm" src="../public/images/voice.png" alt="">
-                                        <img v-if="voiceplay" class="voicepic vm" src="../public/images/voice2.gif" alt="">
-                                        <span class="time">{{room.voice_second}}s</span>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -404,18 +409,25 @@
                 currentjf:0,
                 newid:'',
                 change:false,
-                author:'',
+                author:{
+                    total_vote:''
+                },
                 firstchange:true,
                 tpperson:0,
                 sendstatus:false,
                 listlength:10,
                 bj:'',
                 myaudio:'',
-                myvoice:''
+                myvoice:'',
+                usershow:false,
+                userpopinner:'',
+                giftsend:false,
+                removeroom:false
                 
             }
         },
         created(){
+            
             var curl = window.location.href;
             let localoid =localStorage.getItem('oid');
             if(localoid){
@@ -435,7 +447,7 @@
 
             this.lid = curlSplit.split('with')[0];
             this.rank = curlSplit.split('with')[1].split('end')[0];
-
+            this.newid = this.lid
 
             if(this.rank.length===1){
                 this.gallerypage=1
@@ -463,8 +475,11 @@
                     this.playlist = res.data.content.data.slice(this.worknumber-2,this.worknumber+1);
                 }
 
-                
                 this.$nextTick(()=>{
+                    setTimeout(()=> {
+                        this.removeroom=true
+                    }, 2000);
+                    
                     setTimeout(()=> {
                         this.playlist=res.data.content.data;
                     }, 5000);
@@ -473,11 +488,26 @@
                 this.playlist.map((value,index,arr)=>{
                     if(this.worknumber-1===index){
                         this.currentjf = value.total_vote
+                        this.myvoice = value.works_voice
                         if(value.voice_second=='0'){
                             this.hasvoice=false
                         }else{
                             this.hasvoice=true
                         }
+                    }
+                })
+
+                
+            }).then(()=>{
+                wx.ready(()=>{ 
+                    if(this.hasvoice===false){
+                        this.bj = new Audio();
+                        this.bj.src='/static/audio/music.mp3';
+                        this.bj.play();
+                        this.voiceplay=false
+                        this.play=true
+                    }else{
+                        this.uservoiceplay();
                     }
                 })
                 
@@ -501,29 +531,11 @@
             }).then((res)=> {
                 this.tpperson=res.data.content;
             })
-
-            
-            this.bj = new Audio();
-            this.myaudio = new Audio();
-            wx.ready(()=>{ 
-                if(this.hasvoice===false){
-                    this.bj.src='/static/audio/music.mp3';
-                    this.bj.play();
-                    this.play=true
-                }else{
-                    this.myaudio.src=this.myvoice;
-                    this.myaudio.play();
-                    this.play=false
-                }
-            })
-
-            this.roomchange();
-            this.voicedata();
             
 
         },
         mounted(){
-
+            
             let bheight = document.body.clientHeight;
             document.getElementById('gallery').style.height=bheight+'px'
 
@@ -535,11 +547,15 @@
                 this.action2=true;
             }, 3500);
             setTimeout(()=> {
+                this.usershow=true;
+            }, 3800);            
+            setTimeout(()=> {
                 this.action5=true;
-            }, 3800);
+            }, 4200);
             setTimeout(()=> {
                 this.action4=true;
-            }, 4200);
+                
+            }, 4500);
 
             document.documentElement.className = 'js'
             setTimeout(()=> {
@@ -556,6 +572,10 @@
             if(this.rank=='1'){
                 document.getElementById('btnleft').style.visibility="hidden";
             }
+
+            setTimeout(()=> {
+                this.authorinfo();
+            }, 3000);
 
         },
         methods:{
@@ -576,18 +596,44 @@
                     var presenttype=3;
                 }
 
+                var sending = document.getElementById('sending');
                 this.$axios.get(`${test}/api/actives/voteUser`, {
                     params:{
-                        uid:this.lid,
+                        uid:this.newid,
                         openid:this.oid,
                         vote_type:presenttype,
                         vote:presentjfnum
                     }
                 }).then((res)=> {
                     if(res.data.status===1){
-                        console.log('ok')
-
+                        let mathrandom = Math.random();
+                        this.giftsend = true                        
                         this.tpperson.total=myjfnum-presentjfnum
+                        if(presenttype===1){
+                            sending.src='../../static/img/gift1.gif?'+mathrandom
+                            this.author.total_vote = parseInt(this.author.total_vote)+10
+                            this.presentnum[0].tot =parseInt(this.presentnum[0].tot)+1
+                            setTimeout(()=> {
+                                this.giftsend = false 
+                                sending.src='#'
+                            }, 5000);
+                        }else if(presenttype===2){
+                            sending.src='../../static/img/gift2.gif?'+mathrandom
+                            this.author.total_vote = parseInt(this.author.total_vote)+30
+                            this.presentnum[1].tot =parseInt(this.presentnum[1].tot)+1
+                            setTimeout(()=> {
+                                this.giftsend = false 
+                                sending.src='#'
+                            }, 3000);
+                        }else{
+                            sending.src='../../static/img/gift3.gif?'+mathrandom
+                            this.author.total_vote = parseInt(this.author.total_vote)+50
+                            this.presentnum[2].tot =parseInt(this.presentnum[2].tot)+1
+                            setTimeout(()=> {
+                                this.giftsend = false 
+                                sending.src='#'
+                            }, 5000);
+                        }
                     }
                 })
             },
@@ -622,24 +668,42 @@
                 this.mk=false;
             },
             musiccontrols(){
+                if(this.play===false){
+                    this.bj = new Audio();
+                    this.bj.src='/static/audio/music.mp3';
+                }
+
                 if(this.bj.paused){
                     this.bj.play();
+                    this.voiceplay=false
                     this.play=true
                 }else{
                     this.bj.pause();
                     this.play=false
                 }
             },
-            information(){
+            information(aid){
                 this.pop1=true;
                 this.mk=true
+                this.$axios.get(`${test}/actives/ParticipantInfo`, {
+                    params:{
+                        id:aid
+                    }
+                }).then((res)=> {
+                    this.userpopinner = res.data.content
+                })
             },
             uservoice(){
                 if(this.myaudio.paused){
+                    this.myaudio.src=this.myvoice;
                     this.myaudio.play();
+                    this.play=false
+                    this.voiceplay=true
                 }else{
                     this.myaudio.pause();
+                    this.voiceplay=false
                 }
+
             },
             indexgo(){
                 this.$router.push('acthome')
@@ -648,6 +712,7 @@
                 this.$router.push('work')
             },
             prev(){
+
                 document.getElementById('btnright').style.visibility="visible";
                 this.worknumber=this.workmany
                 
@@ -664,19 +729,16 @@
                     this.gallerypage-=1   
                     this.prevgroup();
                 }
-                console.log(this.worknumber)
 
                 if(this.worknumber>1){
                     this.workmany-=1
                     this.worknumber-=1
                 }
-
                 
                 setTimeout(()=> {
                     this.roomchange();
                     this.presentdata();
-                    this.authorjf();
-                    this.voicedata();
+                    this.authorinfo();
                 }, 200);
             },
             prevgroup(){
@@ -704,14 +766,7 @@
                 })
             },
             next(){
-                // this.worknumber+=1
-                // this.playlist = this.alllist
-
-                // if(this.firstchange===true){
-                //     this.firstchange=false
-                // }else{
-                //     this.worknumber+=1
-                // }
+                // this.removeroom=true
                 this.worknumber = this.workmany;
                 if(document.querySelector(".room--current")){
                     document.querySelector(".room--current").className='room';
@@ -737,8 +792,7 @@
                 setTimeout(()=> {
                     this.roomchange();
                     this.presentdata();
-                    this.authorjf();
-                    this.voicedata();
+                    this.authorinfo();
                 }, 200);
             },
             nextgroup(){
@@ -784,14 +838,20 @@
                     this.presentrecord = res.data.content.list;
                 })
             },
-            authorjf(){
+            authorinfo(){
                 this.$axios.get(`${test}/actives/ParticipantInfo`, {
                     params:{
                         id:this.newid
                     }
                 }).then((res)=> {
+                    
                     this.author = res.data.content
-                    this.myvoice = res.data.content
+                    this.myvoice = res.data.content.works_voice
+                    if(res.data.content.voice_second==='0'){
+                        this.hasvoice=false
+                    }else{
+                        this.hasvoice=true
+                    }
                 })
             },
             calculatejf(){
@@ -807,14 +867,18 @@
                 }, 100);
 
             },
-            voicedata(){
-                this.$axios.get(`${test}/actives/ParticipantInfo`, {
-                    params:{
-                        id:this.newid
-                    }
-                }).then((res)=> {
-                    this.myvoice = res.data.content.works_voice
-                })
+            uservoiceplay(){
+                this.myaudio = new Audio();
+                this.myaudio.src=this.myvoice;
+                this.play=false
+                
+                setTimeout(()=> {
+                        this.myaudio.play();
+                        this.voiceplay=true
+                }, 6000);
+                this.myaudio.addEventListener('ended', ()=> {
+                    this.voiceplay=false
+                }, false);
             }
         },
         components:{
@@ -859,16 +923,25 @@
         100%{transform:rotate(360deg);}
     }
     .gallery .top .musicon {animation: music linear 2s infinite;}
+
+    .userbox {position: fixed;top: 45%;left: 50%;z-index:400;width: 40%;margin:5rem 0 0 -20%;z-index:-1;opacity: 0;
+    transition:all ease 0.5s;}
+    .voiceshow {width: 52%;margin:5rem 0 0 -26%;}
     .user-box {z-index:500;position: relative;}
-    .information .work-name {font-size: 4rem;color:#333;width: 28rem;text-align: center;margin:1rem auto 0;overflow: hidden;height: 10rem;}
-    .information .user-info {background: #000;padding:1rem 0;border-radius:10rem;display: flex;justify-content: center;margin-top: 1rem;}
-    .information .user-info .userpic {width: 5rem;height: 5rem;border-radius:50%;margin-left: 2rem;margin-top: -0.5rem;}
-    .information .user-info .user-txt {font-size: 3.8rem;color:#fff;line-height: 7rem;}
-    .information .user-info .user-txt .username {margin:0 1rem;}
-    .information .user-info .arrow {width: 2rem;margin-top: -0.5rem;}
-    .information .user-voice {margin-right: 2rem;margin-left: 3rem;border-left: 0.1rem solid #999;}
-    .information .user-voice .voicepic {width:3rem;margin:-2.5rem 1.5rem 0 2rem;}
-    .information .user-voice .time {font-size: 4rem;color:#999;line-height: 7rem;}
+    .usershow {opacity: 1;z-index:400;top: 50%;}
+
+    .work-name {font-size: 4rem;color:#333;width: 28rem;text-align: center;margin:1rem auto 0;overflow: hidden;height: 12rem;}
+    .user-info {background: rgba(0,0,0,0.5);border-radius:10rem;display: flex;justify-content: center;margin-top: 1rem;}
+    .user-info .userpic {width: 5rem;height: 5rem;border-radius:50%;margin-top: -0.5rem;}
+    .user-info .user-txt {font-size: 3rem;color:#fff;line-height: 7rem;}
+    .user-info .user-txt .username {margin:0 0.5rem;}
+    .user-info .arrow {width: 1.6rem;margin-top: -0.5rem;}
+    .user-voice {margin-left: 1.5rem;border-left: 0.1rem solid #999;}
+    .user-voice .voicepic {width:2.6rem;margin:-1.5rem 1rem 0 1rem;}
+    .user-voice .voicepic2 {width: 3.2rem;margin:-1rem 1rem 0 1rem;}
+    .user-voice .time {font-size: 3rem;color:#999;line-height: 7rem;}
+
+    
 
     .gallery-bottom {position: fixed;bottom: -20%;width: 92%;left: 4%;z-index:300;transition: all ease 0.6s;opacity: 0;}
     .action4 {bottom: 3rem;opacity: 1;}
@@ -953,7 +1026,8 @@
     .mask {background: rgba(0,0,0,0.5);width: 100%;height: 100%;z-index:900;position: fixed;top: 0;left: 0;}
     .nav {z-index:500;}
     .nopresent {font-size: 3.2rem;margin-top: 1rem;color:#666;}
-    .giftbox {position: fixed;z-index:6000;width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;top: 0;
+    .giftbox {position: fixed;z-index:-1;width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;top: 0;
     left: 0;}
-    .giftbox img{height: 60.4rem;z-index:6000;position: relative;}
+    .giftsend {z-index:1000;}
+    .giftbox img{width: 100%;position: relative;top: -10%;}
 </style>
