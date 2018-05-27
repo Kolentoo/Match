@@ -19,12 +19,14 @@
             </dl>
         </div>
         <menubox :location="position"></menubox>
+        <tips :msg="tipsmsg" v-if="hasmsg"></tips>
     </div>
 
 </template>
 
 <script>
     import menubox from '../components/menubox/menubox'
+    import tips from '../components/tips/tips'
     var local = 'http://192.168.1.227:8081'
     var test = 'http://studenttest.dfth.com'
     var panda = 'http://student.dfth.com'
@@ -32,7 +34,8 @@
         data(){
             return{
                 position:'me',
-                myjf:''
+                myjf:'',
+                hasmsg:false
             }
         },
         created(){
@@ -58,7 +61,13 @@
                 }
             }).then((res)=>{
                 if(res.data.status===1){
+                    this.hasmsg=true
                     this.tipsmsg='首次登陆成功'
+                    this.myjf= parseInt(this.myjf)+25;
+                }else{
+                    this.hasmsg=true
+                    this.tipsmsg='首次登陆成功'
+                    this.myjf = parseInt(this.myjf)+25
                 }
             })
 
@@ -75,7 +84,9 @@
                             }
                         }).then((res)=>{
                             if(res.data.status===1){
+                                this.hasmsg=true
                                 this.tipsmsg='分享成功'
+                                this.myjf =this.myjf+5
                             }
                         })
                     
@@ -97,7 +108,9 @@
                         }
                     }).then((res)=>{
                         if(res.data.status===1){
+                            this.hasmsg=true
                             this.tipsmsg='分享成功'
+                            this.myjf =this.myjf+5
                         }
                     })
                 // 用户点击了分享后执行的回调函数
@@ -115,7 +128,7 @@
             })
         },
         components:{
-            menubox
+            menubox,tips
         }
     }
 </script>

@@ -98,7 +98,7 @@
             </div>
         </div>
         <menubox :location="position"></menubox>
-        <tips :msg="tipsmsg"></tips>
+        <tips :msg="tipsmsg" v-if="hasmsg"></tips>
     </div>
 </template>
 
@@ -124,6 +124,7 @@
                     }
                 },
                 myAudio:'',
+                hasmsg:false,
                 tipsmsg:''
             }
         },
@@ -148,7 +149,10 @@
                 }
             }).then((res)=>{
                 if(res.data.status===1){
+                    this.hasmsg=true
                     this.tipsmsg='首次登陆成功'
+                }else{
+                    this.hasmsg=false
                 }
             })
 
@@ -168,11 +172,10 @@
                             }
                         }).then((res)=>{
                             if(res.data.status===1){
+                                this.hasmsg=true
                                 this.tipsmsg='分享成功'
                             }
                         })
-                    
-                    // 用户点击了分享后执行的回调函数
                 }
                 });
 
@@ -190,6 +193,7 @@
                         }
                     }).then((res)=>{
                         if(res.data.status===1){
+                            this.hasmsg=true
                             this.tipsmsg='分享成功'
                         }
                     })

@@ -45,12 +45,14 @@
         <div class="loading" v-if="loading">
             <img class="loadingpic g10 vm" src="../public/images/loading.gif" alt="">
         </div>
+        <tips :msg="tipsmsg" v-if="hasmsg"></tips>
     </div>
 </template>
 
 <script>
     import {Waterfall, WaterfallItem} from 'vue2-waterfall';
     import menubox from '../components/menubox/menubox'
+    import tips from '../components/tips/tips'
 
     var test = 'http://studenttest.dfth.com'
     var local = 'http://192.168.1.227:8081'
@@ -73,7 +75,8 @@
                 spage:2,
                 searching:false,
                 listdata:true,
-                searchdata:true
+                searchdata:true,
+                hasmsg:false
 
             }
         },
@@ -120,6 +123,7 @@
                 }
             }).then((res)=>{
                 if(res.data.status===1){
+                    this.hasmsg=true
                     this.tipsmsg='首次登陆成功'
                 }
             })
@@ -137,6 +141,7 @@
                             }
                         }).then((res)=>{
                             if(res.data.status===1){
+                                this.hasmsg=true
                                 this.tipsmsg='分享成功'
                             }
                         })
@@ -159,6 +164,7 @@
                         }
                     }).then((res)=>{
                         if(res.data.status===1){
+                            this.hasmsg=true
                             this.tipsmsg='分享成功'
                         }
                     })
@@ -182,7 +188,7 @@
             };
         },
         components:{
-            Waterfall,WaterfallItem,menubox
+            Waterfall,WaterfallItem,menubox,tips
         },
         methods:{
             searchwords(words){

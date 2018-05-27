@@ -20,7 +20,7 @@
 .gallery .btn--toggle.btn--active .icon:nth-child(2) { display: block; }
 /* two seats on each side for free space */
 
-.gallery .container { position: relative; overflow: hidden; width: 100vw; height: 100vh; perspective: 3000px;transition:all ease 5s;}
+.gallery .container { position: relative; overflow: hidden; width: 100vw; height: 100vh; perspective: 3000px;transition:all ease 3s;}
 .gallery .entering {perspective: 12000px;}
 .gallery .scroller { height: 100%; transform-style: preserve-3d; }
 .gallery .room { position: absolute; top: 50%; left: 50%; width: 100vw; height: 100vh; margin: -50vh 0 0 -50vw; pointer-events: none; opacity: 0; transform-style: preserve-3d; }

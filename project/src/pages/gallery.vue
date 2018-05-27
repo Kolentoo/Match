@@ -10,7 +10,7 @@
             <div class="presentshow">
                 <div class="showcon">
                     <div class="presentscroll">
-                        <vue-seamless-scroll :data="presentrecord" :class-option="classOption" v-if="presentrecord.length>0">
+                        <vue-seamless-scroll :data="presentrecord" :class-option="classOption" v-if="presentrecord.length>1">
                             <p v-for="(list,idx) in presentrecord" :key="idx" class="p1">
                                 <em>{{list.wx_name}}</em>送
                                 <i v-if="list.inte_lev==='1'">粉色爱心</i>
@@ -21,6 +21,15 @@
                             <img v-if="list.inte_lev==='3'" class="present-small vm" src="../public/images/present3.png" alt="">
                             </p>
                         </vue-seamless-scroll>
+                        <p v-for="(list,idx) in presentrecord" :key="idx" class="p1" v-if="presentrecord.length===1">
+                            <em>{{list.wx_name}}</em>送
+                            <i v-if="list.inte_lev==='1'">粉色爱心</i>
+                            <i v-if="list.inte_lev==='2'">蓝色星球</i>
+                            <i v-if="list.inte_lev==='3'">阿特比心</i>
+                        <img v-if="list.inte_lev==='1'" class="present-small vm" src="../public/images/present1.png" alt="">
+                        <img v-if="list.inte_lev==='2'" class="present-small vm" src="../public/images/present2.png" alt="">
+                        <img v-if="list.inte_lev==='3'" class="present-small vm" src="../public/images/present3.png" alt="">
+                        </p>
                         <p class="nopresent" v-if="presentrecord.length===0">还没有收到任何礼物哦</p>
                     </div>
                     <div class="presentall">
@@ -160,6 +169,7 @@
         </div>
 
         <div class="mask" v-if="mk"></div>
+        <tips :msg="tipsmsg" v-if="hasmsg"></tips>
 
         <svg class="hidden">
         <symbol id="icon-arrow" viewBox="0 0 24 24">
@@ -187,14 +197,29 @@
         </svg>
         <div :class="['container',{'entering':enter}]" @click="popcancel()">
         <div class="scroller" id="scroller">
-            <div class="room" v-if="">
+            <div :class="['room',worknumber===1?'room--current':'']" id="firstroom" v-show="worknumber===1">
+                <p class="recorddata">{{firstlist.id}}</p>
                 <div class="room__side room__side--back"> 
+                    <div class="workwrapper">
+                        <div class="picbox">
+                            <div class="wborder g10">
+                                <div class="workbox g10">
+                                    <div class="picinner g10">
+                                        <img ref="wpic" class="workpic vm g10" :src="firstlist.works_img" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="information">
+                            <div class="work-name">{{firstlist.works_name}}</div>
+                        </div>
+                    </div>
                 </div>
                 <div class="room__side room__side--left"></div>
                 <div class="room__side room__side--right"></div>
                 <div class="room__side room__side--bottom"></div>
             </div>
-            <div :class="['room',worknumber-1===idx?'room--current':'']" v-for="(room,idx) in playlist" :key="idx">
+            <div :class="['room',worknumber-2===idx&&worknumber>1?'room--current':'']" v-for="(room,idx) in playlist" :key="idx">
                 <p class="recorddata">{{room.id}}</p>
                 <div class="room__side room__side--back"> 
                     <div class="workwrapper">
@@ -313,6 +338,7 @@
     var test = 'http://studenttest.dfth.com'
     var local = 'http://192.168.1.227:8081'
     var panda = 'http://student.dfth.com'
+    import tips from '../components/tips/tips'
     import vueSeamlessScroll from 'vue-seamless-scroll'
     export default{
         data(){
@@ -422,7 +448,9 @@
                 usershow:false,
                 userpopinner:'',
                 giftsend:false,
-                removeroom:false
+                removeroom:false,
+                hasmsg:false,
+                firstlist:''
                 
             }
         },
@@ -441,6 +469,61 @@
                     window.location.href='http://erp.dfth.com/index.php/Weixin/getWebOpenid?backurl='+urlvalue;
                 }
             }
+
+            this.$axios.get(`${test}/actives/dayAdd`,{
+                params:{
+                    openid:localoid
+                }
+            }).then((res)=>{
+                if(res.data.status===1){
+                    this.hasmsg=true
+                    this.tipsmsg='首次登陆成功'
+                    this.tpperson.total = parseInt(this.tpperson.total)+25
+                }
+            })
+
+            wx.ready(()=>{
+                wx.onMenuShareTimeline({
+                    title: '绘画比赛-东方童画', // 分享标题
+                    link: curl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    imgUrl: '', // 分享图标
+                    success:  ()=> {
+                        this.$axios.get(`${test}/actives/timelineAdd`,{
+                            params:{
+                                openid:localoid
+                            }
+                        }).then((res)=>{
+                            if(res.data.status===1){
+                                this.hasmsg=true
+                                this.tipsmsg='分享成功'
+                                this.tpperson.total = this.tpperson.total+5
+                            }
+                        })
+                }
+                });
+
+                wx.onMenuShareAppMessage({
+                title: '绘画比赛-东方童画', // 分享标题
+                desc: '东方童画绘画比赛', // 分享描述
+                link: curl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                imgUrl: '', // 分享图标
+                type: '', // 分享类型,music、video或link，不填默认为link
+                dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+                success: ()=> {
+                    this.$axios.get(`${test}/actives/shareAppAdd`,{
+                        params:{
+                            openid:localoid
+                        }
+                    }).then((res)=>{
+                        if(res.data.status===1){
+                            this.hasmsg=true
+                            this.tipsmsg='分享成功'
+                            this.tpperson.total = this.tpperson.total+5
+                        }
+                    })
+                }
+                });
+            });
 
 
             let curlSplit = curl.split('?')[1];
@@ -463,10 +546,13 @@
                     page:this.gallerypage
                 }
             }).then((res)=> {
-                this.alllist = res.data.content.data;
+                this.firstlist = res.data.content.data[0];
+                // this.alllist = res.data.content.data
+                this.alllist = res.data.content.data.slice(1,res.data.content.data.length);
                 this.workmany = this.worknumber
                 if(this.worknumber===1){
-                    this.playlist = res.data.content.data.slice(this.worknumber-1,this.worknumber+2);
+                    this.playlist = res.data.content.data.slice(this.worknumber,this.worknumber+2);
+
                 }else if(this.worknumber>9){
                     this.playlist = res.data.content.data.slice(this.worknumber-3,this.worknumber);
                 }else{
@@ -481,10 +567,10 @@
                     }, 2000);
                     
                     setTimeout(()=> {
-                        this.playlist=res.data.content.data;
+                        this.playlist=this.alllist;
                     }, 5000);
                 })
-
+                console.log(this.alllist)
                 this.playlist.map((value,index,arr)=>{
                     if(this.worknumber-1===index){
                         this.currentjf = value.total_vote
@@ -540,27 +626,30 @@
             document.getElementById('gallery').style.height=bheight+'px'
 
             setTimeout(()=> {
+                this.removeroom=true;
+            }, 2000); 
+
+            setTimeout(()=> {
                 this.action3=true;
-            }, 3200);            
+            }, 3000);            
             setTimeout(()=> {
                 this.action1=true;
                 this.action2=true;
-            }, 3500);
+            }, 3300);
             setTimeout(()=> {
                 this.usershow=true;
-            }, 3800);            
+            }, 3600);            
             setTimeout(()=> {
                 this.action5=true;
-            }, 4200);
+            }, 3900);
             setTimeout(()=> {
                 this.action4=true;
-                
-            }, 4500);
+            }, 4200);
 
             document.documentElement.className = 'js'
             setTimeout(()=> {
                 this.enter=true
-            }, 1000);
+            }, 500);
 
             setTimeout(()=> {
                 let source = document.getElementById('source');
@@ -613,6 +702,9 @@
                             sending.src='../../static/img/gift1.gif?'+mathrandom
                             this.author.total_vote = parseInt(this.author.total_vote)+10
                             this.presentnum[0].tot =parseInt(this.presentnum[0].tot)+1
+                            this.presentrecord.push(
+                                {inte:"10",inte_lev:"1",wx_name:'kolento'}
+                            )
                             setTimeout(()=> {
                                 this.giftsend = false 
                                 sending.src='#'
@@ -621,19 +713,26 @@
                             sending.src='../../static/img/gift2.gif?'+mathrandom
                             this.author.total_vote = parseInt(this.author.total_vote)+30
                             this.presentnum[1].tot =parseInt(this.presentnum[1].tot)+1
+                            this.presentrecord.push(
+                                {inte:"30",inte_lev:"2",wx_name:'kolento'}
+                            )
                             setTimeout(()=> {
                                 this.giftsend = false 
                                 sending.src='#'
-                            }, 3000);
+                            }, 2800);
                         }else{
                             sending.src='../../static/img/gift3.gif?'+mathrandom
                             this.author.total_vote = parseInt(this.author.total_vote)+50
                             this.presentnum[2].tot =parseInt(this.presentnum[2].tot)+1
+                            this.presentrecord.push(
+                                {inte:"50",inte_lev:"3",wx_name:'kolento'}
+                            )
                             setTimeout(()=> {
                                 this.giftsend = false 
                                 sending.src='#'
                             }, 5000);
                         }
+
                     }
                 })
             },
@@ -750,7 +849,9 @@
                     this.workmany=10
                     this.worknumber=10
                     this.alllist = res.data.content.data;
-                    this.playlist = res.data.content.data;
+                    // this.playlist = res.data.content.data;
+                    this.firstlist = res.data.content.data[0];
+                    this.playlist = res.data.content.data.slice(1,res.data.content.data.length);
 
                     this.playlist.map((value,index,arr)=>{
                         if(this.worknumber-1===index){
@@ -766,7 +867,6 @@
                 })
             },
             next(){
-                // this.removeroom=true
                 this.worknumber = this.workmany;
                 if(document.querySelector(".room--current")){
                     document.querySelector(".room--current").className='room';
@@ -804,8 +904,10 @@
                     this.workmany=1
                     this.worknumber=1
                     this.alllist = res.data.content.data;
-                    this.playlist = res.data.content.data;
+                    // this.playlist = res.data.content.data;
                     this.listlength = this.playlist.length
+                                        this.firstlist = res.data.content.data[0];
+                    this.playlist = res.data.content.data.slice(1,res.data.content.data.length);
 
                     this.playlist.map((value,index,arr)=>{
                         if(this.worknumber-1===index){
@@ -882,7 +984,7 @@
             }
         },
         components:{
-            vueSeamlessScroll
+            vueSeamlessScroll,tips
         }
     }
 </script>
@@ -890,10 +992,11 @@
 
 <style scoped>
     /*画框*/
-    .gallery {overflow-y:hidden;}
+    .gallery {overflow-y:hidden;-webkit-transform-style: preserve-3d;transform-style: preserve-3d;transform: translateZ(0);
+    transform: translate3d(0,0,0);}
     .recorddata {opacity: 0;z-index:-1;}
-    .content {opacity: 0;position: relative;top: -3rem;transition:all ease 0.8s;}
-    .action5 {opacity: 1;top: 0;}
+    .content {opacity: 0;position: relative;transition:all ease 0.8s;}
+    .action5 {opacity: 1;}
     #source {display: none;}
     .gallery .entering {z-index:100;}
     .wborder {border:1.7rem solid #fff;box-shadow:0 1rem 2.5rem rgba(3,15,39,0.14);margin:0 1.5rem;display: flex;align-items: center;}
@@ -907,14 +1010,15 @@
     .nav .btn {width: 8rem;height: 8rem;background: none;}
 
     .gallery .top .indexbtn {width: 10.4rem;height: 10.4rem;border-radius:50%;position: fixed;top: 3rem;left:0;z-index:400;
-    transition:all ease 0.8s;opacity: 0;}
-    .gallery .top .rankingbtn {width: 10.4rem;height: 10.4rem;border-radius:50%;position: fixed;top: 14rem;left: -1rem;z-index:400;
-    transition:all ease 0.8s;opacity: 0;}
-    .gallery .top .musicbtn {width: 8rem;height: 8rem;border-radius:50%;position: fixed;top: 3rem;right: -1rem;z-index:400;
+    transition:all ease 0.8s;opacity: 0;transform: translateX(0px);}
+    .gallery .top .rankingbtn {width: 10.4rem;height: 10.4rem;border-radius:50%;position: fixed;top: 14rem;left: 0;z-index:400;
+    transition:all ease 0.8s;opacity: 0;transform: translateX(0px);}
+    .gallery .top .musicbtn {width: 8rem;height: 8rem;border-radius:50%;position: fixed;top: 3rem;right: 0rem;z-index:400;
     transition:all ease 0.8s;opacity: 0;}
 
-    .gallery .top .action1 {opacity: 1;left: 2rem;}
-    .gallery .top .action2 {opacity: 1;left: 2rem;}
+
+    .gallery .top .action1 {opacity: 1;transform: translateX(20px)}
+    .gallery .top .action2 {opacity: 1;transform: translateX(20px);}
     .gallery .top .action3 {opacity: 1;right:3rem;}
 
     @keyframes music {
@@ -924,11 +1028,11 @@
     }
     .gallery .top .musicon {animation: music linear 2s infinite;}
 
-    .userbox {position: fixed;top: 45%;left: 50%;z-index:400;width: 40%;margin:5rem 0 0 -20%;z-index:-1;opacity: 0;
-    transition:all ease 0.5s;}
+    .userbox {position: fixed;top: 50%;left: 50%;z-index:400;width: 40%;margin:5rem 0 0 -20%;z-index:-1;opacity: 0;
+    transition:all ease 0.5s;transform: translateY(50px);}
     .voiceshow {width: 52%;margin:5rem 0 0 -26%;}
     .user-box {z-index:500;position: relative;}
-    .usershow {opacity: 1;z-index:400;top: 50%;}
+    .usershow {opacity: 1;z-index:400;transform: translateY(0px);}
 
     .work-name {font-size: 4rem;color:#333;width: 28rem;text-align: center;margin:1rem auto 0;overflow: hidden;height: 12rem;}
     .user-info {background: rgba(0,0,0,0.5);border-radius:10rem;display: flex;justify-content: center;margin-top: 1rem;}
@@ -943,8 +1047,9 @@
 
     
 
-    .gallery-bottom {position: fixed;bottom: -20%;width: 92%;left: 4%;z-index:300;transition: all ease 0.6s;opacity: 0;}
-    .action4 {bottom: 3rem;opacity: 1;}
+    .gallery-bottom {position: fixed;bottom: 3rem;width: 92%;left: 4%;z-index:300;transition: all ease 0.6s;opacity: 0;
+    transform: translateY(100%);}
+    .action4 {transform: translateY(0);opacity: 1;}
     .gallery-bottom .presentshow {width: 100%;background: rgba(255,255,255,0.5);height: 18rem;border-radius:2rem;
     box-shadow:0 1.8rem 6.8rem rgba(0,0,0,0.18);}
     .presentshow .showcon {padding:1rem 5%;}
@@ -971,8 +1076,8 @@
     .send-con .p3 {font-size: 2.6rem;position: absolute;width: 100%;color:#fff;top: 0.4rem;left: 0;}
 
     .presentbox {border-radius:2.1rem;overflow: hidden;background: #fff;box-shadow:0 1.8rem 6.8rem rgba(0,0,0,0.18);margin-top: 2rem;
-    transition:all ease 0.5s;position: fixed;bottom: -100%;width: 92%;left: 4%;opacity: 0;z-index:-1;}
-    .preon {opacity: 1;z-index:400;bottom: 3rem;}
+    transition:all ease 0.5s;position: fixed;bottom:0;width: 100%;left: 0;opacity: 0;z-index:-1;transform: translateY(100%)}
+    .preon {opacity: 1;z-index:400;bottom: 0;transform: translateY(0)}
     .presentbox .precon {background: #f5f5f5;display: flex;justify-content: center;align-items: center;}
     .presentbox .prelist {text-align: center;width: 33.333%;padding:1.5rem 0 0.5rem 0;border:1rem solid #f5f5f5;}
     .presentbox .liston {border-color:rgb(255,205,83);}
