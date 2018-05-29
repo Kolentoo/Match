@@ -1,442 +1,141 @@
 <template>
     <div class="gallery" id="gallery">
-        <div class="top">
-            <img :class="['indexbtn vm',{'action1':action1}]" @click="indexgo()" src="../public/images/indexbtn.png" alt="">
-            <img :class="['rankingbtn vm',{'action2':action2}]" @click="rankgo()" src="../public/images/rankingbtn.png" alt="">
-            <img :class="['musicbtn vm',{'musicon':play},{'action3':action3}]" @click="musiccontrols()" src="../public/images/music.png" alt="">
-        </div> 
-
-        <div :class="['gallery-bottom',{'action4':action4}]">
-            <div class="presentshow">
-                <div class="showcon">
-                    <div class="presentscroll">
-                        <vue-seamless-scroll :data="presentrecord" :class-option="classOption" v-if="presentrecord.length>1">
-                            <p v-for="(list,idx) in presentrecord" :key="idx" class="p1">
-                                <em>{{list.wx_name}}</em>送
-                                <i v-if="list.inte_lev==='1'">粉色爱心</i>
-                                <i v-if="list.inte_lev==='2'">蓝色星球</i>
-                                <i v-if="list.inte_lev==='3'">阿特比心</i>
-                            <img v-if="list.inte_lev==='1'" class="present-small vm" src="../public/images/present1.png" alt="">
-                            <img v-if="list.inte_lev==='2'" class="present-small vm" src="../public/images/present2.png" alt="">
-                            <img v-if="list.inte_lev==='3'" class="present-small vm" src="../public/images/present3.png" alt="">
-                            </p>
-                        </vue-seamless-scroll>
-                        <p v-for="(list,idx) in presentrecord" :key="idx" class="p1" v-if="presentrecord.length===1">
-                            <em>{{list.wx_name}}</em>送
-                            <i v-if="list.inte_lev==='1'">粉色爱心</i>
-                            <i v-if="list.inte_lev==='2'">蓝色星球</i>
-                            <i v-if="list.inte_lev==='3'">阿特比心</i>
-                        <img v-if="list.inte_lev==='1'" class="present-small vm" src="../public/images/present1.png" alt="">
-                        <img v-if="list.inte_lev==='2'" class="present-small vm" src="../public/images/present2.png" alt="">
-                        <img v-if="list.inte_lev==='3'" class="present-small vm" src="../public/images/present3.png" alt="">
-                        </p>
-                        <p class="nopresent" v-if="presentrecord.length===0">还没有收到任何礼物哦</p>
-                    </div>
-                    <div class="presentall">
-                        <div class="alltitle tc">
-                            <img class="line vm" src="../public/images/line1.png" alt="">
-                            <span class="s1">总共收到礼物</span>
-                            <img class="line vm" src="../public/images/line2.png" alt="">
-                        </div>
-                        <ul class="presentnumber">
-                            <li class="present">
-                                <img class="present-pic vm" src="../public/images/present1.png" alt="">
-                                <em>{{presentnum[0].tot}}</em>
-                            </li>
-                            <li class="present">
-                                <img class="present-pic vm" src="../public/images/present2.png" alt="">
-                                <em>{{presentnum[1].tot}}</em>
-                            </li>
-                            <li class="present">
-                                <img class="present-pic vm" src="../public/images/present3.png" alt="">
-                                <em>{{presentnum[2].tot}}</em>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="send">
-                <div class="send-con clearfix">
-                    <div class="jfbox fl" v-if="!change">
-                        <p class="p1">NO.{{rank}}</p>
-                        <P class="p2">积分：<em>{{author.total_vote}}</em></P>
-                    </div>
-                    <div class="jfbox fl" v-if="change">
-                        <p class="p1">NO.{{author.rank}}</p>
-                        <P class="p2">积分：<em>{{author.total_vote}}</em></P>
-                    </div>
-                    <div class="sendwakeup fr">
-                        <img class="wakeupbtn vm g10" src="../public/images/sendpresent.png" alt="">
-                        <p class="p3" @click="sendpresent()">送礼物</p>
-                    </div>
-                </div>
-            </div>
-            <div :class="['presentbox',{'preon':preon}]">
-                <ul class="precon">
-                    <li :class="['prelist',{'liston':item.on}]" v-for="(item,idx) in items" :key="idx" @click="choose(item,idx)">
-                        <img class="vm presentpic" :src="item.img" alt="">
-                        <p class="p1">{{item.name}}</p>
-                        <div class="price">
-                            <em>{{item.money}}</em>
-                            <img class="moneypic vm" src="../public/images/money.png" alt="">
-                        </div>
-                    </li>
-                </ul>
-                <div class="option clearfix">
-                    <p class="yourmoney fl">
-                        余额：<em>{{tpperson.total}}</em>
-                        
-                        <img class="moneypic vm" src="../public/images/money.png" alt="">
-                    </p>
-                    <div class="btngroup fr" >
-                        <div class="btn1 btn" @click="makemoney()">
-                            <img class="btnpic1 vm" src="../public/images/getjf.png" alt="">
-                            <p class="p1">如何赚积分</p>
-                        </div>
-                        <div class="btn2 btn" @click="sendgift()">
-                            <img class="btnpic1 vm" v-if="sendstatus" src="../public/images/sendpresent.png" alt="">
-                            <img class="btnpic1 vm" v-if="!sendstatus" src="../public/images/notsend.png" alt="">
-                            <p class="p1">送出</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div :class="['userbox',{'voiceshow':hasvoice},{'usershow':usershow}]" >
-            <div class="user-info clearfix">
-                <div class="user-txt fl" @click="information(author.id)">
-                    <img class="userpic vm" :src="author.head_img" alt="">
-                    <span class="username">{{author.childname}}</span>
-                    <img class="arrow vm" src="../public/images/arrowright.png" alt="">
-                </div>
-                <div class="user-voice fr" v-if="hasvoice" @click="uservoice()">
-                    <img v-if="!voiceplay" class="voicepic vm" src="../public/images/voice.png" alt="">
-                    <img v-if="voiceplay" class="voicepic2 vm" src="../public/images/voice2.gif" alt="">
-                    <span class="time">{{author.voice_second}}s</span>
-                </div>
-            </div>
-        </div>
-
-        <div :class="['giftbox',{'giftsend':giftsend}]">
-            <img id="sending" class="vm" src="" alt="">
-        </div>
-
-        <div class="popbox">
-            <div class="pop1 pop" v-if="pop1">
-                <div class="popinner">
-                    <p class="poptitle">资料详情</p>
-                    <div class="popcon">
-                        <img class="userpic vm" :src="userpopinner.head_img" alt="">
-                        <p class="username tc">{{userpopinner.childname}}</p>
-                        <p class="grouptype tc">{{userpopinner.group_type}}</p>
-                        <p class="ages tc">{{userpopinner.age}}岁，{{userpopinner.sex}}</p>
-                        <dl>
-                            <dd><em>指导老师：</em>{{userpopinner.teacher}}</dd>
-                            <dd><em>所在区域：</em>{{userpopinner.province}}{{userpopinner.city}}</dd>
-                            <dd><em>所属机构或校区：</em>{{userpopinner.organization}}</dd>
-                        </dl>
-                        <div class="desc">
-                            <h2 class="tc">{{userpopinner.works_name}}</h2>
-                            <div class="shape"></div>
-                            <p class="desctxt">
-                                {{userpopinner.works_det}}
-                            </p>
-                        </div>
-                    </div>
-                    <img @click="closepop1()" class="vm close" src="../public/images/popclose.png" alt="">
-                </div>
-            </div>
-            <div class="pop2 pop" v-if="pop2">
-                <div class="popinner">
-                    <p class="poptitle">如何赚积分</p>
-                    <div class="popcon">
-                        <p class="p1">1. 每日首次登陆奖励25积分。</p>
-                        <p class="p1">2. 分享活动页面至朋友圈，每次可获得5积分。（每日限3次）</p>
-                        <p class="p1">3. 分享活动页面至好友或微信群，每次可获得5积分。（每日限10次）</p>
-                    </div>
-                    <img class="vm close" @click="closepop2()" src="../public/images/popclose.png" alt="">
-                </div>
-            </div>
-            <div class="pop3 tc" v-if="pop3">
-                <div class="popinner">
-                    <img class="vm endpic" src="../public/images/end.png" alt="">
-                    <p class="p2 tc">线上评选活动已结束</p>
-                    <img class="lookbtn vm" src="../public/images/resultbtn.png" alt="">
-                    <img @click="closepop3()" class="vm close" src="../public/images/popclose2.png" alt="">
-                </div>
-            </div>
-        </div>
-
-        <div class="mask" v-if="mk"></div>
-        <tips :msg="tipsmsg" v-if="hasmsg"></tips>
-
-        <svg class="hidden">
-        <symbol id="icon-arrow" viewBox="0 0 24 24">
-        <title></title>
-        <polygon points="6.3,12.8 20.9,12.8 20.9,11.2 6.3,11.2 10.2,7.2 9,6 3.1,12 9,18 10.2,16.8 "/>
-        </symbol>
-        <symbol id="icon-drop" viewBox="0 0 24 24">
-        <title></title>
-        <path d="M12,21c-3.6,0-6.6-3-6.6-6.6C5.4,11,10.8,4,11.4,3.2C11.6,3.1,11.8,3,12,3s0.4,0.1,0.6,0.3c0.6,0.8,6.1,7.8,6.1,11.2C18.6,18.1,15.6,21,12,21zM12,4.8c-1.8,2.4-5.2,7.4-5.2,9.6c0,2.9,2.3,5.2,5.2,5.2s5.2-2.3,5.2-5.2C17.2,12.2,13.8,7.3,12,4.8z"/>
-        <path d="M12,18.2c-0.4,0-0.7-0.3-0.7-0.7s0.3-0.7,0.7-0.7c1.3,0,2.4-1.1,2.4-2.4c0-0.4,0.3-0.7,0.7-0.7c0.4,0,0.7,0.3,0.7,0.7C15.8,16.5,14.1,18.2,12,18.2z"/>
-        </symbol>
-        <symbol id="icon-menu" viewBox="0 0 24 24">
-        <title></title>
-        <path d="M24,5.8H0v-2h24V5.8z M19.8,11H4.2v2h15.6V11z M24,18.2H0v2h24V18.2z"/>
-        </symbol>
-        <symbol id="icon-cross" viewBox="0 0 24 24">
-        <title></title>
-        <path d="M13.4,12l7.8,7.8l-1.4,1.4l-7.8-7.8l-7.8,7.8l-1.4-1.4l7.8-7.8L2.7,4.2l1.4-1.4l7.8,7.8l7.8-7.8l1.4,1.4L13.4,12z"/>
-        </symbol>
-        <symbol id="icon-info" viewBox="0 0 20 20">
-        <title></title>
-        <circle style="fill:#fff" cx="10" cy="10" r="9.1"/>
-        <path d="M10,0C4.5,0,0,4.5,0,10s4.5,10,10,10s10-4.5,10-10S15.5,0,10,0z M10,18.6c-4.7,0-8.6-3.9-8.6-8.6S5.3,1.4,10,1.4s8.6,3.9,8.6,8.6S14.7,18.6,10,18.6z M10.7,5C10.9,5.2,11,5.5,11,5.7s-0.1,0.5-0.3,0.7c-0.2,0.2-0.4,0.3-0.7,0.3c-0.3,0-0.5-0.1-0.7-0.3C9.1,6.2,9,6,9,5.7S9.1,5.2,9.3,5C9.5,4.8,9.7,4.7,10,4.7C10.3,4.7,10.5,4.8,10.7,5z M9.3,8.3h1.4v7.2H9.3V8.3z"/>
-        </symbol>
-        </svg>
-        <div :class="['container',{'entering':enter}]" @click="popcancel()">
-        <div class="scroller" id="scroller">
-            <!--<div class="room room--current">
-                <p class="recorddata"></p>
-                <div class="room__side room__side--back"> 
-                    <div class="workwrapper">
-                        <div class="picbox">
-                            <div class="wborder g10">
-                                <div class="workbox g10">
-                                    <div class="picinner g10">
-                                        <img ref="wpic" class="workpic vm g10" src="" alt="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="information">
-                            <div class="work-name">111111111</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="room__side room__side--left"></div>
-                <div class="room__side room__side--right"></div>
-                <div class="room__side room__side--bottom"></div>
-            </div>
-            <div class="room">
-                <p class="recorddata"></p>
-                <div class="room__side room__side--back"> 
-                    <div class="workwrapper">
-                        <div class="picbox">
-                            <div class="wborder g10">
-                                <div class="workbox g10">
-                                    <div class="picinner g10">
-                                        <img ref="wpic" class="workpic vm g10" src="" alt="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="information">
-                            <div class="work-name">222222222</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="room__side room__side--left"></div>
-                <div class="room__side room__side--right"></div>
-                <div class="room__side room__side--bottom"></div>
-            </div>
-            <div class="room">
-                <p class="recorddata"></p>
-                <div class="room__side room__side--back"> 
-                    <div class="workwrapper">
-                        <div class="picbox">
-                            <div class="wborder g10">
-                                <div class="workbox g10">
-                                    <div class="picinner g10">
-                                        <img ref="wpic" class="workpic vm g10" src="" alt="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="information">
-                            <div class="work-name">3333333333</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="room__side room__side--left"></div>
-                <div class="room__side room__side--right"></div>
-                <div class="room__side room__side--bottom"></div>
-            </div>
-            <div class="room">
-                <p class="recorddata"></p>
-                <div class="room__side room__side--back"> 
-                    <div class="workwrapper">
-                        <div class="picbox">
-                            <div class="wborder g10">
-                                <div class="workbox g10">
-                                    <div class="picinner g10">
-                                        <img ref="wpic" class="workpic vm g10" src="" alt="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="information">
-                            <div class="work-name">222222222</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="room__side room__side--left"></div>
-                <div class="room__side room__side--right"></div>
-                <div class="room__side room__side--bottom"></div>
-            </div>
-            <div class="room">
-                <p class="recorddata"></p>
-                <div class="room__side room__side--back"> 
-                    <div class="workwrapper">
-                        <div class="picbox">
-                            <div class="wborder g10">
-                                <div class="workbox g10">
-                                    <div class="picinner g10">
-                                        <img ref="wpic" class="workpic vm g10" src="" alt="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="information">
-                            <div class="work-name">3333333333</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="room__side room__side--left"></div>
-                <div class="room__side room__side--right"></div>
-                <div class="room__side room__side--bottom"></div>
-            </div>-->
-            <!--<div class="room" id="firstroom">
-                <p class="recorddata"></p>
-                <div class="room__side room__side--back"> 
-                    <div class="workwrapper">
-                        <div class="picbox">
-                            <div class="wborder g10">
-                                <div class="workbox g10">
-                                    <div class="picinner g10">
-                                        <img ref="wpic" class="workpic vm g10" src="" alt="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="information">
-                            <div class="work-name"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="room__side room__side--left"></div>
-                <div class="room__side room__side--right"></div>
-                <div class="room__side room__side--bottom"></div>
-            </div>-->
-            <!--<div class="room current--room" v-for="(room,idx) in playlist" :key="idx">-->
-            <div :class="['room',workmany-1===idx?'room--current':'']" v-for="(room,idx) in playlist" :key="idx">
-                <p class="recorddata">{{room.id}}</p>
-                <div class="room__side room__side--back"> 
-                    <div class="workwrapper">
-                        <div class="picbox">
-                            <div class="wborder g10">
-                                <div class="workbox g10">
-                                    <div class="picinner g10">
-                                        <img ref="wpic" class="workpic vm g10" :src="room.works_img" alt="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="information">
-                            <div class="work-name">{{room.works_name}}</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="room__side room__side--left"></div>
-                <div class="room__side room__side--right"></div>
-                <div class="room__side room__side--bottom"></div>
-            </div>
-        </div>
 
         
 
+
+<svg class="hidden">
+<symbol id="icon-arrow" viewBox="0 0 24 24">
+  <title></title>
+  <polygon points="6.3,12.8 20.9,12.8 20.9,11.2 6.3,11.2 10.2,7.2 9,6 3.1,12 9,18 10.2,16.8 "/>
+</symbol>
+<symbol id="icon-drop" viewBox="0 0 24 24">
+  <title></title>
+  <path d="M12,21c-3.6,0-6.6-3-6.6-6.6C5.4,11,10.8,4,11.4,3.2C11.6,3.1,11.8,3,12,3s0.4,0.1,0.6,0.3c0.6,0.8,6.1,7.8,6.1,11.2C18.6,18.1,15.6,21,12,21zM12,4.8c-1.8,2.4-5.2,7.4-5.2,9.6c0,2.9,2.3,5.2,5.2,5.2s5.2-2.3,5.2-5.2C17.2,12.2,13.8,7.3,12,4.8z"/>
+  <path d="M12,18.2c-0.4,0-0.7-0.3-0.7-0.7s0.3-0.7,0.7-0.7c1.3,0,2.4-1.1,2.4-2.4c0-0.4,0.3-0.7,0.7-0.7c0.4,0,0.7,0.3,0.7,0.7C15.8,16.5,14.1,18.2,12,18.2z"/>
+</symbol>
+<symbol id="icon-menu" viewBox="0 0 24 24">
+  <title></title>
+  <path d="M24,5.8H0v-2h24V5.8z M19.8,11H4.2v2h15.6V11z M24,18.2H0v2h24V18.2z"/>
+</symbol>
+<symbol id="icon-cross" viewBox="0 0 24 24">
+  <title></title>
+  <path d="M13.4,12l7.8,7.8l-1.4,1.4l-7.8-7.8l-7.8,7.8l-1.4-1.4l7.8-7.8L2.7,4.2l1.4-1.4l7.8,7.8l7.8-7.8l1.4,1.4L13.4,12z"/>
+</symbol>
+<symbol id="icon-info" viewBox="0 0 20 20">
+  <title></title>
+  <circle style="fill:#fff" cx="10" cy="10" r="9.1"/>
+  <path d="M10,0C4.5,0,0,4.5,0,10s4.5,10,10,10s10-4.5,10-10S15.5,0,10,0z M10,18.6c-4.7,0-8.6-3.9-8.6-8.6S5.3,1.4,10,1.4s8.6,3.9,8.6,8.6S14.7,18.6,10,18.6z M10.7,5C10.9,5.2,11,5.5,11,5.7s-0.1,0.5-0.3,0.7c-0.2,0.2-0.4,0.3-0.7,0.3c-0.3,0-0.5-0.1-0.7-0.3C9.1,6.2,9,6,9,5.7S9.1,5.2,9.3,5C9.5,4.8,9.7,4.7,10,4.7C10.3,4.7,10.5,4.8,10.7,5z M9.3,8.3h1.4v7.2H9.3V8.3z"/>
+</symbol>
+</svg>
+<div :class="['container',{'entering':enter}]" @click="popcancel()">
+  <div class="scroller">
+    <div :class="['room',workmany-1===idx?'room--current':'']" v-for="(room,idx) in playlist" :key="idx">
+        <p class="recorddata">{{room.id}}</p>
+        <div class="room__side room__side--back"> 
+            <div class="workwrapper">
+                <div class="picbox">
+                    <div class="wborder g10">
+                        <div class="workbox g10">
+                            <div class="picinner g10">
+                                <img ref="wpic" class="workpic vm g10" :src="room.works_img" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="information">
+                    <div class="work-name">{{room.works_name}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="room__side room__side--left"></div>
+        <div class="room__side room__side--right"></div>
+        <div class="room__side room__side--bottom"></div>
     </div>
-    <!-- /container -->
-    <div id="content" :class="['content',{'action5':action5}]" @click="popcancel()">
-    <header class="codrops-header hide">
-        <h1 class="codrops-header__title"></h1>
-        <button class="btn btn--info btn--toggle"> <svg class="icon icon--info">
-        <use xlink:href="#icon-info"></use>
-        </svg> <svg class="icon icon--cross">
-        <use xlink:href="#icon-cross"></use>
-        </svg> </button>
-        <button class="btn btn--menu btn--toggle"> <svg class="icon icon--menu">
-        <use xlink:href="#icon-menu"></use>
-        </svg> <svg class="icon icon--cross">
-        <use xlink:href="#icon-cross"></use>
-        </svg> </button>
-        <div class="overlay overlay--menu">
-        <ul class="menu">
-            <li class="menu__item menu__item--current"><a class="menu__link" href="#"></a></li>
-            <li class="menu__item"><a class="menu__link" href="#"></a></li>
-            <li class="menu__item"><a class="menu__link" href="#"></a></li>
-            <li class="menu__item"><a class="menu__link" href="#"></a></li>
-        </ul>
-        </div>
-        <div class="overlay overlay--info">
-        </div>
-    </header>
-    <div class="slides">
-        <div class="slide">
-        <h2 class="slide__name"></h2>
-        <h3 class="slide__title"></span>
-            <div class="slide__number"></div>
-        </h3>
-        <p class="slide__date"></p>
-        </div>
-        <div class="slide">
-        <h2 class="slide__name"></h2>
-        <h3 class="slide__title">
-            <div class="slide__number"></div>
-        </h3>
-        <p class="slide__date"></p>
-        </div>
-        <div class="slide">
-        <h2 class="slide__name"></h2>
-        <h3 class="slide__title">
-            <div class="slide__number"></div>
-        </h3>
-        <p class="slide__date"></p>
-        </div>
-        <div class="slide">
-        <h2 class="slide__name"></h2>
-        <h3 class="slide__title">
-            <div class="slide__number"></div>
-        </h3>
-        <p class="slide__date"></p>
-        </div>
-        <div class="slide">
-        <h2 class="slide__name"></h2>
-        <h3 class="slide__title">
-            <div class="slide__number"></div>
-        </h3>
-        <p class="slide__date"></p>
-        </div>
+  </div>
+</div>
+<!-- /container -->
+<div class="content">
+  <header class="codrops-header">
+    <h1 class="codrops-header__title">Room</h1>
+    <button class="btn btn--info btn--toggle">111111111111111111</button>
+    <button class="btn btn--menu btn--toggle">222222222222222222</button>
+    <div class="overlay overlay--menu">
+      <ul class="menu">
+        <li class="menu__item menu__item--current"><a class="menu__link" href="#"></a></li>
+        <li class="menu__item"><a class="menu__link" href="#"></a></li>
+        <li class="menu__item"><a class="menu__link" href="#"></a></li>
+        <li class="menu__item"><a class="menu__link" href="#"></a></li>
+      </ul>
     </div>
-    <nav class="nav">
-        <button class="btn btn--nav btn--nav-left btn-left" id="btnleft" @click="prev()">
-            <img class="btnpic vm g10" src="../public/images/prev.png" alt="">
-        </button>
-        <button class="btn btn--nav btn--nav-right btn-right" id="btnright" @click="next()">
-            <img class="btnpic vm g10" src="../public/images/next.png" alt="">
-        </button>
-    </nav>
+    <div class="overlay overlay--info">
+      <p class="info"></p>
     </div>
-    <!-- /content -->
-    <div class="overlay overlay--loader overlay--active">
-    <div class="loader">
-        <div></div>
-        <div></div>
-        <div></div>
+  </header>
+  <h4 class="location"></h4>
+  <div class="slides">
+    <div class="slide">
+      <h2 class="slide__name"> <br/>
+        </h2>
+      <h3 class="slide__title"> <span></span>
+        <div class="slide__number"> <strong></strong></div>
+      </h3>
+      <p class="slide__date"></p>
     </div>
+    <div class="slide">
+      <h2 class="slide__name"> <br/>
+        </h2>
+      <h3 class="slide__title"> <span></span>
+        <div class="slide__number"> <strong></strong></div>
+      </h3>
+      <p class="slide__date"></p>
     </div>
-    
+    <div class="slide">
+      <h2 class="slide__name"> <br/>
+        </h2>
+      <h3 class="slide__title"> <span></span>
+        <div class="slide__number"> <strong></strong></div>
+      </h3>
+      <p class="slide__date"></p>
+    </div>
+    <div class="slide">
+      <h2 class="slide__name"> <br/>
+        </h2>
+      <h3 class="slide__title"> <span></span>
+        <div class="slide__number"> <strong></strong></div>
+      </h3>
+      <p class="slide__date"></p>
+    </div>
+    <div class="slide">
+      <h2 class="slide__name"> <br/>
+        </h2>
+      <h3 class="slide__title"> <span></span>
+        <div class="slide__number"> <strong></strong></div>
+      </h3>
+      <p class="slide__date"></p>
+    </div>
+  </div>
+  <nav class="nav">
+    <button class="btn btn--nav btn--nav-left" id="btnleft"> <svg class="nav-icon nav-icon--left" width="42px" height="12px" viewBox="0 0 70 20">
+    <path class="nav__triangle" d="M52.5,10L70,0v20L52.5,10z"/>
+    <path class="nav__line" d="M55.1,11.4H0V8.6h55.1V11.4z"/>
+    </svg> </button>
+    <button class="btn btn--nav btn--nav-right" id="btnright"> <svg class="nav-icon nav-icon--right" width="42px" height="12px" viewBox="0 0 70 20">
+    <path class="nav__triangle" d="M52.5,10L70,0v20L52.5,10z"/>
+    <path class="nav__line" d="M55.1,11.4H0V8.6h55.1V11.4z"/>
+    </svg> </button>
+  </nav>
+</div>
+
+
+<!-- /content -->
+<div class="overlay overlay--loader overlay--active">
+  <div class="loader">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+</div>
 
     <iframe src="" frameborder="0" id="source">
 
@@ -1144,10 +843,8 @@
     }
 </script>
 
-
 <style scoped>
-    /*画框*/
-    .gallery {overflow-y:hidden;-webkit-transform-style: preserve-3d;transform-style: preserve-3d;transform: translateZ(0);
+    /*.gallery {overflow-y:hidden;-webkit-transform-style: preserve-3d;transform-style: preserve-3d;transform: translateZ(0);
     transform: translate3d(0,0,0);}
     .recorddata {opacity: 0;z-index:-1;}
     .content {opacity: 0;position: relative;transition:all ease 0.8s;}
@@ -1289,5 +986,7 @@
     .giftbox {position: fixed;z-index:-1;width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;top: 0;
     left: 0;}
     .giftsend {z-index:1000;}
-    .giftbox img{width: 100%;position: relative;top: -10%;}
+    .giftbox img{width: 100%;position: relative;top: -10%;}*/
+
+    .btn {width: 50px;}
 </style>

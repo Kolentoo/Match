@@ -197,139 +197,6 @@
         </svg>
         <div :class="['container',{'entering':enter}]" @click="popcancel()">
         <div class="scroller" id="scroller">
-            <!--<div class="room room--current">
-                <p class="recorddata"></p>
-                <div class="room__side room__side--back"> 
-                    <div class="workwrapper">
-                        <div class="picbox">
-                            <div class="wborder g10">
-                                <div class="workbox g10">
-                                    <div class="picinner g10">
-                                        <img ref="wpic" class="workpic vm g10" src="" alt="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="information">
-                            <div class="work-name">111111111</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="room__side room__side--left"></div>
-                <div class="room__side room__side--right"></div>
-                <div class="room__side room__side--bottom"></div>
-            </div>
-            <div class="room">
-                <p class="recorddata"></p>
-                <div class="room__side room__side--back"> 
-                    <div class="workwrapper">
-                        <div class="picbox">
-                            <div class="wborder g10">
-                                <div class="workbox g10">
-                                    <div class="picinner g10">
-                                        <img ref="wpic" class="workpic vm g10" src="" alt="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="information">
-                            <div class="work-name">222222222</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="room__side room__side--left"></div>
-                <div class="room__side room__side--right"></div>
-                <div class="room__side room__side--bottom"></div>
-            </div>
-            <div class="room">
-                <p class="recorddata"></p>
-                <div class="room__side room__side--back"> 
-                    <div class="workwrapper">
-                        <div class="picbox">
-                            <div class="wborder g10">
-                                <div class="workbox g10">
-                                    <div class="picinner g10">
-                                        <img ref="wpic" class="workpic vm g10" src="" alt="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="information">
-                            <div class="work-name">3333333333</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="room__side room__side--left"></div>
-                <div class="room__side room__side--right"></div>
-                <div class="room__side room__side--bottom"></div>
-            </div>
-            <div class="room">
-                <p class="recorddata"></p>
-                <div class="room__side room__side--back"> 
-                    <div class="workwrapper">
-                        <div class="picbox">
-                            <div class="wborder g10">
-                                <div class="workbox g10">
-                                    <div class="picinner g10">
-                                        <img ref="wpic" class="workpic vm g10" src="" alt="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="information">
-                            <div class="work-name">222222222</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="room__side room__side--left"></div>
-                <div class="room__side room__side--right"></div>
-                <div class="room__side room__side--bottom"></div>
-            </div>
-            <div class="room">
-                <p class="recorddata"></p>
-                <div class="room__side room__side--back"> 
-                    <div class="workwrapper">
-                        <div class="picbox">
-                            <div class="wborder g10">
-                                <div class="workbox g10">
-                                    <div class="picinner g10">
-                                        <img ref="wpic" class="workpic vm g10" src="" alt="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="information">
-                            <div class="work-name">3333333333</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="room__side room__side--left"></div>
-                <div class="room__side room__side--right"></div>
-                <div class="room__side room__side--bottom"></div>
-            </div>-->
-            <!--<div class="room" id="firstroom">
-                <p class="recorddata"></p>
-                <div class="room__side room__side--back"> 
-                    <div class="workwrapper">
-                        <div class="picbox">
-                            <div class="wborder g10">
-                                <div class="workbox g10">
-                                    <div class="picinner g10">
-                                        <img ref="wpic" class="workpic vm g10" src="" alt="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="information">
-                            <div class="work-name"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="room__side room__side--left"></div>
-                <div class="room__side room__side--right"></div>
-                <div class="room__side room__side--bottom"></div>
-            </div>-->
-            <!--<div class="room current--room" v-for="(room,idx) in playlist" :key="idx">-->
             <div :class="['room',workmany-1===idx?'room--current':'']" v-for="(room,idx) in playlist" :key="idx">
                 <p class="recorddata">{{room.id}}</p>
                 <div class="room__side room__side--back"> 
@@ -562,7 +429,6 @@
                 removeroom:false,
                 hasmsg:false,
                 firstlist:'',
-                realnumber:'',
                 first:''
                 
             }
@@ -659,7 +525,6 @@
             }else{
                 this.gallerypage = parseInt(this.rank.charAt(0))+1;
                 this.worknumber = parseInt(this.rank.charAt(1));
-                this.realnumber = parseInt(this.rank.charAt(1));
             }
 
             // 列表
@@ -938,7 +803,7 @@
             prev(){
 
                 document.getElementById('btnright').style.visibility="visible";
-                this.worknumber=this.workmany
+                // this.worknumber=this.workmany
                 
                 if( document.querySelector(".room--current")){
                     document.querySelector(".room--current").className='room';
@@ -955,33 +820,40 @@
                 }
 
                 if(this.workmany===1){
-                    this.firstchange=true
+                    // this.firstchange=true
                     if(this.gallerypage>1){
                         this.gallerypage-=1 
+                        this.workmany=10
+                        setTimeout(()=> {
+                            this.prevgroup();
+                        }, 500);
                         
-                        this.prevgroup();
                     }
                 }
 
-                if(this.workmany<4){
+                // if(this.workmany===2){
+                //     this.playlist= this.alllist
+                // }
+
+                // if(this.workmany<4){
                     
-                    let firstid = this.playlist[this.workmany-1].id
+                //     let firstid = this.playlist[this.workmany-1].id
                     
 
-                    this.$axios.get(`${test}/actives/ParticipantInfo`, {
-                        params:{
-                            id:firstid
-                        }
-                    }).then((res)=> {
-                        this.first = res.data.content
-                        this.myvoice = res.data.content.works_voice
-                        if(res.data.content.voice_second==='0'){
-                            this.hasvoice=false
-                        }else{
-                            this.hasvoice=true
-                        }
-                    })
-                }
+                //     this.$axios.get(`${test}/actives/ParticipantInfo`, {
+                //         params:{
+                //             id:firstid
+                //         }
+                //     }).then((res)=> {
+                //         this.first = res.data.content
+                //         this.myvoice = res.data.content.works_voice
+                //         if(res.data.content.voice_second==='0'){
+                //             this.hasvoice=false
+                //         }else{
+                //             this.hasvoice=true
+                //         }
+                //     })
+                // }
 
                 console.log(this.workmany)
                 
@@ -989,7 +861,7 @@
                     this.roomchange();
                     this.presentdata();
                     this.authorinfo();
-                }, 200);
+                }, 500);
             },
             prevgroup(){
                 this.$axios.get(`${test}/actives/picSayList`, {
@@ -997,14 +869,14 @@
                         page:this.gallerypage
                     }
                 }).then((res)=> {
-                    this.workmany=10
-                    this.worknumber=10
+                    // this.workmany=10
+                    // this.worknumber=10
                     this.alllist = res.data.content.data;
                     this.firstlist = res.data.content.data[0];
                     this.playlist = res.data.content.data;
 
                     this.playlist.map((value,index,arr)=>{
-                        if(this.worknumber-1===index){
+                        if(this.workmany-1===index){
                             this.currentjf = value.total_vote
                             if(value.voice_second==='0'){
                                 this.hasvoice=false
@@ -1017,8 +889,8 @@
                 })
             },
             next(){
-                this.worknumber = this.workmany;
-                if(document.querySelector(".room--current")){
+                // this.worknumber = this.workmany;
+                if(document.querySelector(".room--current")&&this.workmany>1){
                     document.querySelector(".room--current").className='room';
                 }
                 this.playlist = this.alllist
@@ -1026,7 +898,11 @@
 
                 if(this.workmany===10){
                     this.gallerypage+=1   
-                    this.nextgroup();
+                    this.workmany=1
+                    setTimeout(()=> {
+                         this.nextgroup();
+                    }, 800);
+                   
                 }
                 
             
@@ -1035,21 +911,37 @@
                 }
                 
                 if(this.workmany<10){
-                    this.workmany+=1
-                    this.worknumber+=1
+                    this.worknumber=this.worknumber+1
+                    // this.workmany=this.workmany+1
+                    if(this.workmany===1){
+                        setTimeout(()=> {
+                            this.workmany=this.workmany+1
+                        }, 600);
+                        
+                        setTimeout(()=> {
+                            this.roomchange();
+                            this.presentdata();
+                            this.authorinfo();
+                        }, 800);
+                    }else{
+                        this.workmany=this.workmany+1
+                    }
+
+                    setTimeout(()=> {
+                        this.roomchange();
+                        this.presentdata();
+                        this.authorinfo();
+                    }, 800);
                 }
 
                 if(this.workmany===2){
-                    // this.firstchange=false
                     this.playlist= this.alllist
                 }
                 console.log(this.workmany)
+
+
                 
-                setTimeout(()=> {
-                    this.roomchange();
-                    this.presentdata();
-                    this.authorinfo();
-                }, 200);
+
             },
             nextgroup(){
                 this.$axios.get(`${test}/actives/picSayList`, {
@@ -1057,15 +949,15 @@
                         page:this.gallerypage
                     }
                 }).then((res)=> {
-                    this.workmany=1
-                    this.worknumber=1
+                    // this.workmany=1
+                    // this.worknumber=1
                     this.alllist = res.data.content.data;
                     this.listlength = this.playlist.length
                     this.firstlist = res.data.content.data[0];
                     this.playlist = res.data.content.data;
 
                     this.playlist.map((value,index,arr)=>{
-                        if(this.worknumber-1===index){
+                        if(this.workmany-1===index){
                             this.currentjf = value.total_vote
                             if(value.voice_second==='0'){
                                 this.hasvoice=false
@@ -1150,7 +1042,7 @@
     .gallery {overflow-y:hidden;-webkit-transform-style: preserve-3d;transform-style: preserve-3d;transform: translateZ(0);
     transform: translate3d(0,0,0);}
     .recorddata {opacity: 0;z-index:-1;}
-    .content {opacity: 0;position: relative;transition:all ease 0.8s;}
+    .content {opacity: 0;transition:all ease 0.8s;}
     .action5 {opacity: 1;}
     #source {display: none;}
     .gallery .entering {z-index:100;}
