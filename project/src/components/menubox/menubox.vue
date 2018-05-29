@@ -37,7 +37,10 @@
         },
         methods:{
             indexgo(){
-                this.$router.push('acthome')
+                this.$router.push('acthome');
+                setTimeout(()=> {
+                    window.location.reload();
+                }, 100);
             },
             workgo(){
                 this.$router.push('work')

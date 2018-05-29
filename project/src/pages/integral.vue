@@ -64,10 +64,6 @@
                     this.hasmsg=true
                     this.tipsmsg='首次登陆成功'
                     this.myjf= parseInt(this.myjf)+25;
-                }else{
-                    this.hasmsg=true
-                    this.tipsmsg='首次登陆成功'
-                    this.myjf = parseInt(this.myjf)+25
                 }
             })
 

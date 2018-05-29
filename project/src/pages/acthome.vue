@@ -2,7 +2,7 @@
     <div class="activity">
         <div class="banner">
             <img class="logo vm" src="../public/images/logo.png" alt="">
-            <img @click="musiccontrols()" :class="['music vm',{'musicon':play}]" src="../public/images/music.png" alt="">
+            <img id="mbtn" @click="musiccontrols()" :class="['music vm',{'musicon':play}]" src="../public/images/music.png" alt="">
         </div>
         <div class="navigation">
             <ul class="nav-con">
@@ -111,7 +111,7 @@
     export default{
         data(){
             return{
-                play:true,
+                play:false,
                 position:'index',
                 swiperOption1: {
                     pagination: {
@@ -129,6 +129,7 @@
             }
         },
         created(){
+
             var curl = window.location.href;
             let localoid =localStorage.getItem('oid');
             if(localoid){
@@ -156,10 +157,14 @@
                 }
             })
 
+
             wx.ready(()=>{
+                
                 this.myAudio = new Audio();
-                this.myAudio.src='/static/audio/music.mp3';
+                this.myAudio.src='http://p6c1w0z8o.bkt.clouddn.com/psayVoice_20180410142637_62761.mp3';
+                this.myAudio.loop='loop';
                 this.myAudio.play();
+                this.play=true;
 
                 wx.onMenuShareTimeline({
                     title: '绘画比赛-东方童画', // 分享标题
@@ -208,6 +213,13 @@
             // 然后你就可以使用当前上下文内的swiper对象去做你想做的事了
             console.log('this is current swiper instance object', this.swiper)
             this.swiper.slideTo(3, 1000, false)
+            document.getElementById('mbtn').click();
+
+        },
+        beforeDestroy(){
+            // alert(1)
+            this.myAudio.pause()
+            this.play=false;
         },
         computed:{
             swiper() {

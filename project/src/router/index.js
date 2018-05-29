@@ -9,6 +9,7 @@ import integral from '../pages/integral'
 import work from '../pages/work'
 import acthome from '../pages/acthome'
 import gallery from '../pages/gallery'
+import testgallery from '../pages/testgallery'
 
 
 Vue.use(Router)
@@ -59,6 +60,11 @@ export default new Router({
       path: '/gallery',
       name: 'gallery',
       component: gallery
+    },
+    {
+      path: '/testgallery',
+      name: 'testgallery',
+      component: testgallery
     }
   ]
 })
