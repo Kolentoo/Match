@@ -32,23 +32,23 @@
                 <!-- slides -->
                 <swiper-slide>
                     <dl>
-                        <dd><a href="" target="_blank">东方童画|“童年画语”杯儿童绘画比赛开启“童年画语”杯儿童绘画比赛开启“童年画语”杯儿童绘画比赛开启</a></dd>
-                        <dd><a href="" target="_blank">东方童画|“童年画语”杯儿童绘画比赛开启</a></dd>
-                        <dd><a href="" target="_blank">东方童画|“童年画语”杯儿童绘画比赛开启</a></dd>
+                        <dd><a href="" target="_blank">搜狐网：2018年“童年画语”杯儿童绘画比赛启动 让孩子画出“我的美丽中国”</a></dd>
+                        <dd><a href="" target="_blank">新浪网：2018年童年画语杯儿童绘画比赛启动</a></dd>
+                        <dd><a href="" target="_blank">网易：2018"童年画语"杯儿童绘画比赛启动 画出"中国梦"</a></dd>
                     </dl>
                 </swiper-slide>
                 <swiper-slide>
                     <dl>
-                        <dd><a href="" target="_blank">东方童画|“童年画语”杯儿童绘画比赛开启“童年画语”杯儿童绘画比赛开启“童年画语”杯儿童绘画比赛开启</a></dd>
-                        <dd><a href="" target="_blank">东方童画|“童年画语”杯儿童绘画比赛开启</a></dd>
-                        <dd><a href="" target="_blank">东方童画|“童年画语”杯儿童绘画比赛开启</a></dd>
+                        <dd><a href="" target="_blank">腾讯大申：2018年“童年画语”杯儿童绘画比赛启动 画出“我的美丽中国”</a></dd>
+                        <dd><a href="" target="_blank">新华网：“童年画语”杯儿童绘画比赛在上海启动</a></dd>
+                        <dd><a href="" target="_blank">中新社：2018年“童年画语”杯儿童绘画比赛启动 让孩子画出“我的美丽中国”</a></dd>
                     </dl>
                 </swiper-slide>
                 <swiper-slide>
                     <dl>
-                        <dd><a href="" target="_blank">东方童画|“童年画语”杯儿童绘画比赛开启“童年画语”杯儿童绘画比赛开启“童年画语”杯儿童绘画比赛开启</a></dd>
-                        <dd><a href="" target="_blank">东方童画|“童年画语”杯儿童绘画比赛开启</a></dd>
-                        <dd><a href="" target="_blank">东方童画|“童年画语”杯儿童绘画比赛开启</a></dd>
+                        <dd><a href="" target="_blank">上海日报：Painting contest launched to discover talented child artist</a></dd>
+                        <dd><a href="" target="_blank">上海热线：2018"童年画语"杯儿童绘画比赛启动 让孩子画出“我的美丽中国”</a></dd>
+                        <dd><a href="" target="_blank">东方网：2018年“童年画语”杯儿童绘画比赛启动 让孩子画出“我的美丽中国”</a></dd>
                     </dl>
                 </swiper-slide>
                 <!-- Optional controls -->
@@ -139,10 +139,22 @@
                     this.oid = curl.split('=')[1];
                     localStorage.setItem('oid',this.oid);
                 }else{
-                    var urlvalue = curl.split('#/')[1]
-                    window.location.href='http://erp.dfth.com/index.php/Weixin/getWebOpenid?backurl='+urlvalue;
+                    // var urlvalue = curl.split('#/')[1]
+                    // window.location.href='http://erp.dfth.com/index.php/Weixin/getWebOpenid?backurl='+urlvalue;
+                    var urlvalue = escape(curl)
+                    window.location.href='http://erp.dfth.com/index.php/Weixin/getWebOpenidtest?backurl='+urlvalue;
                 }
             }
+
+            this.$axios.get(`${test}/actives/joinerIn`,{
+                params:{
+                    openid:localoid
+                }
+            }).then((res)=>{
+                if(res.data.status===1){
+                    
+                }
+            })
 
             this.$axios.get(`${test}/actives/dayAdd`,{
                 params:{
@@ -161,7 +173,7 @@
             wx.ready(()=>{
                 
                 this.myAudio = new Audio();
-                this.myAudio.src='http://p6c1w0z8o.bkt.clouddn.com/psayVoice_20180410142637_62761.mp3';
+                this.myAudio.src='./static/audio/music.mp3';
                 this.myAudio.loop='loop';
                 this.myAudio.play();
                 this.play=true;

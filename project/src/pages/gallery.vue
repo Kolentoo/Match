@@ -205,7 +205,7 @@
                             <div class="wborder g10">
                                 <div class="workbox g10">
                                     <div class="picinner g10">
-                                        <img ref="wpic" class="workpic vm g10" :src="room.works_img" alt="">
+                                        <img class="workpic vm g10" :src="room.works_img" alt="">
                                     </div>
                                 </div>
                             </div>
@@ -340,19 +340,19 @@
                     {
                         money:'10',
                         name:'粉色爱心',
-                        img:'../../static/img/bigpresent1.png',
+                        img:'./static/img/bigpresent1.png',
                         on:true
                     },
                     {
                         money:'30',
                         name:'蓝色星球',
-                        img:'../../static/img/bigpresent2.png',
+                        img:'./static/img/bigpresent2.png',
                         on:false
                     },
                     {
                         money:'50',
                         name:'阿特比心',
-                        img:'../../static/img/bigpresent3.png',
+                        img:'./static/img/bigpresent3.png',
                         on:false
                     }
                 ],
@@ -429,7 +429,8 @@
                 removeroom:false,
                 hasmsg:false,
                 firstlist:'',
-                first:''
+                first:'',
+                loadover:false
                 
             }
         },
@@ -440,11 +441,12 @@
                 sessionStorage.setItem('one','one');
                 setTimeout(()=> {
                     window.location.reload();
-                }, 100);
+                }, 300);
             }
             
             var curl = window.location.href;
             let localoid =localStorage.getItem('oid');
+            // localStorage.removeItem('oid');
             if(localoid){
                 this.oid=localoid
             }else{
@@ -452,20 +454,20 @@
                     this.oid = curl.split('=')[1];
                     localStorage.setItem('oid',this.oid);
                 }else{
-                    var urlvalue = curl.split('#/')[1]
-                    window.location.href='http://erp.dfth.com/index.php/Weixin/getWebOpenid?backurl='+urlvalue;
+                    // var urlvalue = curl.split('#/')[1]
+                    var urlvalue = escape(curl)
+                    // console.log('http://erp.dfth.com/index.php/Weixin/getWebOpenidtest?backurl='+urlvalue)
+                    window.location.href='http://erp.dfth.com/index.php/Weixin/getWebOpenidtest?backurl='+urlvalue;
                 }
             }
 
-            this.$axios.get(`${test}/actives/dayAdd`,{
+            this.$axios.get(`${test}/actives/joinerIn`,{
                 params:{
                     openid:localoid
                 }
             }).then((res)=>{
                 if(res.data.status===1){
-                    this.hasmsg=true
-                    this.tipsmsg='首次登陆成功'
-                    this.tpperson.total = parseInt(this.tpperson.total)+25
+                    
                 }
             })
 
@@ -535,7 +537,6 @@
             }).then((res)=> {
                 this.firstlist = res.data.content.data[0];
                 this.alllist = res.data.content.data
-                // this.alllist = res.data.content.data.slice(1,res.data.content.data.length);
                 this.workmany = this.worknumber
                 if(this.worknumber===1){
                     this.firstchange=true
@@ -545,24 +546,13 @@
                     this.playlist = res.data.content.data.slice(this.worknumber-3,this.worknumber);
                     this.firstchange=false
                 }else{
-                    this.worknumber=2;
                     this.playlist = res.data.content.data.slice(this.worknumber-2,this.worknumber+1);
                     this.firstchange=false
+                    this.worknumber=2;
                 }
 
-                this.$nextTick(()=>{
-                    setTimeout(()=> {
-                        this.removeroom=true
-                    }, 2000);
-                    
-                    setTimeout(()=> {
-                        this.playlist=this.alllist;
-                    }, 5000);
-                })
-                // console.log(this.alllist)
                 this.playlist.map((value,index,arr)=>{
-                    if(this.workmany-1===index){
-                        console.log(value)
+                    if(this.worknumber-1===index){
                         this.currentjf = value.total_vote
                         this.myvoice = value.works_voice
                         if(value.voice_second=='0'){
@@ -573,15 +563,29 @@
                     }
                 })
 
-                
+                this.$nextTick(()=>{
+                    // setTimeout(()=> {
+                    //     this.removeroom=true
+                    // }, 2000);
+                    
+                    setTimeout(()=> {
+                        this.playlist=this.alllist;
+                    }, 3000);
+                })
+
             }).then(()=>{
+                
+
                 wx.ready(()=>{ 
                     if(this.hasvoice===false){
+                        
                         this.bj = new Audio();
-                        this.bj.src='/static/audio/music.mp3';
+                        this.bj.src='./static/audio/music.mp3';
+                        
                         this.bj.play();
                         this.voiceplay=false
                         this.play=true
+                        
                     }else{
                         this.uservoiceplay();
                     }
@@ -606,6 +610,18 @@
                 }
             }).then((res)=> {
                 this.tpperson=res.data.content;
+            }).then(()=>{
+                this.$axios.get(`${test}/actives/dayAdd`,{
+                    params:{
+                        openid:localoid
+                    }
+                }).then((res)=>{
+                    if(res.data.status===1){
+                        this.hasmsg=true
+                        this.tipsmsg='首次登陆成功'
+                        this.tpperson.total = parseInt(this.tpperson.total)+25
+                    }
+                })
             })
             
 
@@ -614,37 +630,36 @@
             
             let bheight = document.body.clientHeight;
             document.getElementById('gallery').style.height=bheight+'px'
+            document.documentElement.className = 'js'
 
             setTimeout(()=> {
                 this.removeroom=true;
-            }, 2000); 
+            }, 3500); 
 
             setTimeout(()=> {
                 this.action3=true;
-            }, 3000);            
+            }, 4000);            
             setTimeout(()=> {
                 this.action1=true;
                 this.action2=true;
-            }, 3300);
+            }, 5000);
             setTimeout(()=> {
                 this.usershow=true;
-            }, 3600);            
+            }, 5500);            
             setTimeout(()=> {
                 this.action5=true;
-            }, 3900);
+            }, 6000);
             setTimeout(()=> {
                 this.action4=true;
-            }, 4200);
-
-            document.documentElement.className = 'js'
+            }, 6500);
             setTimeout(()=> {
                 this.enter=true
-            }, 500);
+            }, 2000);
 
             setTimeout(()=> {
                 let source = document.getElementById('source');
                 let sourceGroup = document.createElement('script')
-                sourceGroup.src='../../static/js/main.js'
+                sourceGroup.src='./static/js/main.js'
                 source.appendChild(sourceGroup);
             }, 500);
 
@@ -656,6 +671,12 @@
                 this.authorinfo();
             }, 3000);
 
+        },
+        beforeDestroy(){
+            this.bj.pause();
+            this.play=false;
+            this.myaudio.pause();
+            this.voiceplay=false
         },
         methods:{
             sendpresent(){
@@ -688,34 +709,35 @@
                         let mathrandom = Math.random();
                         this.giftsend = true                        
                         this.tpperson.total=myjfnum-presentjfnum
+                        let wname = res.data.wx_name
                         if(presenttype===1){
-                            sending.src='../../static/img/gift1.gif?'+mathrandom
+                            sending.src='./static/img/gift1.gif?'+mathrandom
                             this.author.total_vote = parseInt(this.author.total_vote)+10
                             this.presentnum[0].tot =parseInt(this.presentnum[0].tot)+1
                             this.presentrecord.push(
-                                {inte:"10",inte_lev:"1",wx_name:'kolento'}
+                                {inte:"10",inte_lev:"1",wx_name:wname}
                             )
                             setTimeout(()=> {
                                 this.giftsend = false 
                                 sending.src='#'
                             }, 5000);
                         }else if(presenttype===2){
-                            sending.src='../../static/img/gift2.gif?'+mathrandom
+                            sending.src='./static/img/gift2.gif?'+mathrandom
                             this.author.total_vote = parseInt(this.author.total_vote)+30
                             this.presentnum[1].tot =parseInt(this.presentnum[1].tot)+1
                             this.presentrecord.push(
-                                {inte:"30",inte_lev:"2",wx_name:'kolento'}
+                                {inte:"30",inte_lev:"2",wx_name:wname}
                             )
                             setTimeout(()=> {
                                 this.giftsend = false 
                                 sending.src='#'
                             }, 2800);
                         }else{
-                            sending.src='../../static/img/gift3.gif?'+mathrandom
+                            sending.src='./static/img/gift3.gif?'+mathrandom
                             this.author.total_vote = parseInt(this.author.total_vote)+50
                             this.presentnum[2].tot =parseInt(this.presentnum[2].tot)+1
                             this.presentrecord.push(
-                                {inte:"50",inte_lev:"3",wx_name:'kolento'}
+                                {inte:"50",inte_lev:"3",wx_name:wname}
                             )
                             setTimeout(()=> {
                                 this.giftsend = false 
@@ -759,7 +781,7 @@
             musiccontrols(){
                 if(this.play===false){
                     this.bj = new Audio();
-                    this.bj.src='/static/audio/music.mp3';
+                    this.bj.src='./static/audio/music.mp3';
                 }
 
                 if(this.bj.paused){
@@ -814,48 +836,30 @@
                     document.getElementById('btnleft').style.visibility="hidden";
                 }
 
-                if(this.workmany>1){
-                    this.workmany-=1
-                    this.worknumber-=1
-                }
-
                 if(this.workmany===1){
-                    // this.firstchange=true
                     if(this.gallerypage>1){
                         this.gallerypage-=1 
-                        this.workmany=10
                         setTimeout(()=> {
                             this.prevgroup();
                         }, 500);
-                        
+                        setTimeout(()=> {
+                            this.roomchange();
+                            this.presentdata();
+                            this.authorinfo();
+                        }, 800);
                     }
+                }else{
+                    setTimeout(()=> {
+                        this.roomchange();
+                        this.presentdata();
+                        this.authorinfo();
+                    }, 500);
                 }
 
-                // if(this.workmany===2){
-                //     this.playlist= this.alllist
-                // }
-
-                // if(this.workmany<4){
-                    
-                //     let firstid = this.playlist[this.workmany-1].id
-                    
-
-                //     this.$axios.get(`${test}/actives/ParticipantInfo`, {
-                //         params:{
-                //             id:firstid
-                //         }
-                //     }).then((res)=> {
-                //         this.first = res.data.content
-                //         this.myvoice = res.data.content.works_voice
-                //         if(res.data.content.voice_second==='0'){
-                //             this.hasvoice=false
-                //         }else{
-                //             this.hasvoice=true
-                //         }
-                //     })
-                // }
-
-                console.log(this.workmany)
+                if(this.workmany>1){    
+                    this.workmany-=1
+                    this.worknumber-=1
+                }
                 
                 setTimeout(()=> {
                     this.roomchange();
@@ -869,8 +873,8 @@
                         page:this.gallerypage
                     }
                 }).then((res)=> {
-                    // this.workmany=10
-                    // this.worknumber=10
+                    this.workmany=10
+                    this.worknumber=10
                     this.alllist = res.data.content.data;
                     this.firstlist = res.data.content.data[0];
                     this.playlist = res.data.content.data;
@@ -898,11 +902,14 @@
 
                 if(this.workmany===10){
                     this.gallerypage+=1   
-                    this.workmany=1
                     setTimeout(()=> {
                          this.nextgroup();
+                    }, 700);
+                    setTimeout(()=> {
+                        this.roomchange();
+                        this.presentdata();
+                        this.authorinfo();
                     }, 800);
-                   
                 }
                 
             
@@ -949,8 +956,8 @@
                         page:this.gallerypage
                     }
                 }).then((res)=> {
-                    // this.workmany=1
-                    // this.worknumber=1
+                    this.workmany=1
+                    this.worknumber=1
                     this.alllist = res.data.content.data;
                     this.listlength = this.playlist.length
                     this.firstlist = res.data.content.data[0];
@@ -1048,9 +1055,10 @@
     .gallery .entering {z-index:100;}
     .wborder {border:1.7rem solid #fff;box-shadow:0 1rem 2.5rem rgba(3,15,39,0.14);margin:0 1.5rem;display: flex;align-items: center;}
     .workbox {background: #fff;padding: 3rem;box-shadow:0 0 1.5rem 0.1rem rgba(0,0,0,0.3) inset;}
-    .picbox {width: 80%;align-items: center;height: 100%;overflow: hidden;margin: -16vh auto 0;display:flex;}
-    .picinner {max-height:100rem;overflow: hidden;}
-    .workpic {width: 100%;box-shadow:0 0 0 0.2rem rgba(0,0,0,0.2);vertical-align: middle;}
+    /*.workwrapper {}*/
+    .picbox {align-items: center;height: 100%;overflow: hidden;display:flex;margin: -40vh auto 0;width: 60vw;}
+    .picinner {overflow: hidden;}
+    .workpic {width: 100%;box-shadow:0 0 0 0.2rem rgba(0,0,0,0.2);vertical-align: middle;max-height:35vh;}
 
     .gallery .btn-left {position: fixed;top: 45%;left: 2rem;}
     .gallery .btn-right {position: fixed;top: 45%;right: 2rem;}
@@ -1075,9 +1083,9 @@
     }
     .gallery .top .musicon {animation: music linear 2s infinite;}
 
-    .userbox {position: fixed;top: 50%;left: 50%;z-index:400;width: 40%;margin:5rem 0 0 -20%;z-index:-1;opacity: 0;
+    .userbox {position: fixed;top: 50%;left: 50%;z-index:400;width: 36%;margin:5rem 0 0 -18%;z-index:-1;opacity: 0;
     transition:all ease 0.5s;transform: translateY(50px);}
-    .voiceshow {width: 52%;margin:5rem 0 0 -26%;}
+    .voiceshow {width: 50%;margin:5rem 0 0 -25%;}
     .user-box {z-index:500;position: relative;}
     .usershow {opacity: 1;z-index:400;transform: translateY(0px);}
 
@@ -1177,7 +1185,7 @@
 
     .mask {background: rgba(0,0,0,0.5);width: 100%;height: 100%;z-index:900;position: fixed;top: 0;left: 0;}
     .nav {z-index:500;}
-    .nopresent {font-size: 3.2rem;margin-top: 1rem;color:#666;}
+    .nopresent {font-size: 2.4rem;margin-top: 1rem;color:#666;}
     .giftbox {position: fixed;z-index:-1;width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;top: 0;
     left: 0;}
     .giftsend {z-index:1000;}
