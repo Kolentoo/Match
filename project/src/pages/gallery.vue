@@ -137,7 +137,7 @@
                             <dd><em>所属机构或校区：</em>{{userpopinner.organization}}</dd>
                         </dl>
                         <div class="desc">
-                            <h2 class="tc">{{userpopinner.works_name}}</h2>
+                            <h2 class="tc">{{userpopinner.works_name}}的故事</h2>
                             <div class="shape"></div>
                             <p class="desctxt">
                                 {{userpopinner.works_det}}
@@ -197,7 +197,7 @@
         </svg>
         <div :class="['container',{'entering':enter}]" @click="popcancel()">
         <div class="scroller" id="scroller">
-            <div :class="['room',workmany-1===idx?'room--current':'']" v-for="(room,idx) in playlist" :key="idx">
+            <div :class="['room',workmany-1===idx?'room--current':'',{'room--current':coming}]" v-for="(room,idx) in playlist" :key="idx">
                 <p class="recorddata">{{room.id}}</p>
                 <div class="room__side room__side--back"> 
                     <div class="workwrapper">
@@ -321,6 +321,7 @@
     export default{
         data(){
             return{
+                coming:true,
                 oid:'',
                 action1:false,
                 action2:false,
@@ -428,7 +429,6 @@
                 giftsend:false,
                 removeroom:false,
                 hasmsg:false,
-                firstlist:'',
                 first:'',
                 loadover:false
                 
@@ -446,7 +446,6 @@
             
             var curl = window.location.href;
             let localoid =localStorage.getItem('oid');
-            // localStorage.removeItem('oid');
             if(localoid){
                 this.oid=localoid
             }else{
@@ -535,21 +534,22 @@
                     page:this.gallerypage
                 }
             }).then((res)=> {
-                this.firstlist = res.data.content.data[0];
                 this.alllist = res.data.content.data
                 this.workmany = this.worknumber
-                if(this.worknumber===1){
-                    this.firstchange=true
-                    this.playlist = res.data.content.data.slice(this.worknumber-1,this.worknumber+2);
+                // console.log( this.workmany )
+                this.playlist = res.data.content.data.slice(this.worknumber-1,this.worknumber);
+                // if(this.worknumber===1){
+                //     this.firstchange=true
+                //     this.playlist = res.data.content.data.slice(this.worknumber-1,this.worknumber+2);
 
-                }else if(this.worknumber>9){
-                    this.playlist = res.data.content.data.slice(this.worknumber-3,this.worknumber);
-                    this.firstchange=false
-                }else{
-                    this.playlist = res.data.content.data.slice(this.worknumber-2,this.worknumber+1);
-                    this.firstchange=false
-                    this.worknumber=2;
-                }
+                // }else if(this.worknumber>9){
+                //     this.playlist = res.data.content.data.slice(this.worknumber-3,this.worknumber);
+                //     this.firstchange=false
+                // }else{
+                //     this.playlist = res.data.content.data.slice(this.worknumber-2,this.worknumber+1);
+                //     this.firstchange=false
+                //     this.worknumber=2;
+                // }
 
                 this.playlist.map((value,index,arr)=>{
                     if(this.worknumber-1===index){
@@ -564,18 +564,14 @@
                 })
 
                 this.$nextTick(()=>{
-                    // setTimeout(()=> {
-                    //     this.removeroom=true
-                    // }, 2000);
-                    
                     setTimeout(()=> {
+                        this.coming=false
                         this.playlist=this.alllist;
-                    }, 3000);
+                        
+                    }, 5000);
                 })
 
             }).then(()=>{
-                
-
                 wx.ready(()=>{ 
                     if(this.hasvoice===false){
                         
@@ -656,20 +652,20 @@
                 this.enter=true
             }, 2000);
 
-            setTimeout(()=> {
+            // setTimeout(()=> {
                 let source = document.getElementById('source');
                 let sourceGroup = document.createElement('script')
                 sourceGroup.src='./static/js/main.js'
                 source.appendChild(sourceGroup);
-            }, 500);
+            // }, 500);
 
             if(this.rank=='1'){
                 document.getElementById('btnleft').style.visibility="hidden";
             }
 
-            setTimeout(()=> {
+            // setTimeout(()=> {
                 this.authorinfo();
-            }, 3000);
+            // }, 10000);
 
         },
         beforeDestroy(){
@@ -818,9 +814,17 @@
             },
             indexgo(){
                 this.$router.push('acthome')
+                this.bj.pause();
+                this.play=false;
+                this.myaudio.pause();
+                this.voiceplay=false
             },
             rankgo(){
                 this.$router.push('work')
+                this.bj.pause();
+                this.play=false;
+                this.myaudio.pause();
+                this.voiceplay=false
             },
             prev(){
 
@@ -876,7 +880,6 @@
                     this.workmany=10
                     this.worknumber=10
                     this.alllist = res.data.content.data;
-                    this.firstlist = res.data.content.data[0];
                     this.playlist = res.data.content.data;
 
                     this.playlist.map((value,index,arr)=>{
@@ -960,7 +963,6 @@
                     this.worknumber=1
                     this.alllist = res.data.content.data;
                     this.listlength = this.playlist.length
-                    this.firstlist = res.data.content.data[0];
                     this.playlist = res.data.content.data;
 
                     this.playlist.map((value,index,arr)=>{
@@ -1046,7 +1048,7 @@
 
 <style scoped>
     /*画框*/
-    .gallery {overflow-y:hidden;-webkit-transform-style: preserve-3d;transform-style: preserve-3d;transform: translateZ(0);
+    .gallery {background: #cecece;overflow-y:hidden;-webkit-transform-style: preserve-3d;transform-style: preserve-3d;transform: translateZ(0);
     transform: translate3d(0,0,0);}
     .recorddata {opacity: 0;z-index:-1;}
     .content {opacity: 0;transition:all ease 0.8s;}

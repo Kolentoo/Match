@@ -30,27 +30,39 @@
 </svg>
 <div :class="['container',{'entering':enter}]" @click="popcancel()">
   <div class="scroller">
-    <div :class="['room',workmany-1===idx?'room--current':'']" v-for="(room,idx) in playlist" :key="idx">
-        <p class="recorddata">{{room.id}}</p>
-        <div class="room__side room__side--back"> 
-            <div class="workwrapper">
-                <div class="picbox">
-                    <div class="wborder g10">
-                        <div class="workbox g10">
-                            <div class="picinner g10">
-                                <img ref="wpic" class="workpic vm g10" :src="room.works_img" alt="">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="information">
-                    <div class="work-name">{{room.works_name}}</div>
-                </div>
-            </div>
-        </div>
-        <div class="room__side room__side--left"></div>
-        <div class="room__side room__side--right"></div>
-        <div class="room__side room__side--bottom"></div>
+    <div class="room room--current">
+      <div class="room__side room__side--back"> <img class="room__img" src="img/set4/3.jpg" alt="Some image"/> <img class="room__img" src="img/set4/6.jpg" alt="Some image"/> </div>
+      <div class="room__side room__side--left"> <img class="room__img" src="img/set4/7.jpg" alt="Some image"/> <img class="room__img" src="img/set4/1.jpg" alt="Some image"/> <img class="room__img" src="img/set4/2.jpg" alt="Some image"/> </div>
+      <div class="room__side room__side--right"> <img class="room__img" src="img/set4/4.jpg" alt="Some image"/> <img class="room__img" src="img/set4/5.jpg" alt="Some image"/> <img class="room__img" src="img/set4/8.jpg" alt="Some image"/> </div>
+      <div class="room__side room__side--bottom"></div>
+    </div>
+    <!-- /room -->
+    <div class="room">
+      <div class="room__side room__side--back"> <img class="room__img" src="img/set2/1.jpg" alt="Some image"/> <img class="room__img" src="img/set2/6.jpg" alt="Some image"/> </div>
+      <div class="room__side room__side--left"> <img class="room__img" src="img/set2/3.jpg" alt="Some image"/> <img class="room__img" src="img/set2/4.jpg" alt="Some image"/> <img class="room__img" src="img/set2/5.jpg" alt="Some image"/> </div>
+      <div class="room__side room__side--right"> <img class="room__img" src="img/set2/8.jpg" alt="Some image"/> <img class="room__img" src="img/set2/7.jpg" alt="Some image"/> <img class="room__img" src="img/set2/2.jpg" alt="Some image"/> </div>
+      <div class="room__side room__side--bottom"></div>
+    </div>
+    <!-- /room -->
+    <div class="room">
+      <div class="room__side room__side--back"> <img class="room__img" src="img/set3/1.jpg" alt="Some image"/> <img class="room__img" src="img/set3/6.jpg" alt="Some image"/> </div>
+      <div class="room__side room__side--left"> <img class="room__img" src="img/set3/3.jpg" alt="Some image"/> <img class="room__img" src="img/set3/4.jpg" alt="Some image"/> <img class="room__img" src="img/set3/5.jpg" alt="Some image"/> </div>
+      <div class="room__side room__side--right"> <img class="room__img" src="img/set3/8.jpg" alt="Some image"/> <img class="room__img" src="img/set3/7.jpg" alt="Some image"/> <img class="room__img" src="img/set3/2.jpg" alt="Some image"/> </div>
+      <div class="room__side room__side--bottom"></div>
+    </div>
+    <!-- /room -->
+    <div class="room">
+      <div class="room__side room__side--back"> <img class="room__img" src="img/set1/3.jpg" alt="Some image"/> <img class="room__img" src="img/set1/6.jpg" alt="Some image"/> </div>
+      <div class="room__side room__side--left"> <img class="room__img" src="img/set1/7.jpg" alt="Some image"/> <img class="room__img" src="img/set1/1.jpg" alt="Some image"/> <img class="room__img" src="img/set1/2.jpg" alt="Some image"/> </div>
+      <div class="room__side room__side--right"> <img class="room__img" src="img/set1/4.jpg" alt="Some image"/> <img class="room__img" src="img/set1/5.jpg" alt="Some image"/> <img class="room__img" src="img/set1/8.jpg" alt="Some image"/> </div>
+      <div class="room__side room__side--bottom"></div>
+    </div>
+    <!-- /room -->
+    <div class="room">
+      <div class="room__side room__side--back"> <img class="room__img" src="img/set5/7.jpg" alt="Some image"/> <img class="room__img" src="img/set5/5.jpg" alt="Some image"/> </div>
+      <div class="room__side room__side--left"> <img class="room__img" src="img/set5/6.jpg" alt="Some image"/> <img class="room__img" src="img/set5/4.jpg" alt="Some image"/> <img class="room__img" src="img/set5/3.jpg" alt="Some image"/> </div>
+      <div class="room__side room__side--right"> <img class="room__img" src="img/set5/2.jpg" alt="Some image"/> <img class="room__img" src="img/set5/1.jpg" alt="Some image"/> <img class="room__img" src="img/set5/8.jpg" alt="Some image"/> </div>
+      <div class="room__side room__side--bottom"></div>
     </div>
   </div>
 </div>
@@ -473,7 +485,7 @@
             document.documentElement.className = 'js'
             setTimeout(()=> {
                 this.enter=true
-            }, 500);
+            }, 2000);
 
             setTimeout(()=> {
                 let source = document.getElementById('source');

@@ -11,11 +11,11 @@
                     <p class="p1">比赛规则</p>
                 </li>
                 <li class="nav-list" @click="prizego()">
-                    <img class="vm g10" src="../public/images/indexicon2.png" alt="">
+                    <img class="vm g10" src="../public/images/indexicon3.png" alt="">
                     <p class="p1">奖项设置</p>
                 </li>
                 <li class="nav-list" @click="workgo()">
-                    <img class="vm g10" src="../public/images/indexicon3.png" alt="">
+                    <img class="vm g10" src="../public/images/indexicon2.png" alt="">
                     <p class="p1">比赛作品</p>
                 </li>
             </ul>
