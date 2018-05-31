@@ -572,7 +572,7 @@
 					DOM.loader.classList.remove('overlay--active');
 				}
 			});
-		}, 2000);
+		}, 500);
 	});
 
 })(window);

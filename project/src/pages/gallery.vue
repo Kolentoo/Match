@@ -137,7 +137,7 @@
                             <dd><em>所属机构或校区：</em>{{userpopinner.organization}}</dd>
                         </dl>
                         <div class="desc">
-                            <h2 class="tc">{{userpopinner.works_name}}的故事</h2>
+                            <h2 class="tc">{{userpopinner.works_name}}的创作故事</h2>
                             <div class="shape"></div>
                             <p class="desctxt">
                                 {{userpopinner.works_det}}
@@ -537,6 +537,7 @@
                 this.alllist = res.data.content.data
                 this.workmany = this.worknumber
                 this.playlist = res.data.content.data.slice(this.worknumber-1,this.worknumber);
+                
                 // if(this.worknumber===1){
                 //     this.firstchange=true
                 //     this.playlist = res.data.content.data.slice(this.worknumber-1,this.worknumber+2);
@@ -565,8 +566,11 @@
                 this.$nextTick(()=>{
                     setTimeout(()=> {
                         this.coming=false
+                        // this.playlist=this.alllist;
+                    }, 5200);
+                    setTimeout(()=> {
                         this.playlist=this.alllist;
-                    }, 2500);
+                    }, 5200);
                 })
 
             }).then(()=>{
@@ -650,7 +654,7 @@
             }, 6000);
             setTimeout(()=> {
                 this.enter=true
-            }, 5000);
+            }, 3000);
 
             // setTimeout(()=> {
                 let source = document.getElementById('source');
@@ -716,7 +720,7 @@
                             setTimeout(()=> {
                                 this.giftsend = false 
                                 sending.src='#'
-                            }, 5000);
+                            }, 7000);
                         }else if(presenttype===2){
                             sending.src='./static/img/gift2.gif?'+mathrandom
                             this.author.total_vote = parseInt(this.author.total_vote)+30
@@ -727,7 +731,7 @@
                             setTimeout(()=> {
                                 this.giftsend = false 
                                 sending.src='#'
-                            }, 2800);
+                            }, 7000);
                         }else{
                             sending.src='./static/img/gift3.gif?'+mathrandom
                             this.author.total_vote = parseInt(this.author.total_vote)+50
@@ -738,7 +742,7 @@
                             setTimeout(()=> {
                                 this.giftsend = false 
                                 sending.src='#'
-                            }, 5000);
+                            }, 7000);
                         }
 
                     }
