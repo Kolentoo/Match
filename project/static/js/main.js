@@ -1,6 +1,5 @@
 
 ;(function(window) {
-
 	'use strict';
 
 	// From https://davidwalsh.name/javascript-debounce-function.

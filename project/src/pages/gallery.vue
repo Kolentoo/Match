@@ -132,7 +132,7 @@
                         <p class="grouptype tc">{{userpopinner.group_type}}</p>
                         <p class="ages tc">{{userpopinner.age}}岁，{{userpopinner.sex}}</p>
                         <dl>
-                            <dd><em>指导老师：</em>{{userpopinner.teacher}}</dd>
+                            <dd v-if="userpopinner.teacher!=''"><em>指导老师：</em>{{userpopinner.teacher}}</dd>
                             <dd><em>所在区域：</em>{{userpopinner.province}}{{userpopinner.city}}</dd>
                             <dd><em>所属机构或校区：</em>{{userpopinner.organization}}</dd>
                         </dl>
@@ -196,8 +196,34 @@
         </symbol>
         </svg>
         <div :class="['container',{'entering':enter}]" @click="popcancel()">
-        <div class="scroller" id="scroller">
-            <div :class="['room',workmany-1===idx?'room--current':'',{'room--current':coming}]" v-for="(room,idx) in playlist" :key="idx">
+        <div class="scroller" v-if="coming">
+            <div class="room room--current">
+                <p class="recorddata"></p>
+                <div class="room__side room__side--back"> 
+                    <div class="workwrapper hide">
+                        <div class="picbox">
+                            <div class="wborder g10">
+                                <div class="workbox g10">
+                                    <div class="picinner g10">
+                                        <img class="workpic vm g10" src="" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="information">
+                            <div class="work-name"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="room__side room__side--left"></div>
+                <div class="room__side room__side--right"></div>
+                <div class="room__side room__side--bottom"></div>
+            </div>
+        </div>
+        <div class="scroller" id="scroller" v-if="!coming">
+        <!--<div class="scroller" id="scroller">-->
+            <!--<div :class="['room',workmany-1===idx?'room--current':'',{'room--current':coming}]" v-for="(room,idx) in playlist" :key="idx">-->
+            <div :class="['room',workmany-1===idx?'room--current':'']" v-for="(room,idx) in playlist" :key="idx">
                 <p class="recorddata">{{room.id}}</p>
                 <div class="room__side room__side--back"> 
                     <div :class="['workwrapper',{'painting':painting},{'romeing':coming}]">
@@ -219,6 +245,72 @@
                 <div class="room__side room__side--right"></div>
                 <div class="room__side room__side--bottom"></div>
             </div>
+            <!--<div class="room ">
+                <p class="recorddata"></p>
+                <div class="room__side room__side--back"> 
+                    <div class="workwrapper hide">
+                        <div class="picbox">
+                            <div class="wborder g10">
+                                <div class="workbox g10">
+                                    <div class="picinner g10">
+                                        <img class="workpic vm g10" src="" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="information">
+                            <div class="work-name"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="room__side room__side--left"></div>
+                <div class="room__side room__side--right"></div>
+                <div class="room__side room__side--bottom"></div>
+            </div>
+            <div class="room room--current">
+                <p class="recorddata"></p>
+                <div class="room__side room__side--back"> 
+                    <div class="workwrapper hide">
+                        <div class="picbox">
+                            <div class="wborder g10">
+                                <div class="workbox g10">
+                                    <div class="picinner g10">
+                                        <img class="workpic vm g10" src="" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="information">
+                            <div class="work-name"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="room__side room__side--left"></div>
+                <div class="room__side room__side--right"></div>
+                <div class="room__side room__side--bottom"></div>
+            </div>
+            <div class="room">
+                <p class="recorddata"></p>
+                <div class="room__side room__side--back"> 
+                    <div class="workwrapper hide">
+                        <div class="picbox">
+                            <div class="wborder g10">
+                                <div class="workbox g10">
+                                    <div class="picinner g10">
+                                        <img class="workpic vm g10" src="" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="information">
+                            <div class="work-name"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="room__side room__side--left"></div>
+                <div class="room__side room__side--right"></div>
+                <div class="room__side room__side--bottom"></div>
+            </div>-->
         </div>
 
         
@@ -369,29 +461,29 @@
                 },
                 gallerypage:1,
                 playlist:[
-                    {
-                        "childname":"",
-                        "head_img":"",
-                        "works_img":"",
-                        "works_name":"",
-                        "voice_second":""
-                    },
-                    {
-                        "childname":"",
-                        "head_img":"",
-                        "works_img":"",
-                        "works_name":"",
-                        "voice_second":""
-                    },
-                    {
-                        "childname":"",
-                        "head_img":"",
-                        "works_img":"",
-                        "works_name":"",
-                        "voice_second":""
-                    }
+                    // {
+                    //     "childname":"",
+                    //     "head_img":"",
+                    //     "works_img":"",
+                    //     "works_name":"",
+                    //     "voice_second":""
+                    // },
+                    // {
+                    //     "childname":"",
+                    //     "head_img":"",
+                    //     "works_img":"",
+                    //     "works_name":"",
+                    //     "voice_second":""
+                    // },
+                    // {
+                    //     "childname":"",
+                    //     "head_img":"",
+                    //     "works_img":"",
+                    //     "works_name":"",
+                    //     "voice_second":""
+                    // }
                 ],
-                alllist:'',
+                alllist:[],
                 worknumber:1,
                 workmany:1,
                 presentnum:[
@@ -536,7 +628,9 @@
             }).then((res)=> {
                 this.alllist = res.data.content.data
                 this.workmany = this.worknumber
-                this.playlist = res.data.content.data.slice(this.worknumber-1,this.worknumber);
+                // this.playlist=res.data.content.data;
+                // this.playlist = [1,2,3,4,5,6,7,8,9,10]
+                // this.playlist = res.data.content.data.slice(this.worknumber-1,this.worknumber);
                 
                 // if(this.worknumber===1){
                 //     this.firstchange=true
@@ -551,26 +645,37 @@
                 //     this.worknumber=2;
                 // }
 
-                this.playlist.map((value,index,arr)=>{
-                    if(this.worknumber-1===index){
-                        this.currentjf = value.total_vote
-                        this.myvoice = value.works_voice
-                        if(value.voice_second=='0'){
-                            this.hasvoice=false
-                        }else{
-                            this.hasvoice=true
-                        }
-                    }
-                })
+                // this.playlist.map((value,index,arr)=>{
+                //     if(this.worknumber-1===index){
+                //         this.currentjf = value.total_vote
+                //         this.myvoice = value.works_voice
+                //         if(value.voice_second=='0'){
+                //             this.hasvoice=false
+                //         }else{
+                //             this.hasvoice=true
+                //         }
+                //     }
+                // })
 
                 this.$nextTick(()=>{
                     setTimeout(()=> {
                         this.coming=false
-                        // this.playlist=this.alllist;
-                    }, 5200);
-                    setTimeout(()=> {
                         this.playlist=this.alllist;
-                    }, 5200);
+                    }, 6000);
+                    setTimeout(()=> {
+                        // this.playlist=this.alllist
+                        this.playlist.map((value,index,arr)=>{
+                            if(this.worknumber-1===index){
+                                this.currentjf = value.total_vote
+                                this.myvoice = value.works_voice
+                                if(value.voice_second=='0'){
+                                    this.hasvoice=false
+                                }else{
+                                    this.hasvoice=true
+                                }
+                            }
+                        })
+                    }, 6000);
                 })
 
             }).then(()=>{
@@ -584,7 +689,6 @@
                             this.voiceplay=false
                             this.play=true
                         }, 4300);
-
                         
                     }else{
                         this.uservoiceplay();
@@ -623,6 +727,12 @@
                     }
                 })
             })
+
+            if(this.myaudio){
+                this.myaudio.addEventListener('ended', ()=> {
+                    this.voiceplay=false
+                }, false);
+            }
             
 
         },
@@ -841,23 +951,27 @@
                 }, 100);
             },
             prev(){
-                this.painting=true
-                setTimeout(()=> {
-                    this.painting=false
-                }, 1000);
-                document.getElementById('btnright').style.visibility="visible";
-                // this.worknumber=this.workmany
+                // 关闭音频
+                if(this.voiceplay===true){
+                    this.myaudio.pause();
+                    this.voiceplay=false
+                }
+
                 
                 if( document.querySelector(".room--current")){
                     document.querySelector(".room--current").className='room';
                 }
-                this.playlist = this.alllist
+                // this.playlist = this.alllist
 
+                // 箭头按钮控制
+                document.getElementById('btnright').style.visibility="visible";
                 if(this.gallerypage===1&&this.workmany===2){
                     document.getElementById('btnleft').style.visibility="hidden";
                 }
 
+
                 if(this.workmany===1){
+                    
                     if(this.gallerypage>1){
                         this.gallerypage-=1 
                         setTimeout(()=> {
@@ -913,61 +1027,76 @@
                 })
             },
             next(){
-                this.painting=true
-                setTimeout(()=> {
-                    this.painting=false
-                }, 1000);
+                // this.painting=true
+                // setTimeout(()=> {
+                //     this.painting=false
+                // }, 1000);
                 // this.worknumber = this.workmany;
-                if(document.querySelector(".room--current")&&this.workmany>1){
-                    document.querySelector(".room--current").className='room';
-                }
-                // this.playlist = this.alllist
-                document.getElementById('btnleft').style.visibility="visible";
+                // if(this.workmany===2){
+                //     setTimeout(function() {
+                //         document.querySelector('.room').style.opacity=1
+                //     }, 1000);  
+                // }
 
-                if(this.workmany===10){
-                    this.gallerypage+=1   
-                    setTimeout(()=> {
-                         this.nextgroup();
-                    }, 700);
-                    setTimeout(()=> {
-                        this.roomchange();
-                        this.presentdata();
-                        this.authorinfo();
-                    }, 800);
-                }
+                // if(this.voiceplay===true){
+                //     this.myaudio.pause();
+                //     this.voiceplay=false
+                // }
+
+
+                // if(document.querySelector(".room--current")&&this.workmany>1){
+                //     document.querySelector(".room--current").className='room';
+                // }
+                // // this.playlist = this.alllist
+                // document.getElementById('btnleft').style.visibility="visible";
+
+                // if(this.workmany===10){
+                //     this.gallerypage+=1   
+                //     setTimeout(()=> {
+                //          this.nextgroup();
+                //     }, 700);
+                //     setTimeout(()=> {
+                //         this.roomchange();
+                //         this.presentdata();
+                //         this.authorinfo();
+                //     }, 800);
+                // }
                 
             
-                if(this.listlength<10&&this.listlength===this.worknumber-1){
-                    document.getElementById('btnright').style.visibility="hidden";
-                }
+                // if(this.listlength<10&&this.listlength===this.worknumber-1){
+                //     document.getElementById('btnright').style.visibility="hidden";
+                // }
                 
-                if(this.workmany<10){
-                    this.worknumber=this.worknumber+1
-                    // this.workmany=this.workmany+1
-                    if(this.workmany===1){
-                        setTimeout(()=> {
-                            this.workmany=this.workmany+1
-                        }, 600);
+                // if(this.workmany<10){
+                //     // this.worknumber=this.worknumber+1
+                //     // this.workmany=this.workmany+1
+                //     setTimeout(()=> {
+                //         this.workmany=this.workmany+1
+                //     }, 600);
+                //     if(this.workmany===1){
+                //         // setTimeout(()=> {
+                //         //     this.workmany=this.workmany+1
+                //         // }, 600);
                         
-                        setTimeout(()=> {
-                            this.roomchange();
-                            this.presentdata();
-                            this.authorinfo();
-                        }, 800);
-                    }else{
-                        this.workmany=this.workmany+1
-                    }
+                //         setTimeout(()=> {
+                //             this.roomchange();
+                //             this.presentdata();
+                //             this.authorinfo();
+                //         }, 800);
+                //     }else{
+                //         // this.workmany=this.workmany+1
+                //     }
 
-                    setTimeout(()=> {
-                        this.roomchange();
-                        this.presentdata();
-                        this.authorinfo();
-                    }, 800);
-                }
+                //     setTimeout(()=> {
+                //         this.roomchange();
+                //         this.presentdata();
+                //         this.authorinfo();
+                //     }, 800);
+                // }
 
-                if(this.workmany===2){
-                    this.playlist= this.alllist
-                }
+                // if(this.workmany===2){
+                //     this.playlist= this.alllist
+                // }
                 console.log(this.workmany)
 
 
