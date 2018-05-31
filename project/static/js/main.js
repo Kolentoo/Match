@@ -555,19 +555,24 @@
 	imagesLoaded(DOM.scroller, function() {
 		var extradelay = 1000;
 		// Slide out loader.
-		anime({
-			targets: DOM.loader,
-			duration: 600,
-			easing: 'easeInOutCubic',
-			delay: extradelay,
-			translateY: '-100%',
-			begin: function() {
-				init();
-			},
-			complete: function() {
-				DOM.loader.classList.remove('overlay--active');
-			}
-		});
+
+		setTimeout(function() {
+			
+		
+			anime({
+				targets: DOM.loader,
+				duration: 1000,
+				easing: 'easeInOutCubic',
+				delay: extradelay,
+				translateY: '-100%',
+				begin: function() {
+					init();
+				},
+				complete: function() {
+					DOM.loader.classList.remove('overlay--active');
+				}
+			});
+		}, 2000);
 	});
 
 })(window);

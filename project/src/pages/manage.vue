@@ -31,10 +31,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="voice" v-if="vupload">
+                <!--<div class="voice" v-if="vupload">
                     <div class="voice-con">
                         <img class="voice-icon" src="../public/images/voice.png" alt="">
                         <span class="seconds">11s</span>
+                    </div>
+                </div>-->
+                <div class="voice" v-if="picStatus==='yes'">
+                    <div class="voice-con clearfix">
+                        <p class="p1 fl">您的参赛证书</p>
+                        <p class="p2 fr" @click="card()">点击查看</p>
                     </div>
                 </div>
             </div>
@@ -84,6 +90,14 @@
             如有疑问拨打客服电话：<a href="tel:400-895-6006">400-895-6006</a>
         </p>
         <p class="hehe hide" @click="test()">test</p>
+        <div class="cardbox" v-if="cardshow">
+            <div class="cardcon tc">
+                <img class="vm cardpic g10" src="../public/images/prize.jpg" alt="">
+                <p class="cardname">{{info.childname}}</p>
+                <img class="vm cardclose" @click="cardoff()" src="../public/images/cardclose.png" alt="">
+            </div>
+        </div>
+        <div class="mask" v-if="cardshow"></div>
     </div>
 </template>
 
@@ -101,7 +115,8 @@
                 info:'',
                 picurl:'',
                 picStatus:'no',
-                upStatus:'novoice'
+                upStatus:'novoice',
+                cardshow:false
             }
         },
         created(){
@@ -200,6 +215,12 @@
             test(){
                 var mid = sessionStorage.getItem('tid'); 
                 window.location.href=`http://erp.dfth.com/index.php/Drawing/upload2.html?id=${mid}`
+            },
+            card(){
+                this.cardshow=true
+            },
+            cardoff(){
+                this.cardshow=false
             }
         }
     }
@@ -208,12 +229,15 @@
 <style scoped>
     body,html{background: #fff;}
     .manage {background: #fff;padding-bottom: 14rem;}
-    .manageTop {background:url('../public/images/bj1.jpg') no-repeat center center;background-size: 100%;min-height: 37.3rem;}
+    .manageTop {background:url('../public/images/bj1.jpg') no-repeat center center;background-size: cover;min-height: 37.3rem;}
     .manageTop h2{font-size: 3.8rem;color:#fff;padding:1.5rem 0;position: relative;top: 1.5rem;font-weight:bold;}
-    .voice {background: url('../public/images/decorate2.jpg') no-repeat center center;background-size: 100%;height: 7.9rem;
+    .voice {background: url('../public/images/bj10.jpg') no-repeat center center;background-size: 100%;height: 7.9rem;
     border-radius:0 0 1.5rem 1.5rem;margin-top: 2rem;}
-    .voice-con {width: 19rem;height: 5.8rem;margin:0 auto;border-radius:1.2rem;background: #fff;position: relative;top: 1rem;display: flex;
-    align-items: center;}
+    /*.voice-con {height: 5.8rem;margin:0 auto;border-radius:1.2rem;background: #fff;position: relative;top: 1rem;display: flex;
+    align-items: center;}*/
+    .voice-con .p1 {font-size: 3rem;margin-left: 3rem;text-shadow:0 0.2rem 1.2rem rgba(0,60,101,0.4);color:#fff;line-height: 7.9rem;}
+    .voice-con .p2 {width: 12.7rem;height: 5.2rem;font-size: 2.4rem;color:#31aaf6;text-align: center;border-radius:0.8rem;background: #fff;
+    box-shadow:0 0.4rem 1.2rem rgba(0,87,146,0.4);line-height: 5.2rem;margin-right: 3rem;position: relative;top: 0.2rem;}
     .voice-con .voice-icon {width: 2.3rem;margin-left: 2rem;}
     .voice-con .seconds {font-size: 2.4rem;color:#999;margin-left: 9rem;}
     .infor {background: #fff;border-radius:1.5rem;box-shadow:0 1.4rem 6rem rgba(3,15,39,0.14);width: 90%;margin:0 auto;
@@ -249,6 +273,11 @@
     .bottom {font-size: 2.8rem;color:#666;margin-top: 4rem;}
     .bottom a{color:#fd7555;}
     .hehe {width: 100%;height: 5rem;border:0.1rem solid #000;}
+    .cardbox {position: fixed;z-index:1000;top: 20%;left: 0;width: 100%;}
+    .cardbox .cardcon {width: 54.3rem;margin:0 auto;height: 76.7rem;}
+    .cardbox .cardname {font-size: 2.6rem;color:#333;position: absolute;top: 48%;left: 40%;font-weight:bold;}
+    .cardclose {width: 7.6rem;height: 7.6rem;margin-top: 6rem;}
+    .mask {background:rgba(0,0,0,0.5);position: fixed;z-index:500;width: 100%;height: 100%;top: 0;left: 0;}
     
 
 

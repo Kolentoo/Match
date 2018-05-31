@@ -299,6 +299,9 @@
             },
             gogallery(lid,rank){
                 this.$router.push(`gallery?${lid}with${rank}end`);
+                setTimeout(()=> {
+                    window.location.reload();
+                }, 200);
             }
         }
     }

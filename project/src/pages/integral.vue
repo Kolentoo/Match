@@ -93,7 +93,7 @@
                             if(res.data.status===1){
                                 this.hasmsg=true
                                 this.tipsmsg='分享成功'
-                                this.myjf =this.myjf+5
+                                this.myjf =parseInt(this.myjf)+5
                             }
                         })
                     
@@ -117,7 +117,7 @@
                         if(res.data.status===1){
                             this.hasmsg=true
                             this.tipsmsg='分享成功'
-                            this.myjf =this.myjf+5
+                            this.myjf =this.myjf =parseInt(this.myjf)+5
                         }
                     })
                 // 用户点击了分享后执行的回调函数

@@ -200,7 +200,7 @@
             <div :class="['room',workmany-1===idx?'room--current':'',{'room--current':coming}]" v-for="(room,idx) in playlist" :key="idx">
                 <p class="recorddata">{{room.id}}</p>
                 <div class="room__side room__side--back"> 
-                    <div class="workwrapper">
+                    <div :class="['workwrapper',{'painting':painting},{'romeing':coming}]">
                         <div class="picbox">
                             <div class="wborder g10">
                                 <div class="workbox g10">
@@ -430,19 +430,19 @@
                 removeroom:false,
                 hasmsg:false,
                 first:'',
-                loadover:false
-                
+                loadover:false,
+                painting:false
             }
         },
         created(){
 
-            let galleryload = sessionStorage.getItem('one');
-            if(!galleryload){
-                sessionStorage.setItem('one','one');
-                setTimeout(()=> {
-                    window.location.reload();
-                }, 300);
-            }
+            // let galleryload = sessionStorage.getItem('one');
+            // if(!galleryload){
+            //     sessionStorage.setItem('one','one');
+            //     setTimeout(()=> {
+            //         window.location.reload();
+            //     }, 300);
+            // }
             
             var curl = window.location.href;
             let localoid =localStorage.getItem('oid');
@@ -484,7 +484,7 @@
                             if(res.data.status===1){
                                 this.hasmsg=true
                                 this.tipsmsg='分享成功'
-                                this.tpperson.total = this.tpperson.total+5
+                                this.tpperson.total = parseInt(this.tpperson.total)+5
                             }
                         })
                 }
@@ -506,7 +506,7 @@
                         if(res.data.status===1){
                             this.hasmsg=true
                             this.tipsmsg='分享成功'
-                            this.tpperson.total = this.tpperson.total+5
+                            this.tpperson.total = parseInt(this.tpperson.total)+5
                         }
                     })
                 }
@@ -536,7 +536,6 @@
             }).then((res)=> {
                 this.alllist = res.data.content.data
                 this.workmany = this.worknumber
-                // console.log( this.workmany )
                 this.playlist = res.data.content.data.slice(this.worknumber-1,this.worknumber);
                 // if(this.worknumber===1){
                 //     this.firstchange=true
@@ -567,8 +566,7 @@
                     setTimeout(()=> {
                         this.coming=false
                         this.playlist=this.alllist;
-                        
-                    }, 5000);
+                    }, 2500);
                 })
 
             }).then(()=>{
@@ -577,10 +575,12 @@
                         
                         this.bj = new Audio();
                         this.bj.src='./static/audio/music.mp3';
-                        
-                        this.bj.play();
-                        this.voiceplay=false
-                        this.play=true
+                        setTimeout(()=> {
+                            this.bj.play();
+                            this.voiceplay=false
+                            this.play=true
+                        }, 4300);
+
                         
                     }else{
                         this.uservoiceplay();
@@ -630,27 +630,27 @@
 
             setTimeout(()=> {
                 this.removeroom=true;
-            }, 3500); 
+            }, 4500); 
 
             setTimeout(()=> {
                 this.action3=true;
-            }, 4000);            
+            }, 4800);            
             setTimeout(()=> {
                 this.action1=true;
                 this.action2=true;
-            }, 5000);
+            }, 5100);
             setTimeout(()=> {
                 this.usershow=true;
-            }, 5500);            
+            }, 5400);            
             setTimeout(()=> {
                 this.action5=true;
-            }, 6000);
+            }, 5700);
             setTimeout(()=> {
                 this.action4=true;
-            }, 6500);
+            }, 6000);
             setTimeout(()=> {
                 this.enter=true
-            }, 2000);
+            }, 5000);
 
             // setTimeout(()=> {
                 let source = document.getElementById('source');
@@ -801,7 +801,19 @@
                 })
             },
             uservoice(){
-                if(this.myaudio.paused){
+                // alert(this.voiceplay)
+                // if(this.myaudio.paused){
+                //     this.myaudio=new Audio();
+                //     this.myaudio.src=this.myvoice;
+                //     this.myaudio.play();
+                //     this.play=false
+                //     this.voiceplay=true
+                // }else{
+                //     this.myaudio.pause();
+                //     this.voiceplay=false
+                // }
+                if(this.voiceplay===false){
+                    this.myaudio=new Audio();
                     this.myaudio.src=this.myvoice;
                     this.myaudio.play();
                     this.play=false
@@ -814,20 +826,21 @@
             },
             indexgo(){
                 this.$router.push('acthome')
-                this.bj.pause();
-                this.play=false;
-                this.myaudio.pause();
-                this.voiceplay=false
+                setTimeout(()=> {
+                    window.location.reload();
+                }, 100);
             },
             rankgo(){
                 this.$router.push('work')
-                this.bj.pause();
-                this.play=false;
-                this.myaudio.pause();
-                this.voiceplay=false
+                setTimeout(()=> {
+                    window.location.reload();
+                }, 100);
             },
             prev(){
-
+                this.painting=true
+                setTimeout(()=> {
+                    this.painting=false
+                }, 1000);
                 document.getElementById('btnright').style.visibility="visible";
                 // this.worknumber=this.workmany
                 
@@ -857,7 +870,7 @@
                         this.roomchange();
                         this.presentdata();
                         this.authorinfo();
-                    }, 500);
+                    }, 800);
                 }
 
                 if(this.workmany>1){    
@@ -869,7 +882,7 @@
                     this.roomchange();
                     this.presentdata();
                     this.authorinfo();
-                }, 500);
+                }, 800);
             },
             prevgroup(){
                 this.$axios.get(`${test}/actives/picSayList`, {
@@ -896,11 +909,15 @@
                 })
             },
             next(){
+                this.painting=true
+                setTimeout(()=> {
+                    this.painting=false
+                }, 1000);
                 // this.worknumber = this.workmany;
                 if(document.querySelector(".room--current")&&this.workmany>1){
                     document.querySelector(".room--current").className='room';
                 }
-                this.playlist = this.alllist
+                // this.playlist = this.alllist
                 document.getElementById('btnleft').style.visibility="visible";
 
                 if(this.workmany===10){
@@ -1033,7 +1050,7 @@
                 setTimeout(()=> {
                         this.myaudio.play();
                         this.voiceplay=true
-                }, 2000);
+                }, 4000);
                 this.myaudio.addEventListener('ended', ()=> {
                     this.voiceplay=false
                 }, false);
@@ -1048,6 +1065,7 @@
 
 <style scoped>
     /*画框*/
+
     .gallery {background: #cecece;overflow-y:hidden;-webkit-transform-style: preserve-3d;transform-style: preserve-3d;transform: translateZ(0);
     transform: translate3d(0,0,0);}
     .recorddata {opacity: 0;z-index:-1;}
@@ -1057,7 +1075,9 @@
     .gallery .entering {z-index:100;}
     .wborder {border:1.7rem solid #fff;box-shadow:0 1rem 2.5rem rgba(3,15,39,0.14);margin:0 1.5rem;display: flex;align-items: center;}
     .workbox {background: #fff;padding: 3rem;box-shadow:0 0 1.5rem 0.1rem rgba(0,0,0,0.3) inset;}
-    /*.workwrapper {}*/
+    .workwrapper {transition:all ease 0.8s;opacity: 1;}
+    .painting {opacity: 0;}
+    .romeing {opacity: 0;}
     .picbox {align-items: center;height: 100%;overflow: hidden;display:flex;margin: -40vh auto 0;width: 60vw;}
     .picinner {overflow: hidden;}
     .workpic {width: 100%;box-shadow:0 0 0 0.2rem rgba(0,0,0,0.2);vertical-align: middle;max-height:35vh;}
@@ -1147,7 +1167,7 @@
     .presentbox .option {height: 11rem;padding:0 2rem;}
     .presentbox .option .yourmoney {color:#c58500;font-size: 2.8rem;line-height: 11rem;}
     .presentbox .option .yourmoney .moneypic {margin-top: -0.3rem;}
-    .btngroup .btn {width: 15rem;margin:1rem 0 0 1rem;position: relative;text-align: center;}
+    .btngroup .btn {width: 15rem;margin:1.5rem 0 0 1rem;position: relative;text-align: center;}
     .btngroup .btn .p1 {font-size: 2.6rem;color:#fff;text-shadow:0.2rem 0.4rem 0.4rem rgba(43,21,0,0.2);width: 100%;height: 100%;
     top:2rem;left: 0;position: absolute;}
     .btngroup .btn .btnpic1 {width: 100%;}
@@ -1187,7 +1207,7 @@
 
     .mask {background: rgba(0,0,0,0.5);width: 100%;height: 100%;z-index:900;position: fixed;top: 0;left: 0;}
     .nav {z-index:500;}
-    .nopresent {font-size: 2.4rem;margin-top: 1rem;color:#666;}
+    .nopresent {font-size: 2.4rem;margin-top: 1rem;color:#999;text-align: center;}
     .giftbox {position: fixed;z-index:-1;width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;top: 0;
     left: 0;}
     .giftsend {z-index:1000;}
