@@ -226,7 +226,8 @@
             <div :class="['room',workmany-1===idx?'room--current me':'zindex']" v-for="(room,idx) in playlist" :key="idx">
                 <p class="recorddata">{{room.id}}</p>
                 <div class="room__side room__side--back"> 
-                    <div :class="['workwrapper',{'painting':painting},{'romeing':coming}]">
+                    <!--<div :class="['workwrapper',{'painting':painting},{'romeing':coming}]">-->
+                        <div :class="['workwrapper',{'painting':painting}]">
                         <div class="picbox">
                             <div class="wborder g10">
                                 <div class="workbox g10">
@@ -245,72 +246,6 @@
                 <div class="room__side room__side--right"></div>
                 <div class="room__side room__side--bottom"></div>
             </div>
-            <!--<div class="room ">
-                <p class="recorddata"></p>
-                <div class="room__side room__side--back"> 
-                    <div class="workwrapper hide">
-                        <div class="picbox">
-                            <div class="wborder g10">
-                                <div class="workbox g10">
-                                    <div class="picinner g10">
-                                        <img class="workpic vm g10" src="" alt="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="information">
-                            <div class="work-name"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="room__side room__side--left"></div>
-                <div class="room__side room__side--right"></div>
-                <div class="room__side room__side--bottom"></div>
-            </div>
-            <div class="room room--current">
-                <p class="recorddata"></p>
-                <div class="room__side room__side--back"> 
-                    <div class="workwrapper hide">
-                        <div class="picbox">
-                            <div class="wborder g10">
-                                <div class="workbox g10">
-                                    <div class="picinner g10">
-                                        <img class="workpic vm g10" src="" alt="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="information">
-                            <div class="work-name"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="room__side room__side--left"></div>
-                <div class="room__side room__side--right"></div>
-                <div class="room__side room__side--bottom"></div>
-            </div>
-            <div class="room">
-                <p class="recorddata"></p>
-                <div class="room__side room__side--back"> 
-                    <div class="workwrapper hide">
-                        <div class="picbox">
-                            <div class="wborder g10">
-                                <div class="workbox g10">
-                                    <div class="picinner g10">
-                                        <img class="workpic vm g10" src="" alt="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="information">
-                            <div class="work-name"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="room__side room__side--left"></div>
-                <div class="room__side room__side--right"></div>
-                <div class="room__side room__side--bottom"></div>
-            </div>-->
         </div>
 
         
@@ -460,29 +395,7 @@
                     autoplay:true
                 },
                 gallerypage:1,
-                playlist:[
-                    // {
-                    //     "childname":"",
-                    //     "head_img":"",
-                    //     "works_img":"",
-                    //     "works_name":"",
-                    //     "voice_second":""
-                    // },
-                    // {
-                    //     "childname":"",
-                    //     "head_img":"",
-                    //     "works_img":"",
-                    //     "works_name":"",
-                    //     "voice_second":""
-                    // },
-                    // {
-                    //     "childname":"",
-                    //     "head_img":"",
-                    //     "works_img":"",
-                    //     "works_name":"",
-                    //     "voice_second":""
-                    // }
-                ],
+                playlist:[],
                 alllist:[],
                 worknumber:1,
                 workmany:1,
@@ -526,15 +439,6 @@
             }
         },
         created(){
-
-            // let galleryload = sessionStorage.getItem('one');
-            // if(!galleryload){
-            //     sessionStorage.setItem('one','one');
-            //     setTimeout(()=> {
-            //         window.location.reload();
-            //     }, 300);
-            // }
-            
             var curl = window.location.href;
             let localoid =localStorage.getItem('oid');
             if(localoid){
@@ -615,9 +519,16 @@
                 this.gallerypage=1
                 this.worknumber = parseInt(this.rank);
             }else{
-                this.gallerypage = parseInt(this.rank.charAt(0))+1;
-                this.worknumber = parseInt(this.rank.charAt(1));
+                this.gallerypage = parseInt(this.rank.charAt(0));
+                
+                if(parseInt(this.rank.charAt(1))===0){
+                    this.worknumber=10
+                }else{
+                    this.worknumber = parseInt(this.rank.charAt(1))
+                    
+                }
             }
+            console.log(this.worknumber)
 
             // 列表
             this.$axios.get(`${test}/actives/picSayList`, {
@@ -659,7 +570,7 @@
                 // this.$nextTick(()=>{
                     setTimeout(()=> {
                         this.coming=false
-                        this.playlist=this.alllist;
+                        // this.playlist=this.alllist;
                         this.playlist.map((value,index,arr)=>{
                             if(this.worknumber-1===index){
                                 this.currentjf = value.total_vote
@@ -671,7 +582,7 @@
                                 }
                             }
                         })
-                    }, 5500);
+                    }, 4500);
                 // })
 
             }).then(()=>{
@@ -755,22 +666,23 @@
             setTimeout(()=> {
                 this.usershow=true;
             }, 4400);            
-            setTimeout(()=> {
-                this.action5=true;
-            }, 4600);
+            // setTimeout(()=> {
+                
+            // }, 6000);
             setTimeout(()=> {
                 this.action4=true;
-            }, 6500);
+            }, 4600);
             setTimeout(()=> {
                 this.enter=true
-            }, 3000);
+            }, 2600);
 
             setTimeout(()=> {
                 let source = document.getElementById('source');
                 let sourceGroup = document.createElement('script')
                 sourceGroup.src='./static/js/main.js'
                 source.appendChild(sourceGroup);
-            }, 6500);
+                this.action5=true;
+            }, 5500);
 
             if(this.rank=='1'){
                 document.getElementById('btnleft').style.visibility="hidden";
@@ -829,7 +741,7 @@
                             setTimeout(()=> {
                                 this.giftsend = false 
                                 sending.src='#'
-                            }, 7000);
+                            }, 6200);
                         }else if(presenttype===2){
                             sending.src='./static/img/gift2.gif?'+mathrandom
                             this.author.total_vote = parseInt(this.author.total_vote)+30
@@ -840,7 +752,7 @@
                             setTimeout(()=> {
                                 this.giftsend = false 
                                 sending.src='#'
-                            }, 7000);
+                            }, 4200);
                         }else{
                             sending.src='./static/img/gift3.gif?'+mathrandom
                             this.author.total_vote = parseInt(this.author.total_vote)+50
@@ -851,7 +763,7 @@
                             setTimeout(()=> {
                                 this.giftsend = false 
                                 sending.src='#'
-                            }, 7000);
+                            }, 8000);
                         }
 
                     }
@@ -950,6 +862,10 @@
                 }, 100);
             },
             prev(){
+                this.painting=true
+                setTimeout(()=> {
+                    this.painting=false
+                }, 1400);
                 // 关闭音频
                 if(this.voiceplay===true){
                     this.myaudio.pause();
@@ -1005,7 +921,7 @@
                     if(document.querySelector(".me")){
                         document.querySelector(".me").style.opacity=1
                     }
-                }, 800);
+                }, 1000);
             },
             prevgroup(){
                 this.$axios.get(`${test}/actives/picSayList`, {
@@ -1032,10 +948,10 @@
                 })
             },
             next(){
-                // this.painting=true
-                // setTimeout(()=> {
-                //     this.painting=false
-                // }, 1000);
+                this.painting=true
+                setTimeout(()=> {
+                    this.painting=false
+                }, 1400);
                 // this.worknumber = this.workmany;
                 // if(this.workmany===2){
                 //     setTimeout(function() {
@@ -1122,7 +1038,7 @@
                     if(document.querySelector(".me")){
                         document.querySelector(".me").style.opacity=1
                     }
-                }, 800);
+                }, 1000);
                 
 
             },
@@ -1231,7 +1147,7 @@
     .gallery .entering {z-index:100;}
     .wborder {border:1.7rem solid #fff;box-shadow:0 1rem 2.5rem rgba(3,15,39,0.14);margin:0 1.5rem;display: flex;align-items: center;}
     .workbox {background: #fff;padding: 3rem;box-shadow:0 0 1.5rem 0.1rem rgba(0,0,0,0.3) inset;}
-    .workwrapper {transition:all ease 0.8s;opacity: 1;}
+    .workwrapper {opacity: 1;}
     .painting {opacity: 0;}
     .romeing {opacity: 0;}
     .picbox {align-items: center;height: 100%;overflow: hidden;display:flex;margin: -40vh auto 0;width: 60vw;}
