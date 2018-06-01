@@ -196,7 +196,7 @@
         </symbol>
         </svg>
         <div :class="['container',{'entering':enter}]" @click="popcancel()">
-        <div class="scroller" v-if="coming">
+        <div :class="['scroller1']" v-if="coming">
             <div class="room room--current">
                 <p class="recorddata"></p>
                 <div class="room__side room__side--back"> 
@@ -220,10 +220,10 @@
                 <div class="room__side room__side--bottom"></div>
             </div>
         </div>
-        <div class="scroller" id="scroller" v-if="!coming">
+        <div :class="['scroller']" id="scroller" v-show="!coming">
         <!--<div class="scroller" id="scroller">-->
             <!--<div :class="['room',workmany-1===idx?'room--current':'',{'room--current':coming}]" v-for="(room,idx) in playlist" :key="idx">-->
-            <div :class="['room',workmany-1===idx?'room--current':'']" v-for="(room,idx) in playlist" :key="idx">
+            <div :class="['room',workmany-1===idx?'room--current me':'zindex']" v-for="(room,idx) in playlist" :key="idx">
                 <p class="recorddata">{{room.id}}</p>
                 <div class="room__side room__side--back"> 
                     <div :class="['workwrapper',{'painting':painting},{'romeing':coming}]">
@@ -388,7 +388,7 @@
     </nav>
     </div>
     <!-- /content -->
-    <div class="overlay overlay--loader overlay--active">
+    <div id="loader" :class="['overlay overlay--loader']">
     <div class="loader">
         <div></div>
         <div></div>
@@ -522,7 +522,6 @@
                 removeroom:false,
                 hasmsg:false,
                 first:'',
-                loadover:false,
                 painting:false
             }
         },
@@ -657,13 +656,10 @@
                 //     }
                 // })
 
-                this.$nextTick(()=>{
+                // this.$nextTick(()=>{
                     setTimeout(()=> {
                         this.coming=false
                         this.playlist=this.alllist;
-                    }, 6000);
-                    setTimeout(()=> {
-                        // this.playlist=this.alllist
                         this.playlist.map((value,index,arr)=>{
                             if(this.worknumber-1===index){
                                 this.currentjf = value.total_vote
@@ -675,8 +671,8 @@
                                 }
                             }
                         })
-                    }, 6000);
-                })
+                    }, 5500);
+                // })
 
             }).then(()=>{
                 wx.ready(()=>{ 
@@ -743,35 +739,38 @@
             document.documentElement.className = 'js'
 
             setTimeout(()=> {
-                this.removeroom=true;
-            }, 4500); 
+                document.getElementById('loader').className='overlay overlay--loader overlay--active'
+            }, 2300);
+            // setTimeout(()=> {
+            //     this.removeroom=true;
+            // }, 4500); 
 
             setTimeout(()=> {
                 this.action3=true;
-            }, 4800);            
+            }, 4000);            
             setTimeout(()=> {
                 this.action1=true;
                 this.action2=true;
-            }, 5100);
+            }, 4200);
             setTimeout(()=> {
                 this.usershow=true;
-            }, 5400);            
+            }, 4400);            
             setTimeout(()=> {
                 this.action5=true;
-            }, 5700);
+            }, 4600);
             setTimeout(()=> {
                 this.action4=true;
-            }, 6000);
+            }, 6500);
             setTimeout(()=> {
                 this.enter=true
             }, 3000);
 
-            // setTimeout(()=> {
+            setTimeout(()=> {
                 let source = document.getElementById('source');
                 let sourceGroup = document.createElement('script')
                 sourceGroup.src='./static/js/main.js'
                 source.appendChild(sourceGroup);
-            // }, 500);
+            }, 6500);
 
             if(this.rank=='1'){
                 document.getElementById('btnleft').style.visibility="hidden";
@@ -1001,6 +1000,12 @@
                     this.presentdata();
                     this.authorinfo();
                 }, 800);
+
+                setTimeout(function() {
+                    if(document.querySelector(".me")){
+                        document.querySelector(".me").style.opacity=1
+                    }
+                }, 800);
             },
             prevgroup(){
                 this.$axios.get(`${test}/actives/picSayList`, {
@@ -1023,7 +1028,7 @@
                             }
                         }
                     })
-                    
+                     
                 })
             },
             next(){
@@ -1038,68 +1043,86 @@
                 //     }, 1000);  
                 // }
 
-                // if(this.voiceplay===true){
-                //     this.myaudio.pause();
-                //     this.voiceplay=false
-                // }
+                if(this.voiceplay===true){
+                    this.myaudio.pause();
+                    this.voiceplay=false
+                }
+                
+                if(document.querySelector(".room--current")&&this.workmany>1){
+                    document.querySelector(".room--current").className='room';
+                    
+                }
 
 
-                // if(document.querySelector(".room--current")&&this.workmany>1){
-                //     document.querySelector(".room--current").className='room';
-                // }
-                // // this.playlist = this.alllist
-                // document.getElementById('btnleft').style.visibility="visible";
+                
+                
+                // this.playlist = this.alllist
+                document.getElementById('btnleft').style.visibility="visible";
 
-                // if(this.workmany===10){
-                //     this.gallerypage+=1   
-                //     setTimeout(()=> {
-                //          this.nextgroup();
-                //     }, 700);
-                //     setTimeout(()=> {
-                //         this.roomchange();
-                //         this.presentdata();
-                //         this.authorinfo();
-                //     }, 800);
-                // }
+                if(this.workmany===10){
+                    // this.workmany=1
+                    this.gallerypage+=1   
+                    // setTimeout(()=> {
+                         this.nextgroup();
+                    // }, 500);
+                    // setTimeout(()=> {
+                    //     this.roomchange();
+                    //     this.presentdata();
+                    //     this.authorinfo();
+                    // }, 800);
+                }
                 
             
-                // if(this.listlength<10&&this.listlength===this.worknumber-1){
-                //     document.getElementById('btnright').style.visibility="hidden";
-                // }
+                if(this.listlength<10&&this.listlength===this.worknumber-1){
+                    document.getElementById('btnright').style.visibility="hidden";
+                }
                 
-                // if(this.workmany<10){
-                //     // this.worknumber=this.worknumber+1
-                //     // this.workmany=this.workmany+1
-                //     setTimeout(()=> {
-                //         this.workmany=this.workmany+1
-                //     }, 600);
-                //     if(this.workmany===1){
-                //         // setTimeout(()=> {
-                //         //     this.workmany=this.workmany+1
-                //         // }, 600);
+                if(this.workmany<10){
+                    // this.worknumber=this.worknumber+1
+                    // this.workmany=this.workmany+1
+                    // setTimeout(()=> {
+                        // this.workmany=this.workmany+1
+                    // }, 600);
+                    if(this.workmany===1){
+                        setTimeout(()=> {
+                            this.workmany=this.workmany+1
+                        }, 600);
                         
-                //         setTimeout(()=> {
-                //             this.roomchange();
-                //             this.presentdata();
-                //             this.authorinfo();
-                //         }, 800);
-                //     }else{
-                //         // this.workmany=this.workmany+1
-                //     }
+                        // setTimeout(()=> {
+                        //     this.roomchange();
+                        //     this.presentdata();
+                        //     this.authorinfo();
+                        // }, 800);
+                    }else{
+                        this.workmany=this.workmany+1
+                    }
+                    console.log(this.workmany)
 
-                //     setTimeout(()=> {
-                //         this.roomchange();
-                //         this.presentdata();
-                //         this.authorinfo();
-                //     }, 800);
-                // }
+                    // setTimeout(()=> {
+                    //     this.roomchange();
+                    //     this.presentdata();
+                    //     this.authorinfo();
+                    // }, 800);
+                }
 
                 // if(this.workmany===2){
                 //     this.playlist= this.alllist
                 // }
-                console.log(this.workmany)
 
 
+                
+                setTimeout(()=> {
+                    this.roomchange();
+                    this.presentdata();
+                    this.authorinfo();
+                }, 800);
+
+
+                setTimeout(function() {
+                    if(document.querySelector(".me")){
+                        document.querySelector(".me").style.opacity=1
+                    }
+                }, 800);
                 
 
             },
@@ -1125,6 +1148,7 @@
                             }
                         }
                     })
+                    console.log(this.workmany)
                     
                 })
             },
@@ -1198,7 +1222,6 @@
 
 <style scoped>
     /*画框*/
-
     .gallery {background: #cecece;overflow-y:hidden;-webkit-transform-style: preserve-3d;transform-style: preserve-3d;transform: translateZ(0);
     transform: translate3d(0,0,0);}
     .recorddata {opacity: 0;z-index:-1;}
@@ -1345,4 +1368,5 @@
     left: 0;}
     .giftsend {z-index:1000;}
     .giftbox img{width: 100%;position: relative;top: -10%;}
+    .zindex {z-index:-1;}
 </style>

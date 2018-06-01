@@ -1,7 +1,7 @@
 <template>
     <div class="gallery" id="gallery">
 
-                <div class="top">
+        <!--<div class="top">
             <img :class="['indexbtn vm',{'action1':action1}]" @click="indexgo()" src="../public/images/indexbtn.png" alt="">
             <img :class="['rankingbtn vm',{'action2':action2}]" @click="rankgo()" src="../public/images/rankingbtn.png" alt="">
             <img :class="['musicbtn vm',{'musicon':play},{'action3':action3}]" @click="musiccontrols()" src="../public/images/music.png" alt="">
@@ -170,7 +170,7 @@
         </div>
 
         <div class="mask" v-if="mk"></div>
-        <tips :msg="tipsmsg" v-if="hasmsg"></tips>
+        <tips :msg="tipsmsg" v-if="hasmsg"></tips>-->
 
 
 <svg class="hidden">
@@ -197,23 +197,23 @@
   <path d="M10,0C4.5,0,0,4.5,0,10s4.5,10,10,10s10-4.5,10-10S15.5,0,10,0z M10,18.6c-4.7,0-8.6-3.9-8.6-8.6S5.3,1.4,10,1.4s8.6,3.9,8.6,8.6S14.7,18.6,10,18.6z M10.7,5C10.9,5.2,11,5.5,11,5.7s-0.1,0.5-0.3,0.7c-0.2,0.2-0.4,0.3-0.7,0.3c-0.3,0-0.5-0.1-0.7-0.3C9.1,6.2,9,6,9,5.7S9.1,5.2,9.3,5C9.5,4.8,9.7,4.7,10,4.7C10.3,4.7,10.5,4.8,10.7,5z M9.3,8.3h1.4v7.2H9.3V8.3z"/>
 </symbol>
 </svg>
-<div :class="['container',{'entering':enter}]" @click="popcancel()">
-  <div class="scroller">
-            <div :class="['room',workmany-1===idx?'room--current':'']" v-for="(room,idx) in playlist" :key="idx">
-                <p class="recorddata">{{room.id}}</p>
+<div :class="['container',{'entering':enter}]" >
+        <!--<div class="scroller" v-if="coming">
+            <div class="room room--current">
+                <p class="recorddata"></p>
                 <div class="room__side room__side--back"> 
-                    <div :class="['workwrapper']">
+                    <div class="workwrapper hide">
                         <div class="picbox">
                             <div class="wborder g10">
                                 <div class="workbox g10">
                                     <div class="picinner g10">
-                                        <img class="workpic vm g10" :src="room.works_img" alt="">
+                                        <img class="workpic vm g10" src="" alt="">
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="information">
-                            <div class="work-name">{{room.works_name}}</div>
+                            <div class="work-name"></div>
                         </div>
                     </div>
                 </div>
@@ -221,6 +221,30 @@
                 <div class="room__side room__side--right"></div>
                 <div class="room__side room__side--bottom"></div>
             </div>
+        </div>-->
+  <div class="scroller" v-if="coming">
+        <div :class="['room',workmany-1===idx?'room--current':'']" v-for="(room,idx) in playlist" :key="idx">
+            <p class="recorddata">{{room.id}}</p>
+            <div class="room__side room__side--back"> 
+                <div :class="['workwrapper']">
+                    <div class="picbox">
+                        <div class="wborder g10">
+                            <div class="workbox g10">
+                                <div class="picinner g10">
+                                    <img class="workpic vm g10" :src="room.works_img" alt="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="information">
+                        <div class="work-name">{{room.works_name}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="room__side room__side--left"></div>
+            <div class="room__side room__side--right"></div>
+            <div class="room__side room__side--bottom"></div>
+        </div>
   </div>
 </div>
 <!-- /container -->
@@ -320,6 +344,7 @@
     export default{
         data(){
             return{
+                coming:true,
                 oid:'',
                 action1:false,
                 action2:false,
@@ -652,6 +677,7 @@
             if(this.rank=='1'){
                 document.getElementById('btnleft').style.visibility="hidden";
             }
+
 
             setTimeout(()=> {
                 this.authorinfo();

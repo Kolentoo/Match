@@ -2,6 +2,7 @@
 ;(function(window) {
 	'use strict';
 
+	
 	// From https://davidwalsh.name/javascript-debounce-function.
 	function debounce(func, wait, immediate) {
 		var timeout;
@@ -283,7 +284,8 @@
 		// Position the next room.
 		var nextRoom = DOM.rooms[currentRoom];
 		nextRoom.style.transform = 'translate3d(' + (dir === 'next' ? 100 : -100) + '%,0,0) translate3d(' + (dir === 'next' ? 1 : -1) + 'px,0,0)' ;
-		nextRoom.style.opacity = 1;			
+		nextRoom.style.opacity = 1;		
+		// nextRoom.style.opacity = 0;			
 
 		
 		// Move back.
@@ -294,7 +296,7 @@
 		})
 		.then(function() {
 			// Update current room class.
-			nextRoom.classList.add('room--current');
+			// nextRoom.classList.add('room--current');
 			room.classList.remove('room--current');
 			room.style.opacity = 0;
 
@@ -559,16 +561,16 @@
 			
 		
 			anime({
-				targets: DOM.loader,
-				duration: 1000,
-				easing: 'easeInOutCubic',
-				delay: extradelay,
-				translateY: '-100%',
+				// targets: DOM.loader,
+				// duration: 1000,
+				// easing: 'easeInOutCubic',
+				// delay: extradelay,
+				// translateY: '-100%',
 				begin: function() {
 					init();
 				},
 				complete: function() {
-					DOM.loader.classList.remove('overlay--active');
+					// DOM.loader.classList.remove('overlay--active');
 				}
 			});
 		}, 500);
