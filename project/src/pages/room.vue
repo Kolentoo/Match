@@ -1,5 +1,5 @@
 <template>
-    <div class="gallery" id="gallery">
+    <div :class="['room gallery']">
         <div class="top">
             <img :class="['indexbtn vm',{'action1':action1}]" @click="indexgo()" src="../public/images/indexbtn.png" alt="">
             <img :class="['rankingbtn vm',{'action2':action2}]" @click="rankgo()" src="../public/images/rankingbtn.png" alt="">
@@ -103,21 +103,6 @@
             </div>
         </div>
 
-        <div :class="['userbox',{'voiceshow':hasvoice},{'usershow':usershow}]" >
-            <div class="user-info clearfix">
-                <div class="user-txt fl" @click="information(author.id)">
-                    <img class="userpic vm" :src="author.head_img" alt="">
-                    <span class="username">{{author.childname}}</span>
-                    <img class="arrow vm" src="../public/images/arrowright.png" alt="">
-                </div>
-                <div class="user-voice fr" v-if="hasvoice" @click="uservoice()">
-                    <img v-if="!voiceplay" class="voicepic vm" src="../public/images/voice.png" alt="">
-                    <img v-if="voiceplay" class="voicepic2 vm" src="../public/images/voice2.gif" alt="">
-                    <span class="time">{{author.voice_second}}s</span>
-                </div>
-            </div>
-        </div>
-
         <div :class="['giftbox',{'giftsend':giftsend}]">
             <img id="sending" class="vm" src="" alt="">
         </div>
@@ -171,171 +156,51 @@
         <div class="mask" v-if="mk"></div>
         <tips :msg="tipsmsg" v-if="hasmsg"></tips>
 
-        <svg class="hidden">
-        <symbol id="icon-arrow" viewBox="0 0 24 24">
-        <title></title>
-        <polygon points="6.3,12.8 20.9,12.8 20.9,11.2 6.3,11.2 10.2,7.2 9,6 3.1,12 9,18 10.2,16.8 "/>
-        </symbol>
-        <symbol id="icon-drop" viewBox="0 0 24 24">
-        <title></title>
-        <path d="M12,21c-3.6,0-6.6-3-6.6-6.6C5.4,11,10.8,4,11.4,3.2C11.6,3.1,11.8,3,12,3s0.4,0.1,0.6,0.3c0.6,0.8,6.1,7.8,6.1,11.2C18.6,18.1,15.6,21,12,21zM12,4.8c-1.8,2.4-5.2,7.4-5.2,9.6c0,2.9,2.3,5.2,5.2,5.2s5.2-2.3,5.2-5.2C17.2,12.2,13.8,7.3,12,4.8z"/>
-        <path d="M12,18.2c-0.4,0-0.7-0.3-0.7-0.7s0.3-0.7,0.7-0.7c1.3,0,2.4-1.1,2.4-2.4c0-0.4,0.3-0.7,0.7-0.7c0.4,0,0.7,0.3,0.7,0.7C15.8,16.5,14.1,18.2,12,18.2z"/>
-        </symbol>
-        <symbol id="icon-menu" viewBox="0 0 24 24">
-        <title></title>
-        <path d="M24,5.8H0v-2h24V5.8z M19.8,11H4.2v2h15.6V11z M24,18.2H0v2h24V18.2z"/>
-        </symbol>
-        <symbol id="icon-cross" viewBox="0 0 24 24">
-        <title></title>
-        <path d="M13.4,12l7.8,7.8l-1.4,1.4l-7.8-7.8l-7.8,7.8l-1.4-1.4l7.8-7.8L2.7,4.2l1.4-1.4l7.8,7.8l7.8-7.8l1.4,1.4L13.4,12z"/>
-        </symbol>
-        <symbol id="icon-info" viewBox="0 0 20 20">
-        <title></title>
-        <circle style="fill:#fff" cx="10" cy="10" r="9.1"/>
-        <path d="M10,0C4.5,0,0,4.5,0,10s4.5,10,10,10s10-4.5,10-10S15.5,0,10,0z M10,18.6c-4.7,0-8.6-3.9-8.6-8.6S5.3,1.4,10,1.4s8.6,3.9,8.6,8.6S14.7,18.6,10,18.6z M10.7,5C10.9,5.2,11,5.5,11,5.7s-0.1,0.5-0.3,0.7c-0.2,0.2-0.4,0.3-0.7,0.3c-0.3,0-0.5-0.1-0.7-0.3C9.1,6.2,9,6,9,5.7S9.1,5.2,9.3,5C9.5,4.8,9.7,4.7,10,4.7C10.3,4.7,10.5,4.8,10.7,5z M9.3,8.3h1.4v7.2H9.3V8.3z"/>
-        </symbol>
-        </svg>
-        <div :class="['container',{'entering':enter}]" @click="popcancel()">
-        <div :class="['scroller1']" v-if="coming">
-            <div class="room room--current">
-                <p class="recorddata"></p>
-                <div class="room__side room__side--back"> 
-                    <div class="workwrapper hide">
-                        <div class="picbox">
-                            <div class="wborder g10">
-                                <div class="workbox g10">
-                                    <div class="picinner g10">
-                                        <img class="workpic vm g10" src="" alt="">
-                                    </div>
+        <swiper :options="swiperOption" ref="mySwiper">
+            <!-- slides -->
+            <swiper-slide v-for="(room,idx) in playlist" :key="idx">
+                <img :class="['bjpic vm',{'coming':coming}]" src="../../src/public/images/bj12.png" alt="">
+                <p class="recorddata hide">{{room.id}}</p>
+                <div class="roominner">
+                    <div class="picbox">
+                        <div class="wborder g10">
+                            <div class="workbox g10">
+                                <div class="picinner g10">
+                                    <img class="workpic vm g10" :src="room.works_img" alt="">
                                 </div>
                             </div>
                         </div>
-                        <div class="information">
-                            <div class="work-name"></div>
+                    </div>
+                    <div class="information">
+                        <div class="work-name">{{room.works_name}}</div>
+                    </div>
+                </div>
+                <div :class="['userbox',{'voiceshow':hasvoice},{'usershow':usershow}]" >
+                    <div class="user-info clearfix">
+                        <div class="user-txt fl" @click="information(author.id)">
+                            <img class="userpic vm" :src="author.head_img" alt="">
+                            <span class="username">{{author.childname}}</span>
+                            <img class="arrow vm" src="../public/images/arrowright.png" alt="">
+                        </div>
+                        <div class="user-voice fr" v-if="hasvoice" @click="uservoice()">
+                            <img v-if="!voiceplay" class="voicepic vm" src="../public/images/voice.png" alt="">
+                            <img v-if="voiceplay" class="voicepic2 vm" src="../public/images/voice2.gif" alt="">
+                            <span class="time">{{author.voice_second}}s</span>
                         </div>
                     </div>
                 </div>
-                <div class="room__side room__side--left"></div>
-                <div class="room__side room__side--right"></div>
-                <div class="room__side room__side--bottom"></div>
-            </div>
-        </div>
-        <div :class="['scroller']" id="scroller" v-show="!coming">
-        <!--<div class="scroller" id="scroller">-->
-            <!--<div :class="['room',workmany-1===idx?'room--current':'',{'room--current':coming}]" v-for="(room,idx) in playlist" :key="idx">-->
-            <div :class="['room',workmany-1===idx?'room--current me':'zindex']" v-for="(room,idx) in playlist" :key="idx">
-                <p class="recorddata">{{room.id}}</p>
-                <div class="room__side room__side--back"> 
-                    <!--<div :class="['workwrapper',{'painting':painting},{'romeing':coming}]">-->
-                        <div :class="['workwrapper',{'painting':painting}]">
-                        <div class="picbox">
-                            <div class="wborder g10">
-                                <div class="workbox g10">
-                                    <div class="picinner g10">
-                                        <img class="workpic vm g10" :src="room.works_img" alt="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="information">
-                            <div class="work-name">{{room.works_name}}</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="room__side room__side--left"></div>
-                <div class="room__side room__side--right"></div>
-                <div class="room__side room__side--bottom"></div>
-            </div>
-        </div>
+            </swiper-slide>
+            <!-- Optional controls -->
+            <div class="swiper-pagination spagination"  slot="pagination"></div>
+            <div class="swiper-scrollbar hide"   slot="scrollbar"></div>
+        </swiper>
 
-        
-
-    </div>
-    <!-- /container -->
-    <div id="content" :class="['content',{'action5':action5}]" @click="popcancel()">
-    <header class="codrops-header hide">
-        <h1 class="codrops-header__title"></h1>
-        <button class="btn btn--info btn--toggle"> <svg class="icon icon--info">
-        <use xlink:href="#icon-info"></use>
-        </svg> <svg class="icon icon--cross">
-        <use xlink:href="#icon-cross"></use>
-        </svg> </button>
-        <button class="btn btn--menu btn--toggle"> <svg class="icon icon--menu">
-        <use xlink:href="#icon-menu"></use>
-        </svg> <svg class="icon icon--cross">
-        <use xlink:href="#icon-cross"></use>
-        </svg> </button>
-        <div class="overlay overlay--menu">
-        <ul class="menu">
-            <li class="menu__item menu__item--current"><a class="menu__link" href="#"></a></li>
-            <li class="menu__item"><a class="menu__link" href="#"></a></li>
-            <li class="menu__item"><a class="menu__link" href="#"></a></li>
-            <li class="menu__item"><a class="menu__link" href="#"></a></li>
-        </ul>
-        </div>
-        <div class="overlay overlay--info">
-        </div>
-    </header>
-    <div class="slides">
-        <div class="slide">
-        <h2 class="slide__name"></h2>
-        <h3 class="slide__title"></span>
-            <div class="slide__number"></div>
-        </h3>
-        <p class="slide__date"></p>
-        </div>
-        <div class="slide">
-        <h2 class="slide__name"></h2>
-        <h3 class="slide__title">
-            <div class="slide__number"></div>
-        </h3>
-        <p class="slide__date"></p>
-        </div>
-        <div class="slide">
-        <h2 class="slide__name"></h2>
-        <h3 class="slide__title">
-            <div class="slide__number"></div>
-        </h3>
-        <p class="slide__date"></p>
-        </div>
-        <div class="slide">
-        <h2 class="slide__name"></h2>
-        <h3 class="slide__title">
-            <div class="slide__number"></div>
-        </h3>
-        <p class="slide__date"></p>
-        </div>
-        <div class="slide">
-        <h2 class="slide__name"></h2>
-        <h3 class="slide__title">
-            <div class="slide__number"></div>
-        </h3>
-        <p class="slide__date"></p>
-        </div>
-    </div>
-    <nav class="nav">
         <button class="btn btn--nav btn--nav-left btn-left" id="btnleft" @click="prev()">
             <img class="btnpic vm g10" src="../public/images/prev.png" alt="">
         </button>
         <button class="btn btn--nav btn--nav-right btn-right" id="btnright" @click="next()">
             <img class="btnpic vm g10" src="../public/images/next.png" alt="">
         </button>
-    </nav>
-    </div>
-    <!-- /content -->
-    <div id="loader" :class="['overlay overlay--loader']">
-    <div class="loader">
-        <div></div>
-        <div></div>
-        <div></div>
-    </div>
-    </div>
-    
-
-    <iframe src="" frameborder="0" id="source">
-
-    </iframe>
-
     </div>
 </template>
 
@@ -348,7 +213,25 @@
     export default{
         data(){
             return{
-                coming:true,
+                coming:false,
+                swiperOption: {
+                    notNextTick: true,
+                    navigation: {
+                        nextEl: '.btn-right',
+                        prevEl: '.btn-left',
+                    }
+                },
+                lid:'',
+                rank:'',
+                newid:'',
+                gallerypage:1,
+                playlist:'',
+                currentjf:0,
+                myvoice:'',
+                hasvoice:'',
+                bj:'',
+                voiceplay:'',
+
                 oid:'',
                 action1:false,
                 action2:false,
@@ -362,8 +245,6 @@
                 pop3:false,
                 mk:false,
                 preon:false,
-                hasvoice:false,
-                voiceplay:false,
                 items:[
                     {
                         money:'10',
@@ -394,8 +275,6 @@
                     waitTime: 1000, //单步停止等待时间
                     autoplay:true
                 },
-                gallerypage:1,
-                playlist:[],
                 alllist:[],
                 worknumber:1,
                 workmany:1,
@@ -414,10 +293,6 @@
                     }
                 ],
                 presentrecord:[],
-                lid:'',
-                rank:'',
-                currentjf:0,
-                newid:'',
                 change:false,
                 author:{
                     total_vote:''
@@ -426,16 +301,13 @@
                 tpperson:0,
                 sendstatus:false,
                 listlength:10,
-                bj:'',
                 myaudio:'',
-                myvoice:'',
                 usershow:false,
                 userpopinner:'',
                 giftsend:false,
                 removeroom:false,
                 hasmsg:false,
-                first:'',
-                painting:false
+                first:''
             }
         },
         created(){
@@ -448,7 +320,6 @@
                     this.oid = curl.split('=')[1];
                     localStorage.setItem('oid',this.oid);
                 }else{
-                    // var urlvalue = curl.split('#/')[1]
                     var urlvalue = escape(curl)
                     // console.log('http://erp.dfth.com/index.php/Weixin/getWebOpenidtest?backurl='+urlvalue)
                     window.location.href='http://erp.dfth.com/index.php/Weixin/getWebOpenidtest?backurl='+urlvalue;
@@ -507,9 +378,7 @@
                 });
             });
 
-
             let curlSplit = curl.split('?')[1];
-
             this.lid = curlSplit.split('with')[0];
             this.rank = curlSplit.split('with')[1].split('end')[0];
             this.newid = this.lid
@@ -518,15 +387,13 @@
                 this.gallerypage=1
                 this.worknumber = parseInt(this.rank);
             }else{
-                this.gallerypage = parseInt(this.rank.charAt(0));
-                
+                this.gallerypage = parseInt(this.rank.charAt(0))+1;
                 if(parseInt(this.rank.charAt(1))===0){
                     this.worknumber=10
                 }else{
                     this.worknumber = parseInt(this.rank.charAt(1))
                 }
             }
-            console.log(this.worknumber)
 
             // 列表
             this.$axios.get(`${test}/actives/picSayList`, {
@@ -534,54 +401,19 @@
                     page:this.gallerypage
                 }
             }).then((res)=> {
-                this.alllist = res.data.content.data
+                this.playlist = res.data.content.data
                 this.workmany = this.worknumber
-                // this.playlist=res.data.content.data;
-                // this.playlist = [1,2,3,4,5,6,7,8,9,10]
-                // this.playlist = res.data.content.data.slice(this.worknumber-1,this.worknumber);
-                
-                // if(this.worknumber===1){
-                //     this.firstchange=true
-                //     this.playlist = res.data.content.data.slice(this.worknumber-1,this.worknumber+2);
-
-                // }else if(this.worknumber>9){
-                //     this.playlist = res.data.content.data.slice(this.worknumber-3,this.worknumber);
-                //     this.firstchange=false
-                // }else{
-                //     this.playlist = res.data.content.data.slice(this.worknumber-2,this.worknumber+1);
-                //     this.firstchange=false
-                //     this.worknumber=2;
-                // }
-
-                // this.playlist.map((value,index,arr)=>{
-                //     if(this.worknumber-1===index){
-                //         this.currentjf = value.total_vote
-                //         this.myvoice = value.works_voice
-                //         if(value.voice_second=='0'){
-                //             this.hasvoice=false
-                //         }else{
-                //             this.hasvoice=true
-                //         }
-                //     }
-                // })
-
-                // this.$nextTick(()=>{
-                    setTimeout(()=> {
-                        this.coming=false
-                        // this.playlist=this.alllist;
-                        this.playlist.map((value,index,arr)=>{
-                            if(this.worknumber-1===index){
-                                this.currentjf = value.total_vote
-                                this.myvoice = value.works_voice
-                                if(value.voice_second=='0'){
-                                    this.hasvoice=false
-                                }else{
-                                    this.hasvoice=true
-                                }
-                            }
-                        })
-                    }, 4500);
-                // })
+                this.playlist.map((value,index,arr)=>{
+                    if(this.worknumber-1===index){
+                        this.currentjf = value.total_vote
+                        this.myvoice = value.works_voice
+                        if(value.voice_second=='0'){
+                            this.hasvoice=false
+                        }else{
+                            this.hasvoice=true
+                        }
+                    }
+                })
 
             }).then(()=>{
                 wx.ready(()=>{ 
@@ -593,7 +425,7 @@
                             this.bj.play();
                             this.voiceplay=false
                             this.play=true
-                        }, 4300);
+                        }, 3000);
                         
                     }else{
                         this.uservoiceplay();
@@ -601,6 +433,9 @@
                 })
                 
             })
+
+            console.log(this.worknumber)
+            
 
             // 礼物列表
             this.$axios.get(`${test}/actives/voteList`, {
@@ -638,64 +473,52 @@
                     this.voiceplay=false
                 }, false);
             }
-            
 
+            
         },
         mounted(){
-            
-            let bheight = document.body.clientHeight;
-            document.getElementById('gallery').style.height=bheight+'px'
-            document.documentElement.className = 'js'
 
             setTimeout(()=> {
-                document.getElementById('loader').className='overlay overlay--loader overlay--active'
-            }, 2300);
-            // setTimeout(()=> {
-            //     this.removeroom=true;
-            // }, 4500); 
+                this.coming=true
+            }, 1000);
 
             setTimeout(()=> {
                 this.action3=true;
-            }, 4000);            
+            }, 2000);            
             setTimeout(()=> {
                 this.action1=true;
                 this.action2=true;
-            }, 4200);
+            }, 2200);
             setTimeout(()=> {
                 this.usershow=true;
-            }, 4400);            
-            // setTimeout(()=> {
-                
-            // }, 6000);
+            }, 2400);            
             setTimeout(()=> {
                 this.action4=true;
-            }, 4600);
-            setTimeout(()=> {
-                this.enter=true
             }, 2600);
-
-            setTimeout(()=> {
-                let source = document.getElementById('source');
-                let sourceGroup = document.createElement('script')
-                sourceGroup.src='./static/js/main.js'
-                source.appendChild(sourceGroup);
-                this.action5=true;
-            }, 5500);
-
             if(this.rank=='1'){
                 document.getElementById('btnleft').style.visibility="hidden";
             }
-            this.authorinfo();
-            // setTimeout(()=> {
-                
-            // }, 10000);
 
+            this.$nextTick(()=>{
+                setTimeout(()=> {
+                    this.swiper.slideTo(this.worknumber-1, 1, false)   
+                }, 100);
+            })
+              
+            this.authorinfo();
+        },
+        components:{
+            vueSeamlessScroll,tips
         },
         beforeDestroy(){
-            this.bj.pause();
+            // alert(1)
+            this.myAudio.pause()
             this.play=false;
-            this.myaudio.pause();
-            this.voiceplay=false
+        },
+        computed:{
+            swiper() {
+                return this.$refs.mySwiper.swiper
+            }
         },
         methods:{
             sendpresent(){
@@ -835,6 +658,9 @@
                     this.myaudio.pause();
                     this.voiceplay=false
                 }
+                this.myaudio.addEventListener('ended', ()=> {
+                    this.voiceplay=false
+                }, false);
 
             },
             indexgo(){
@@ -850,21 +676,12 @@
                 }, 100);
             },
             prev(){
-                this.painting=true
-                setTimeout(()=> {
-                    this.painting=false
-                }, 1400);
+
                 // 关闭音频
                 if(this.voiceplay===true){
                     this.myaudio.pause();
                     this.voiceplay=false
                 }
-
-                
-                if( document.querySelector(".room--current")){
-                    document.querySelector(".room--current").className='room';
-                }
-                // this.playlist = this.alllist
 
                 // 箭头按钮控制
                 document.getElementById('btnright').style.visibility="visible";
@@ -872,27 +689,44 @@
                     document.getElementById('btnleft').style.visibility="hidden";
                 }
 
+                let num = this.workmany.toString();
+                if(num.charAt(num.length-1)==='2'){
 
-                if(this.workmany===1){
                     
                     if(this.gallerypage>1){
                         this.gallerypage-=1 
                         setTimeout(()=> {
                             this.prevgroup();
-                        }, 500);
+                        }, 100);
                         setTimeout(()=> {
                             this.roomchange();
                             this.presentdata();
                             this.authorinfo();
-                        }, 800);
+                        }, 300);
                     }
-                }else{
-                    setTimeout(()=> {
-                        this.roomchange();
-                        this.presentdata();
-                        this.authorinfo();
-                    }, 800);
                 }
+                
+
+                // if(this.workmany===1){
+                    
+                //     if(this.gallerypage>1){
+                //         this.gallerypage-=1 
+                //         setTimeout(()=> {
+                //             this.prevgroup();
+                //         }, 100);
+                //         setTimeout(()=> {
+                //             this.roomchange();
+                //             this.presentdata();
+                //             this.authorinfo();
+                //         }, 300);
+                //     }
+                // }else{
+                //     setTimeout(()=> {
+                //         this.roomchange();
+                //         this.presentdata();
+                //         this.authorinfo();
+                //     }, 300);
+                // }
 
                 if(this.workmany>1){    
                     this.workmany-=1
@@ -903,13 +737,8 @@
                     this.roomchange();
                     this.presentdata();
                     this.authorinfo();
-                }, 800);
-
-                setTimeout(function() {
-                    if(document.querySelector(".me")){
-                        document.querySelector(".me").style.opacity=1
-                    }
-                }, 1000);
+                }, 300);
+                
             },
             prevgroup(){
                 this.$axios.get(`${test}/actives/picSayList`, {
@@ -917,10 +746,8 @@
                         page:this.gallerypage
                     }
                 }).then((res)=> {
-                    this.workmany=10
-                    this.worknumber=10
-                    this.alllist = res.data.content.data;
-                    this.playlist = res.data.content.data;
+                    this.workmany=this.workmany-1
+                    this.playlist.unshift(...res.data.content.data);
 
                     this.playlist.map((value,index,arr)=>{
                         if(this.workmany-1===index){
@@ -932,42 +759,26 @@
                             }
                         }
                     })
+                    
                      
                 })
             },
             next(){
-                this.painting=true
-                setTimeout(()=> {
-                    this.painting=false
-                }, 1400);
-                // this.worknumber = this.workmany;
-                // if(this.workmany===2){
-                //     setTimeout(function() {
-                //         document.querySelector('.room').style.opacity=1
-                //     }, 1000);  
-                // }
 
                 if(this.voiceplay===true){
                     this.myaudio.pause();
                     this.voiceplay=false
                 }
-                
-                if(document.querySelector(".room--current")&&this.workmany>1){
-                    document.querySelector(".room--current").className='room';
-                    
-                }
 
-
-                
                 
                 // this.playlist = this.alllist
                 document.getElementById('btnleft').style.visibility="visible";
-
-                if(this.workmany===10){
+                let num = this.workmany.toString();
+                if(num.charAt(num.length-1)==='9'){
                     // this.workmany=1
                     this.gallerypage+=1   
                     // setTimeout(()=> {
-                         this.nextgroup();
+                    this.nextgroup();
                     // }, 500);
                     // setTimeout(()=> {
                     //     this.roomchange();
@@ -981,7 +792,7 @@
                     document.getElementById('btnright').style.visibility="hidden";
                 }
                 
-                if(this.workmany<10){
+                // if(this.workmany<10){
                     // this.worknumber=this.worknumber+1
                     // this.workmany=this.workmany+1
                     // setTimeout(()=> {
@@ -990,7 +801,7 @@
                     if(this.workmany===1){
                         setTimeout(()=> {
                             this.workmany=this.workmany+1
-                        }, 600);
+                        }, 100);
                         
                         // setTimeout(()=> {
                         //     this.roomchange();
@@ -1007,7 +818,7 @@
                     //     this.presentdata();
                     //     this.authorinfo();
                     // }, 800);
-                }
+                // }
 
                 // if(this.workmany===2){
                 //     this.playlist= this.alllist
@@ -1019,14 +830,7 @@
                     this.roomchange();
                     this.presentdata();
                     this.authorinfo();
-                }, 800);
-
-
-                setTimeout(function() {
-                    if(document.querySelector(".me")){
-                        document.querySelector(".me").style.opacity=1
-                    }
-                }, 1000);
+                }, 300);
                 
 
             },
@@ -1036,11 +840,9 @@
                         page:this.gallerypage
                     }
                 }).then((res)=> {
-                    this.workmany=1
-                    this.worknumber=1
-                    this.alllist = res.data.content.data;
-                    this.listlength = this.playlist.length
-                    this.playlist = res.data.content.data;
+                    this.workmany=this.workmany+1
+                    this.playlist.push(...res.data.content.data);
+                    // this.playlist = res.data.content.data;
 
                     this.playlist.map((value,index,arr)=>{
                         if(this.workmany-1===index){
@@ -1052,12 +854,12 @@
                             }
                         }
                     })
-                    console.log(this.workmany)
+                    console.log(this.playlist)
                     
                 })
             },
             roomchange(){
-                let nowroom =document.querySelector(".room--current .recorddata");
+                let nowroom =document.querySelector(".swiper-slide-active .recorddata");
                 if(nowroom){
                     let nowinner = nowroom.innerHTML
                     this.newid = nowinner;
@@ -1111,23 +913,25 @@
                 setTimeout(()=> {
                         this.myaudio.play();
                         this.voiceplay=true
-                }, 4000);
+                }, 3000);
                 this.myaudio.addEventListener('ended', ()=> {
                     this.voiceplay=false
                 }, false);
             }
-        },
-        components:{
-            vueSeamlessScroll,tips
         }
     }
 </script>
 
-
 <style scoped>
-    /*画框*/
-    .gallery {background: #cecece;overflow-y:hidden;-webkit-transform-style: preserve-3d;transform-style: preserve-3d;transform: translateZ(0);
-    transform: translate3d(0,0,0);}
+    body,html {overflow: hidden;}
+    .room {overflow: hidden;width: 100%;height: 100%;}
+    .room .bjpic {transition:all ease 3s;transform: scale(1,1);height: 100vh;width: 100vw;z-index:1;}
+    /*.room .coming {transform: scale(1.6,1.6);}*/
+    .roominner {position: absolute;top: 0%;left: 0;width: 100%;z-index:10;}
+    .btn {z-index:500;top: 60%;width: 8rem;height: 8rem;}
+    .information {margin-top: 2rem;}
+
+
     .recorddata {opacity: 0;z-index:-1;}
     .content {opacity: 0;transition:all ease 0.8s;}
     .action5 {opacity: 1;}
@@ -1138,12 +942,12 @@
     .workwrapper {opacity: 1;}
     .painting {opacity: 0;}
     .romeing {opacity: 0;}
-    .picbox {align-items: center;height: 100%;overflow: hidden;display:flex;margin: -40vh auto 0;width: 60vw;}
+    .picbox {align-items: center;height: 100%;display:flex;margin: 15vh auto 0;width: 50vw;}
     .picinner {overflow: hidden;}
     .workpic {width: 100%;box-shadow:0 0 0 0.2rem rgba(0,0,0,0.2);vertical-align: middle;max-height:35vh;}
 
-    .gallery .btn-left {position: fixed;top: 45%;left: 2rem;}
-    .gallery .btn-right {position: fixed;top: 45%;right: 2rem;}
+    .gallery .btn-left {position: fixed;top: 45%;left: 2rem;z-index:300;}
+    .gallery .btn-right {position: fixed;top: 45%;right: 2rem;z-index:300;}
     .nav .btn {width: 8rem;height: 8rem;background: none;}
 
     .gallery .top .indexbtn {width: 10.4rem;height: 10.4rem;border-radius:50%;position: fixed;top: 3rem;left:0;z-index:400;
@@ -1165,13 +969,13 @@
     }
     .gallery .top .musicon {animation: music linear 2s infinite;}
 
-    .userbox {position: fixed;top: 50%;left: 50%;z-index:400;width: 36%;margin:5rem 0 0 -18%;z-index:-1;opacity: 0;
+    .userbox {position: absolute;top: 50%;left: 50%;z-index:400;width: 36%;margin:5rem 0 0 -18%;z-index:-1;opacity: 0;
     transition:all ease 0.5s;transform: translateY(50px);}
     .voiceshow {width: 50%;margin:5rem 0 0 -25%;}
     .user-box {z-index:500;position: relative;}
     .usershow {opacity: 1;z-index:400;transform: translateY(0px);}
 
-    .work-name {font-size: 4rem;color:#333;width: 28rem;text-align: center;margin:1rem auto 0;overflow: hidden;height: 12rem;}
+    .work-name {font-size: 3rem;color:#333;width: 28rem;text-align: center;margin:1rem auto 0;overflow: hidden;height: 8rem;}
     .user-info {background: rgba(0,0,0,0.5);border-radius:10rem;display: flex;justify-content: center;margin-top: 1rem;}
     .user-info .userpic {width: 5rem;height: 5rem;border-radius:50%;margin-top: -0.5rem;}
     .user-info .user-txt {font-size: 3rem;color:#fff;line-height: 7rem;}

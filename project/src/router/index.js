@@ -8,6 +8,7 @@ import voice from '../pages/voice'
 import integral from '../pages/integral'
 import work from '../pages/work'
 import acthome from '../pages/acthome'
+import room from '../pages/room'
 import gallery from '../pages/gallery'
 import testgallery from '../pages/testgallery'
 
@@ -55,6 +56,11 @@ export default new Router({
       path: '/acthome',
       name: 'acthome',
       component: acthome
+    },
+    {
+      path: '/room',
+      name: 'room',
+      component: room
     },
     {
       path: '/gallery',

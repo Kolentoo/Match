@@ -1,7 +1,7 @@
 <template>
     <div :class="['sign',{anzhuo:anzhuo}]">
         <div class="sign-box">
-            <p class="sign-time">报名时间：2018年4月8日~6月</p>
+            <p class="sign-time">报名时间：2018年4月8日~6月22日</p>
             <div class="content">
                 <ul class="tab-con">
                     <li :class="['tab-list b',match==='未报名'?'tabon':'']" @click="tab('未报名')">比赛报名</li>
@@ -59,8 +59,8 @@
                 <div class="my-match" v-if="match==='已报名'">
                     <div class="tips">
                         <p class="p1">已报名的参赛者登录后，可上传及修改作品和语音</p>
-                        <p class="p1">作品上传日期：2018年4月8日~6月</p>
-                        <p class="p1">语音上传日期：2018年4月15日~6月</p>
+                        <p class="p1">作品上传日期：2018年4月8日~6月22日</p>
+                        <p class="p1">语音上传日期：2018年4月15日~6月22日</p>
                     </div>
                     <div class="login-box">
                         <login ref="login2" :login2="login2" key="login2"></login>

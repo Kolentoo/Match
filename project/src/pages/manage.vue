@@ -39,7 +39,7 @@
                 </div>-->
                 <div class="voice" v-if="picStatus==='yes'">
                     <div class="voice-con clearfix">
-                        <p class="p1 fl">您的参赛证书</p>
+                        <p class="p1 fl b">您的参赛证书</p>
                         <p class="p2 fr" @click="card()">点击查看</p>
                     </div>
                 </div>
@@ -50,8 +50,8 @@
                 <li class="clist" @click="gowork">
                     <h3 v-if="picStatus==='no'" class="b">作品上传</h3>
                     <h3 v-if="picStatus==='yes'" class="b">作品修改</h3>
-                    <p v-if="picStatus==='no'" class="p1">上传日期：2018-04～2018-06</p>
-                    <p v-if="picStatus==='yes'" class="p1">截止日期：2018-06</p>
+                    <p v-if="picStatus==='no'" class="p1">上传日期：2018-04～2018-06-22</p>
+                    <p v-if="picStatus==='yes'" class="p1">截止日期：2018-06-22</p>
                     <div class="status">
                         <span class="s2" v-if="work===1">未开始</span>
                         <span class="s2 s3" v-if="work===2">已开始</span>
@@ -63,8 +63,8 @@
                 <li class="clist" @click="goinfo"> 
                     <h3 class="b" v-if="upStatus==='novoice'">语音上传</h3>
                     <h3 class="b" v-if="upStatus==='voiceok'">语音修改</h3>
-                    <p class="p1" v-if="upStatus==='novoice'">上传日期：2018-04～2018-06</p>
-                    <p class="p1" v-if="upStatus==='voiceok'">截止日期：2018-06</p>
+                    <p class="p1" v-if="upStatus==='novoice'">上传日期：2018-04～2018-06-22</p>
+                    <p class="p1" v-if="upStatus==='voiceok'">截止日期：2018-06-22</p>
                     <div class="status">
                         <span class="s2" v-if="voice===1">未开始</span>
                         <span class="s2 s3" v-if="voice===2">已开始</span>
@@ -231,19 +231,19 @@
     .manage {background: #fff;padding-bottom: 14rem;}
     .manageTop {background:url('../public/images/bj1.jpg') no-repeat center center;background-size: cover;min-height: 37.3rem;}
     .manageTop h2{font-size: 3.8rem;color:#fff;padding:1.5rem 0;position: relative;top: 1.5rem;font-weight:bold;}
-    .voice {background: url('../public/images/bj10.jpg') no-repeat center center;background-size: 100%;height: 7.9rem;
+    .voice {background: url('../public/images/bj10.jpg') no-repeat center center;background-size: cover;height: 7.9rem;
     border-radius:0 0 1.5rem 1.5rem;margin-top: 2rem;}
     /*.voice-con {height: 5.8rem;margin:0 auto;border-radius:1.2rem;background: #fff;position: relative;top: 1rem;display: flex;
     align-items: center;}*/
-    .voice-con .p1 {font-size: 3rem;margin-left: 3rem;text-shadow:0 0.2rem 1.2rem rgba(0,60,101,0.4);color:#fff;line-height: 7.9rem;}
-    .voice-con .p2 {width: 12.7rem;height: 5.2rem;font-size: 2.4rem;color:#31aaf6;text-align: center;border-radius:0.8rem;background: #fff;
+    .voice .voice-con .p1 {font-size: 3rem;margin-left: 3rem;text-shadow:0 0.2rem 1.2rem rgba(0,60,101,0.4);color:#fff;line-height: 7.9rem;}
+    .voice .voice-con .p2 {width: 12.7rem;height: 5.2rem;font-size: 2.4rem;color:#31aaf6;text-align: center;border-radius:0.8rem;background: #fff;
     box-shadow:0 0.4rem 1.2rem rgba(0,87,146,0.4);line-height: 5.2rem;margin-right: 3rem;position: relative;top: 0.2rem;}
     .voice-con .voice-icon {width: 2.3rem;margin-left: 2rem;}
     .voice-con .seconds {font-size: 2.4rem;color:#999;margin-left: 9rem;}
     .infor {background: #fff;border-radius:1.5rem;box-shadow:0 1.4rem 6rem rgba(3,15,39,0.14);width: 90%;margin:0 auto;
     position: relative;min-height: 31rem;position: relative;top: 2rem;margin-bottom: 6rem;}
     .infor-box {padding:0 3rem;}
-    .infor-con {width: 30rem;display: flex;align-items: center;height: 100%;margin-top: 5rem;}
+    .infor-con {width: 28rem;display: flex;align-items: center;height: 100%;margin-top: 5rem;}
     .infor .name {font-size: 3.4rem;color:#333;margin-bottom: 1rem;}
     .infor .s1 {font-size: 2.4rem;}
     .infor .s1 i{display: inline-block;width: 10rem;height: 3.8rem;line-height: 3.8rem;color:#fff;text-align: center;font-size: 2.4rem;
@@ -273,7 +273,7 @@
     .bottom {font-size: 2.8rem;color:#666;margin-top: 4rem;}
     .bottom a{color:#fd7555;}
     .hehe {width: 100%;height: 5rem;border:0.1rem solid #000;}
-    .cardbox {position: fixed;z-index:1000;top: 20%;left: 0;width: 100%;}
+    .cardbox {position: fixed;z-index:1000;top: 13%;left: 0;width: 100%;}
     .cardbox .cardcon {width: 54.3rem;margin:0 auto;height: 76.7rem;}
     .cardbox .cardname {font-size: 2.6rem;color:#333;position: absolute;top: 48%;left: 40%;font-weight:bold;}
     .cardclose {width: 7.6rem;height: 7.6rem;margin-top: 6rem;}
