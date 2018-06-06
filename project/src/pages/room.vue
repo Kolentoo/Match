@@ -159,7 +159,7 @@
         <swiper :options="swiperOption" ref="mySwiper">
             <!-- slides -->
             <swiper-slide v-for="(room,idx) in playlist" :key="idx">
-                <img :class="['bjpic vm',{'coming':coming}]" src="../../src/public/images/bj12.png" alt="">
+                <img :class="['bjpic vm',{'coming':coming}]" src="../../src/public/images/bj13.jpg" alt="">
                 <p class="recorddata hide">{{room.id}}</p>
                 <div class="roominner">
                     <div class="picbox">
@@ -307,7 +307,8 @@
                 giftsend:false,
                 removeroom:false,
                 hasmsg:false,
-                first:''
+                first:'',
+                pagegroup:[]
             }
         },
         created(){
@@ -387,13 +388,16 @@
                 this.gallerypage=1
                 this.worknumber = parseInt(this.rank);
             }else{
-                this.gallerypage = parseInt(this.rank.charAt(0))+1;
+                
                 if(parseInt(this.rank.charAt(1))===0){
                     this.worknumber=10
+                    this.gallerypage = parseInt(this.rank.charAt(0));
                 }else{
                     this.worknumber = parseInt(this.rank.charAt(1))
+                    this.gallerypage = parseInt(this.rank.charAt(0))+1;
                 }
             }
+            this.pagegroup.push(this.gallerypage)
 
             // 列表
             this.$axios.get(`${test}/actives/picSayList`, {
@@ -402,6 +406,23 @@
                 }
             }).then((res)=> {
                 this.playlist = res.data.content.data
+                let num = this.worknumber.toString();
+                if(num.charAt(num.length-1)==='1'){
+                    if(this.gallerypage>1){
+                        this.gallerypage-=1 
+                        this.pagegroup.push(this.gallerypage)
+                        this.prevgroup();
+                        this.swiper.updateSlides();
+                    }
+                    
+                }else if(num.charAt(num.length-1)==='0'){
+                    this.gallerypage+=1 
+                    this.pagegroup.push(this.gallerypage)
+                    this.nextgroup();
+                    this.swiper.updateSlides();
+                }else{
+                    
+                }
                 this.workmany = this.worknumber
                 this.playlist.map((value,index,arr)=>{
                     if(this.worknumber-1===index){
@@ -684,27 +705,45 @@
                 }
 
                 // 箭头按钮控制
-                document.getElementById('btnright').style.visibility="visible";
-                if(this.gallerypage===1&&this.workmany===2){
-                    document.getElementById('btnleft').style.visibility="hidden";
-                }
+                // document.getElementById('btnright').style.visibility="visible";
+                // if(this.gallerypage===1&&this.workmany===2){
+                //     document.getElementById('btnleft').style.visibility="hidden";
+                // }
 
                 let num = this.workmany.toString();
                 if(num.charAt(num.length-1)==='2'){
+                    // console.log('page'+this.gallerypage)
+                    // console.log('group'+this.pagegroup)
+                    var maxN = eval("Math.max(" + this.pagegroup.toString() + ")");
+                    var minN = eval("Math.min(" + this.pagegroup.toString() + ")");
+                    if(this.pagegroup.indexOf(minN-1)>-1){
+                        console.log('yes')
+                    }else{
+                        // this.gallerypage-=1 
+                        console.log('min'+minN)
+                        this.gallerypage = minN-1;
+                        this.pagegroup.push(this.gallerypage)
+                        this.prevgroup();
+                        this.swiper.updateSlides();
+                    }
 
                     
-                    if(this.gallerypage>1){
-                        this.gallerypage-=1 
-                        setTimeout(()=> {
-                            this.prevgroup();
-                        }, 100);
-                        setTimeout(()=> {
-                            this.roomchange();
-                            this.presentdata();
-                            this.authorinfo();
-                        }, 300);
-                    }
+                    // if(this.gallerypage>1){
+                    //     this.gallerypage-=1 
+                    //     setTimeout(()=> {
+                    //         this.prevgroup();
+                    //     }, 100);
+                    //     setTimeout(()=> {
+                    //         this.roomchange();
+                    //         this.presentdata();
+                    //         this.authorinfo();
+                    //     }, 300);
+                    // }
                 }
+                // if(num.charAt(num.length-1)==='1'){
+                    
+                // }
+                
                 
 
                 // if(this.workmany===1){
@@ -741,6 +780,7 @@
                 
             },
             prevgroup(){
+                
                 this.$axios.get(`${test}/actives/picSayList`, {
                     params:{
                         page:this.gallerypage
@@ -748,7 +788,11 @@
                 }).then((res)=> {
                     this.workmany=this.workmany-1
                     this.playlist.unshift(...res.data.content.data);
-
+                    let slidenum = this.gallerypage.toString()+0;
+                    setTimeout(()=> {
+                        this.swiper.slideTo(slidenum, 1, false)   
+                    }, 100);
+                    
                     this.playlist.map((value,index,arr)=>{
                         if(this.workmany-1===index){
                             this.currentjf = value.total_vote
@@ -775,10 +819,27 @@
                 document.getElementById('btnleft').style.visibility="visible";
                 let num = this.workmany.toString();
                 if(num.charAt(num.length-1)==='9'){
+                    // if(this.pagegroup.indexOf(this.gallerypage)>-1){
+                    //     console.log('yes')
+                    // }else{
+ 
+                    // }
+
+                       this.gallerypage+=1 
+                        this.pagegroup.push(this.gallerypage)
+                        this.nextgroup();
+                        this.swiper.updateSlides();
                     // this.workmany=1
-                    this.gallerypage+=1   
+                    // if(this.pagegroup.indexOf(parseInt(this.gallerypage)+1)>-1){
+                    //     console.log('ok')
+                    // }else{
+                    //     console.log('no')
+                    //     this.gallerypage+=1 
+                    //     this.nextgroup();
+                    // }
+                      
                     // setTimeout(()=> {
-                    this.nextgroup();
+                    
                     // }, 500);
                     // setTimeout(()=> {
                     //     this.roomchange();
@@ -791,6 +852,16 @@
                 if(this.listlength<10&&this.listlength===this.worknumber-1){
                     document.getElementById('btnright').style.visibility="hidden";
                 }
+
+
+                // if(num.charAt(num.length-1)==='1'){
+                //     for (var i=0;i<10;i++){
+                //         this.swiper.removeSlide(1);
+                //     }
+                    
+                // }
+                this.workmany=this.workmany+1
+                console.log(this.playlist)
                 
                 // if(this.workmany<10){
                     // this.worknumber=this.worknumber+1
@@ -798,19 +869,19 @@
                     // setTimeout(()=> {
                         // this.workmany=this.workmany+1
                     // }, 600);
-                    if(this.workmany===1){
-                        setTimeout(()=> {
-                            this.workmany=this.workmany+1
-                        }, 100);
+                    // if(this.workmany===1){
+                    //     setTimeout(()=> {
+                    //         this.workmany=this.workmany+1
+                    //     }, 100);
                         
-                        // setTimeout(()=> {
-                        //     this.roomchange();
-                        //     this.presentdata();
-                        //     this.authorinfo();
-                        // }, 800);
-                    }else{
-                        this.workmany=this.workmany+1
-                    }
+                    //     // setTimeout(()=> {
+                    //     //     this.roomchange();
+                    //     //     this.presentdata();
+                    //     //     this.authorinfo();
+                    //     // }, 800);
+                    // }else{
+                    //     this.workmany=this.workmany+1
+                    // }
                     console.log(this.workmany)
 
                     // setTimeout(()=> {
@@ -840,7 +911,7 @@
                         page:this.gallerypage
                     }
                 }).then((res)=> {
-                    this.workmany=this.workmany+1
+                    // this.workmany=this.workmany+1
                     this.playlist.push(...res.data.content.data);
                     // this.playlist = res.data.content.data;
 
@@ -924,9 +995,10 @@
 
 <style scoped>
     body,html {overflow: hidden;}
+    .swiper-slide {overflow: hidden;}
     .room {overflow: hidden;width: 100%;height: 100%;}
     .room .bjpic {transition:all ease 3s;transform: scale(1,1);height: 100vh;width: 100vw;z-index:1;}
-    /*.room .coming {transform: scale(1.6,1.6);}*/
+    .room .coming {transform: scale(1.6,1.6);}
     .roominner {position: absolute;top: 0%;left: 0;width: 100%;z-index:10;}
     .btn {z-index:500;top: 60%;width: 8rem;height: 8rem;}
     .information {margin-top: 2rem;}
