@@ -162,7 +162,7 @@
                 <img :class="['bjpic vm',{'coming':coming}]" src="../../src/public/images/bj13.jpg" alt="">
                 <p class="recorddata hide">{{room.id}}</p>
                 <div class="roominner">
-                    <div class="picbox">
+                    <div :class="['picbox',{'picaction':action6}]">
                         <div class="wborder g10">
                             <div class="workbox g10">
                                 <div class="picinner g10">
@@ -238,6 +238,7 @@
                 action3:false,
                 action4:false,
                 action5:false,
+                action6:false,
                 play:true,
                 enter:false,
                 pop1:false,
@@ -383,6 +384,8 @@
             this.lid = curlSplit.split('with')[0];
             this.rank = curlSplit.split('with')[1].split('end')[0];
             this.newid = this.lid
+            this.ranking = parseInt(this.rank);
+
 
             if(this.rank.length===1){
                 this.gallerypage=1
@@ -406,7 +409,8 @@
                 }
             }).then((res)=> {
                 this.playlist = res.data.content.data
-                let num = this.worknumber.toString();
+                // let num = this.worknumber.toString();
+                let num = this.ranking.toString();
                 if(num.charAt(num.length-1)==='1'){
                     if(this.gallerypage>1){
                         this.gallerypage-=1 
@@ -499,23 +503,30 @@
         },
         mounted(){
 
+            if(this.ranking===1){
+                document.getElementById('btnleft').style.visibility="hidden";
+            }
+
             setTimeout(()=> {
                 this.coming=true
             }, 1000);
 
             setTimeout(()=> {
+                this.action6=true;
+            }, 2000);    
+            setTimeout(()=> {
                 this.action3=true;
-            }, 2000);            
+            }, 2200);            
             setTimeout(()=> {
                 this.action1=true;
                 this.action2=true;
-            }, 2200);
+            }, 2400);
             setTimeout(()=> {
                 this.usershow=true;
-            }, 2400);            
+            }, 2600);            
             setTimeout(()=> {
                 this.action4=true;
-            }, 2600);
+            }, 2800);
             if(this.rank=='1'){
                 document.getElementById('btnleft').style.visibility="hidden";
             }
@@ -706,25 +717,32 @@
 
                 // 箭头按钮控制
                 // document.getElementById('btnright').style.visibility="visible";
-                // if(this.gallerypage===1&&this.workmany===2){
-                //     document.getElementById('btnleft').style.visibility="hidden";
-                // }
+                if(this.ranking===2){
+                    document.getElementById('btnleft').style.visibility="hidden";
+                }
 
-                let num = this.workmany.toString();
+
+
+                let num = this.ranking.toString();
                 if(num.charAt(num.length-1)==='2'){
                     // console.log('page'+this.gallerypage)
                     // console.log('group'+this.pagegroup)
                     var maxN = eval("Math.max(" + this.pagegroup.toString() + ")");
                     var minN = eval("Math.min(" + this.pagegroup.toString() + ")");
-                    if(this.pagegroup.indexOf(minN-1)>-1){
+
+                    if(this.pagegroup.indexOf(parseInt(num.charAt(0)))>-1||minN===1){
                         console.log('yes')
                     }else{
                         // this.gallerypage-=1 
-                        console.log('min'+minN)
-                        this.gallerypage = minN-1;
-                        this.pagegroup.push(this.gallerypage)
-                        this.prevgroup();
-                        this.swiper.updateSlides();
+                        console.log('min'+minN);    
+                        // console.log('roomtype'+roomtype);
+                        // if(roomtype+1===minN){
+                            this.gallerypage = parseInt(num.charAt(0));
+                            this.pagegroup.push(this.gallerypage)
+                            this.prevgroup();
+                            this.swiper.updateSlides();
+                        // }
+
                     }
 
                     
@@ -743,6 +761,11 @@
                 // if(num.charAt(num.length-1)==='1'){
                     
                 // }
+                if(this.ranking>1){    
+                    // this.workmany-=1
+                    this.ranking-=1
+                }
+                console.log(this.ranking)
                 
                 
 
@@ -766,11 +789,11 @@
                 //         this.authorinfo();
                 //     }, 300);
                 // }
+                // if(this.workmany>1){    
+                //     this.workmany-=1
+                //     this.worknumber-=1
+                // }
 
-                if(this.workmany>1){    
-                    this.workmany-=1
-                    this.worknumber-=1
-                }
                 
                 setTimeout(()=> {
                     this.roomchange();
@@ -790,19 +813,21 @@
                     this.playlist.unshift(...res.data.content.data);
                     let slidenum = this.gallerypage.toString()+0;
                     setTimeout(()=> {
-                        this.swiper.slideTo(slidenum, 1, false)   
+                        this.swiper.slideTo(10, 1, false)   
+                        // this.swiper.slideTo(slidenum, 1, false)   
                     }, 100);
+                    console.log(this.playlist)
                     
-                    this.playlist.map((value,index,arr)=>{
-                        if(this.workmany-1===index){
-                            this.currentjf = value.total_vote
-                            if(value.voice_second==='0'){
-                                this.hasvoice=false
-                            }else{
-                                this.hasvoice=true
-                            }
-                        }
-                    })
+                    // this.playlist.map((value,index,arr)=>{
+                    //     if(this.workmany-1===index){
+                    //         this.currentjf = value.total_vote
+                    //         if(value.voice_second==='0'){
+                    //             this.hasvoice=false
+                    //         }else{
+                    //             this.hasvoice=true
+                    //         }
+                    //     }
+                    // })
                     
                      
                 })
@@ -817,18 +842,36 @@
                 
                 // this.playlist = this.alllist
                 document.getElementById('btnleft').style.visibility="visible";
-                let num = this.workmany.toString();
+                // let num = this.workmany.toString();
+                let num = this.ranking.toString();
+                var maxN = eval("Math.max(" + this.pagegroup.toString() + ")");
+                var minN = eval("Math.min(" + this.pagegroup.toString() + ")");
+
                 if(num.charAt(num.length-1)==='9'){
                     // if(this.pagegroup.indexOf(this.gallerypage)>-1){
                     //     console.log('yes')
                     // }else{
  
                     // }
-
-                       this.gallerypage+=1 
+                    if(num.length===1){
+                        this.gallerypage = 2
                         this.pagegroup.push(this.gallerypage)
                         this.nextgroup();
                         this.swiper.updateSlides();
+                    }else{
+                        if(this.pagegroup.indexOf(parseInt(num.charAt(0))+2 )>-1){
+                            console.log('yes')
+                        }else{
+                            this.gallerypage = parseInt(num.charAt(0))+2
+                            this.pagegroup.push(this.gallerypage)
+                            this.nextgroup();
+                            this.swiper.updateSlides();
+
+                        }
+                    }
+
+
+
                     // this.workmany=1
                     // if(this.pagegroup.indexOf(parseInt(this.gallerypage)+1)>-1){
                     //     console.log('ok')
@@ -847,7 +890,9 @@
                     //     this.authorinfo();
                     // }, 800);
                 }
-                
+
+                this.ranking+=1
+                console.log(this.ranking)
             
                 if(this.listlength<10&&this.listlength===this.worknumber-1){
                     document.getElementById('btnright').style.visibility="hidden";
@@ -860,8 +905,8 @@
                 //     }
                     
                 // }
-                this.workmany=this.workmany+1
-                console.log(this.playlist)
+                // this.workmany=this.workmany+1
+                // console.log(this.playlist)
                 
                 // if(this.workmany<10){
                     // this.worknumber=this.worknumber+1
@@ -882,7 +927,7 @@
                     // }else{
                     //     this.workmany=this.workmany+1
                     // }
-                    console.log(this.workmany)
+                    // console.log(this.workmany)
 
                     // setTimeout(()=> {
                     //     this.roomchange();
@@ -915,16 +960,16 @@
                     this.playlist.push(...res.data.content.data);
                     // this.playlist = res.data.content.data;
 
-                    this.playlist.map((value,index,arr)=>{
-                        if(this.workmany-1===index){
-                            this.currentjf = value.total_vote
-                            if(value.voice_second==='0'){
-                                this.hasvoice=false
-                            }else{
-                                this.hasvoice=true
-                            }
-                        }
-                    })
+                    // this.playlist.map((value,index,arr)=>{
+                    //     if(this.workmany-1===index){
+                    //         this.currentjf = value.total_vote
+                    //         if(value.voice_second==='0'){
+                    //             this.hasvoice=false
+                    //         }else{
+                    //             this.hasvoice=true
+                    //         }
+                    //     }
+                    // })
                     console.log(this.playlist)
                     
                 })
@@ -997,7 +1042,7 @@
     body,html {overflow: hidden;}
     .swiper-slide {overflow: hidden;}
     .room {overflow: hidden;width: 100%;height: 100%;}
-    .room .bjpic {transition:all ease 3s;transform: scale(1,1);height: 100vh;width: 100vw;z-index:1;}
+    .room .bjpic {transition:all ease 4s;transform: scale(1,1);height: 100vh;width: 100vw;z-index:1;}
     .room .coming {transform: scale(1.6,1.6);}
     .roominner {position: absolute;top: 0%;left: 0;width: 100%;z-index:10;}
     .btn {z-index:500;top: 60%;width: 8rem;height: 8rem;}
@@ -1014,7 +1059,8 @@
     .workwrapper {opacity: 1;}
     .painting {opacity: 0;}
     .romeing {opacity: 0;}
-    .picbox {align-items: center;height: 100%;display:flex;margin: 15vh auto 0;width: 50vw;}
+    .picbox {align-items: center;height: 100%;display:flex;margin: 16vh auto 0;width: 50vw;transition:all ease 0.5s;opacity: 0;}
+    .picaction {opacity: 1;margin: 15vh auto 0;}
     .picinner {overflow: hidden;}
     .workpic {width: 100%;box-shadow:0 0 0 0.2rem rgba(0,0,0,0.2);vertical-align: middle;max-height:35vh;}
 
