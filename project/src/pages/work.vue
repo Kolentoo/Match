@@ -88,24 +88,24 @@
             }else{
                 if(curl.indexOf('openid')>-1){
                     this.oid = curl.split('=')[1];
-                    localStorage.setItem('oid',this.oid);
+                    
+                    this.$axios.get(`${test}/actives/joinerIn`,{
+                        params:{
+                            openid:localoid
+                        }
+                    }).then((res)=>{
+                        if(res.data.status===1){
+                            localStorage.setItem('oid',this.oid);
+                        }else{
+                            alert('登录失败')
+                        }
+                    })
                 }else{
-                    // var urlvalue = curl.split('#/')[1]
-                    // window.location.href='http://erp.dfth.com/index.php/Weixin/getWebOpenid?backurl='+urlvalue;
                     var urlvalue = escape(curl)
+                    // console.log('http://erp.dfth.com/index.php/Weixin/getWebOpenidtest?backurl='+urlvalue)
                     window.location.href='http://erp.dfth.com/index.php/Weixin/getWebOpenidtest?backurl='+urlvalue;
                 }
             }
-
-            this.$axios.get(`${test}/actives/joinerIn`,{
-                params:{
-                    openid:localoid
-                }
-            }).then((res)=>{
-                if(res.data.status===1){
-                    
-                }
-            })
 
 
             let swidth = document.documentElement.clientWidth; 

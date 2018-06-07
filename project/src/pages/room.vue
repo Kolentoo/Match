@@ -1,5 +1,5 @@
 <template>
-    <div :class="['room gallery']">
+    <div :class="['room gallery',{'gbig':bjshow}]">
         <div class="top">
             <img :class="['indexbtn vm',{'action1':action1}]" @click="indexgo()" src="../public/images/indexbtn.png" alt="">
             <img :class="['rankingbtn vm',{'action2':action2}]" @click="rankgo()" src="../public/images/rankingbtn.png" alt="">
@@ -154,15 +154,21 @@
         </div>
 
         <div class="mask" v-if="mk"></div>
+        <div class="mask seemk" v-if="see" @click="nosee()"></div>
         <tips :msg="tipsmsg" v-if="hasmsg"></tips>
 
-        <swiper :options="swiperOption" ref="mySwiper">
+        <div class="original" v-if="see" @click="nosee()">
+            <img class="g10 vm" :src="originalpic" alt="">
+        </div>
+
+        <swiper :options="swiperOption" ref="mySwiper" @slideNextTransitionStart="nextslide()" @slidePrevTransitionStart= "prevslide()">
             <!-- slides -->
             <swiper-slide v-for="(room,idx) in playlist" :key="idx">
                 <img :class="['bjpic vm',{'coming':coming}]" src="../../src/public/images/bj13.jpg" alt="">
+                <!--<img v-show="!bjshow" :class="['bjpic showpic vm']" src="../../src/public/images/bj13.jpg" alt="">-->
                 <p class="recorddata hide">{{room.id}}</p>
                 <div class="roominner">
-                    <div :class="['picbox',{'picaction':action6}]">
+                    <div :class="['picbox',{'picaction':action6}]" @click="seepic(room.works_img)">
                         <div class="wborder g10">
                             <div class="workbox g10">
                                 <div class="picinner g10">
@@ -171,7 +177,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="information">
+                    <div :class="['information',{'infotxt':action7}]">
                         <div class="work-name">{{room.works_name}}</div>
                     </div>
                 </div>
@@ -213,6 +219,9 @@
     export default{
         data(){
             return{
+                bjshow:false,
+                see:false,
+                originalpic:'',
                 coming:false,
                 swiperOption: {
                     notNextTick: true,
@@ -239,6 +248,7 @@
                 action4:false,
                 action5:false,
                 action6:false,
+                action7:false,
                 play:true,
                 enter:false,
                 pop1:false,
@@ -309,7 +319,8 @@
                 removeroom:false,
                 hasmsg:false,
                 first:'',
-                pagegroup:[]
+                pagegroup:[],
+                seemk:false
             }
         },
         created(){
@@ -320,7 +331,18 @@
             }else{
                 if(curl.indexOf('openid')>-1){
                     this.oid = curl.split('=')[1];
-                    localStorage.setItem('oid',this.oid);
+                    
+                    this.$axios.get(`${test}/actives/joinerIn`,{
+                        params:{
+                            openid:localoid
+                        }
+                    }).then((res)=>{
+                        if(res.data.status===1){
+                            localStorage.setItem('oid',this.oid);
+                        }else{
+                            alert('登录失败')
+                        }
+                    })
                 }else{
                     var urlvalue = escape(curl)
                     // console.log('http://erp.dfth.com/index.php/Weixin/getWebOpenidtest?backurl='+urlvalue)
@@ -328,14 +350,7 @@
                 }
             }
 
-            this.$axios.get(`${test}/actives/joinerIn`,{
-                params:{
-                    openid:localoid
-                }
-            }).then((res)=>{
-                if(res.data.status===1){
-                }
-            })
+
 
             wx.ready(()=>{
                 wx.onMenuShareTimeline({
@@ -408,7 +423,10 @@
                     page:this.gallerypage
                 }
             }).then((res)=> {
+                // setTimeout(()=> {
                 this.playlist = res.data.content.data
+                // }, 200);
+                
                 // let num = this.worknumber.toString();
                 let num = this.ranking.toString();
                 if(num.charAt(num.length-1)==='1'){
@@ -502,31 +520,40 @@
             
         },
         mounted(){
-
+            window.addEventListener("popstate", ()=>{
+                setTimeout(()=> {
+                    window.location.reload();
+                }, 100);
+                this.play=false;
+            }, false)
             if(this.ranking===1){
                 document.getElementById('btnleft').style.visibility="hidden";
             }
-
+            
             setTimeout(()=> {
                 this.coming=true
+                this.bjshow=true
             }, 1000);
 
             setTimeout(()=> {
                 this.action6=true;
-            }, 2000);    
+            }, 2500); 
+            setTimeout(()=> {
+                this.action7=true;
+            }, 2700);    
             setTimeout(()=> {
                 this.action3=true;
-            }, 2200);            
+            }, 2900);            
             setTimeout(()=> {
                 this.action1=true;
                 this.action2=true;
-            }, 2400);
+            }, 3100);
             setTimeout(()=> {
                 this.usershow=true;
-            }, 2600);            
+            }, 3200);            
             setTimeout(()=> {
                 this.action4=true;
-            }, 2800);
+            }, 3400);
             if(this.rank=='1'){
                 document.getElementById('btnleft').style.visibility="hidden";
             }
@@ -534,7 +561,7 @@
             this.$nextTick(()=>{
                 setTimeout(()=> {
                     this.swiper.slideTo(this.worknumber-1, 1, false)   
-                }, 100);
+                }, 250);
             })
               
             this.authorinfo();
@@ -553,6 +580,149 @@
             }
         },
         methods:{
+            seepic(imgurl){
+                this.originalpic = imgurl;
+                this.see=true
+            },
+            nosee(){
+                this.see=false
+            },
+            nextslide(){
+                if(this.voiceplay===true){
+                    this.myaudio.pause();
+                    this.voiceplay=false
+                }
+
+                
+                // this.playlist = this.alllist
+                document.getElementById('btnleft').style.visibility="visible";
+                // let num = this.workmany.toString();
+                let num = this.ranking.toString();
+                var maxN = eval("Math.max(" + this.pagegroup.toString() + ")");
+                var minN = eval("Math.min(" + this.pagegroup.toString() + ")");
+
+                if(num.charAt(num.length-1)==='9'){
+                    // if(this.pagegroup.indexOf(this.gallerypage)>-1){
+                    //     console.log('yes')
+                    // }else{
+ 
+                    // }
+                    if(num.length===1){
+                        this.gallerypage = 2
+                        this.pagegroup.push(this.gallerypage)
+                        this.nextgroup();
+                        this.swiper.updateSlides();
+                    }else{
+                        if(this.pagegroup.indexOf(parseInt(num.charAt(0))+2 )>-1){
+                            console.log('yes')
+                        }else{
+                            this.gallerypage = parseInt(num.charAt(0))+2
+                            this.pagegroup.push(this.gallerypage)
+                            this.nextgroup();
+                            this.swiper.updateSlides();
+
+                        }
+                    }
+
+
+
+                    // this.workmany=1
+                    // if(this.pagegroup.indexOf(parseInt(this.gallerypage)+1)>-1){
+                    //     console.log('ok')
+                    // }else{
+                    //     console.log('no')
+                    //     this.gallerypage+=1 
+                    //     this.nextgroup();
+                    // }
+                      
+                    // setTimeout(()=> {
+                    
+                    // }, 500);
+                    // setTimeout(()=> {
+                    //     this.roomchange();
+                    //     this.presentdata();
+                    //     this.authorinfo();
+                    // }, 800);
+                }
+
+                this.ranking+=1
+                console.log(this.ranking)
+            
+                if(this.listlength<10&&this.listlength===this.worknumber-1){
+                    document.getElementById('btnright').style.visibility="hidden";
+                }
+
+                setTimeout(()=> {
+                    this.roomchange();
+                    this.presentdata();
+                    this.authorinfo();
+                }, 300);
+            },
+            prevslide(){
+                // 关闭音频
+                if(this.voiceplay===true){
+                    this.myaudio.pause();
+                    this.voiceplay=false
+                }
+
+                // 箭头按钮控制
+                // document.getElementById('btnright').style.visibility="visible";
+                if(this.ranking===2){
+                    document.getElementById('btnleft').style.visibility="hidden";
+                }
+
+
+
+                let num = this.ranking.toString();
+                if(num.charAt(num.length-1)==='2'){
+                    // console.log('page'+this.gallerypage)
+                    // console.log('group'+this.pagegroup)
+                    var maxN = eval("Math.max(" + this.pagegroup.toString() + ")");
+                    var minN = eval("Math.min(" + this.pagegroup.toString() + ")");
+
+                    if(this.pagegroup.indexOf(parseInt(num.charAt(0)))>-1||minN===1){
+                        console.log('yes')
+                    }else{
+                        // this.gallerypage-=1 
+                        console.log('min'+minN);    
+                        // console.log('roomtype'+roomtype);
+                        // if(roomtype+1===minN){
+                            this.gallerypage = parseInt(num.charAt(0));
+                            this.pagegroup.push(this.gallerypage)
+                            this.prevgroup();
+                            this.swiper.updateSlides();
+                        // }
+
+                    }
+
+                    
+                    // if(this.gallerypage>1){
+                    //     this.gallerypage-=1 
+                    //     setTimeout(()=> {
+                    //         this.prevgroup();
+                    //     }, 100);
+                    //     setTimeout(()=> {
+                    //         this.roomchange();
+                    //         this.presentdata();
+                    //         this.authorinfo();
+                    //     }, 300);
+                    // }
+                }
+                // if(num.charAt(num.length-1)==='1'){
+                    
+                // }
+                if(this.ranking>1){    
+                    // this.workmany-=1
+                    this.ranking-=1
+                }
+                console.log(this.ranking)
+                
+                setTimeout(()=> {
+                    this.roomchange();
+                    this.presentdata();
+                    this.authorinfo();
+                }, 300);
+            },
             sendpresent(){
                 this.preon=true
                 this.calculatejf();
@@ -616,7 +786,7 @@
                             setTimeout(()=> {
                                 this.giftsend = false 
                                 sending.src='#'
-                            }, 8000);
+                            }, 7000);
                         }
 
                     }
@@ -666,6 +836,9 @@
                     this.bj.pause();
                     this.play=false
                 }
+                this.myaudio.pause();
+                this.voiceplay=false
+                
             },
             information(aid){
                 this.pop1=true;
@@ -690,6 +863,8 @@
                     this.myaudio.pause();
                     this.voiceplay=false
                 }
+                this.bj.pause();
+                this.play=false
                 this.myaudio.addEventListener('ended', ()=> {
                     this.voiceplay=false
                 }, false);
@@ -766,34 +941,6 @@
                     this.ranking-=1
                 }
                 console.log(this.ranking)
-                
-                
-
-                // if(this.workmany===1){
-                    
-                //     if(this.gallerypage>1){
-                //         this.gallerypage-=1 
-                //         setTimeout(()=> {
-                //             this.prevgroup();
-                //         }, 100);
-                //         setTimeout(()=> {
-                //             this.roomchange();
-                //             this.presentdata();
-                //             this.authorinfo();
-                //         }, 300);
-                //     }
-                // }else{
-                //     setTimeout(()=> {
-                //         this.roomchange();
-                //         this.presentdata();
-                //         this.authorinfo();
-                //     }, 300);
-                // }
-                // if(this.workmany>1){    
-                //     this.workmany-=1
-                //     this.worknumber-=1
-                // }
-
                 
                 setTimeout(()=> {
                     this.roomchange();
@@ -898,50 +1045,6 @@
                     document.getElementById('btnright').style.visibility="hidden";
                 }
 
-
-                // if(num.charAt(num.length-1)==='1'){
-                //     for (var i=0;i<10;i++){
-                //         this.swiper.removeSlide(1);
-                //     }
-                    
-                // }
-                // this.workmany=this.workmany+1
-                // console.log(this.playlist)
-                
-                // if(this.workmany<10){
-                    // this.worknumber=this.worknumber+1
-                    // this.workmany=this.workmany+1
-                    // setTimeout(()=> {
-                        // this.workmany=this.workmany+1
-                    // }, 600);
-                    // if(this.workmany===1){
-                    //     setTimeout(()=> {
-                    //         this.workmany=this.workmany+1
-                    //     }, 100);
-                        
-                    //     // setTimeout(()=> {
-                    //     //     this.roomchange();
-                    //     //     this.presentdata();
-                    //     //     this.authorinfo();
-                    //     // }, 800);
-                    // }else{
-                    //     this.workmany=this.workmany+1
-                    // }
-                    // console.log(this.workmany)
-
-                    // setTimeout(()=> {
-                    //     this.roomchange();
-                    //     this.presentdata();
-                    //     this.authorinfo();
-                    // }, 800);
-                // }
-
-                // if(this.workmany===2){
-                //     this.playlist= this.alllist
-                // }
-
-
-                
                 setTimeout(()=> {
                     this.roomchange();
                     this.presentdata();
@@ -1039,14 +1142,27 @@
 </script>
 
 <style scoped>
+    .gallery {background:url('../public/images/bj13.jpg') no-repeat;background-size: 100% 100%;transition:all ease 0.5;}
+    .gbig {background:url('../public/images/bj13.jpg') no-repeat;background-size: 170% 170%;}
+
+    .original {position: fixed;top: 0;left: 0;width: 100%;height: 100%;display: flex;z-index:1500;justify-content: center;
+    align-items: center;}
+
     body,html {overflow: hidden;}
     .swiper-slide {overflow: hidden;}
+    @keyframes room{
+        0%{transform: scale(1);}
+        100%{transform: scale(1.7);}
+    }
+
     .room {overflow: hidden;width: 100%;height: 100%;}
-    .room .bjpic {transition:all ease 4s;transform: scale(1,1);height: 100vh;width: 100vw;z-index:1;}
-    .room .coming {transform: scale(1.6,1.6);}
+    .room .bjpic {height: 100vh;width: 100vw;z-index:1;transition:all ease 3s;}
+    .room .showpic {transform: scale(1.7);}
+    .room .coming {animation: room ease 3s forwards;}
     .roominner {position: absolute;top: 0%;left: 0;width: 100%;z-index:10;}
     .btn {z-index:500;top: 60%;width: 8rem;height: 8rem;}
-    .information {margin-top: 2rem;}
+    .information {margin-top: 4rem;transition:all ease 0.5s;opacity: 0;}
+    .infotxt {margin-top: 2rem;opacity: 1;}
 
 
     .recorddata {opacity: 0;z-index:-1;}
@@ -1062,7 +1178,7 @@
     .picbox {align-items: center;height: 100%;display:flex;margin: 16vh auto 0;width: 50vw;transition:all ease 0.5s;opacity: 0;}
     .picaction {opacity: 1;margin: 15vh auto 0;}
     .picinner {overflow: hidden;}
-    .workpic {width: 100%;box-shadow:0 0 0 0.2rem rgba(0,0,0,0.2);vertical-align: middle;max-height:35vh;}
+    .workpic {width: 100%;box-shadow:0 0 0 0.2rem rgba(0,0,0,0.2);vertical-align: middle;max-height:25vh;}
 
     .gallery .btn-left {position: fixed;top: 45%;left: 2rem;z-index:300;}
     .gallery .btn-right {position: fixed;top: 45%;right: 2rem;z-index:300;}
@@ -1089,12 +1205,12 @@
 
     .userbox {position: absolute;top: 50%;left: 50%;z-index:400;width: 36%;margin:5rem 0 0 -18%;z-index:-1;opacity: 0;
     transition:all ease 0.5s;transform: translateY(50px);}
-    .voiceshow {width: 50%;margin:5rem 0 0 -25%;}
+    .voiceshow {width: 50%;margin:7.5rem 0 0 -25%;}
     .user-box {z-index:500;position: relative;}
     .usershow {opacity: 1;z-index:400;transform: translateY(0px);}
 
-    .work-name {font-size: 3rem;color:#333;width: 28rem;text-align: center;margin:1rem auto 0;overflow: hidden;height: 8rem;}
-    .user-info {background: rgba(0,0,0,0.5);border-radius:10rem;display: flex;justify-content: center;margin-top: 1rem;}
+    .work-name {font-size: 3rem;color:#333;width: 28rem;text-align: center;margin:1rem auto 0;overflow: hidden;height: 8.2rem;}
+    .user-info {background: rgba(0,0,0,0.5);border-radius:10rem;display: flex;justify-content: center;margin-top: 1.8rem;}
     .user-info .userpic {width: 5rem;height: 5rem;border-radius:50%;margin-top: -0.5rem;}
     .user-info .user-txt {font-size: 3rem;color:#fff;line-height: 7rem;}
     .user-info .user-txt .username {margin:0 0.5rem;}
@@ -1188,6 +1304,7 @@
     .pop3 .close {position: absolute;width: 3rem;top: 2rem;right: 3rem;}
 
     .mask {background: rgba(0,0,0,0.5);width: 100%;height: 100%;z-index:900;position: fixed;top: 0;left: 0;}
+    .seemk {background: rgba(0,0,0,0.8);}
     .nav {z-index:500;}
     .nopresent {font-size: 2.4rem;margin-top: 1rem;color:#999;text-align: center;}
     .giftbox {position: fixed;z-index:-1;width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;top: 0;
