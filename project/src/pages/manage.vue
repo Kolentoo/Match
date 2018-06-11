@@ -103,7 +103,7 @@
 
 <script>
     var local = 'http://192.168.1.227:8081'
-    var panda = 'http://student.dfth.com/'
+    var panda = 'http://studenttest.dfth.com/'
     export default{
         data(){
             return{
@@ -187,10 +187,11 @@
                 // }else{
                 //     this.$router.push('upload');
                 // }
-                let curl = window.location.href;
-                let mid = curl.split('id=')[1];
-                window.location.href=`http://erp.dfth.com/index.php/Drawing/upload2.html?id=${mid}`
-                
+                if(this.work===2){
+                    let curl = window.location.href;
+                    let mid = curl.split('id=')[1];
+                    window.location.href=`http://erp.dfth.com/index.php/Drawing/upload2.html?id=${mid}`
+                }
             },
             // test(){
             //     if(this.voice===2){

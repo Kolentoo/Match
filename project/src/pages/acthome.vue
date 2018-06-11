@@ -99,6 +99,19 @@
         </div>
         <menubox :location="position"></menubox>
         <tips :msg="tipsmsg" v-if="hasmsg"></tips>
+
+        <div class="popbox">
+            <div class="pop3 tc" v-if="pop3">
+                <div class="popinner">
+                    <img class="vm endpic" src="../public/images/end.png" alt="">
+                    <p class="p2 tc">线上评选活动已结束</p>
+                    <img class="lookbtn vm" src="../public/images/resultbtn.png" alt="">
+                    <img @click="closepop3()" class="vm close" src="../public/images/popclose2.png" alt="">
+                </div>
+            </div>
+        </div>
+
+        <div class="mask" v-if="mk"></div>
     </div>
 </template>
 
@@ -125,7 +138,10 @@
                 },
                 myAudio:'',
                 hasmsg:false,
-                tipsmsg:''
+                tipsmsg:'',
+                pop3:false,
+                mk:false,
+                oid:''
             }
         },
         created(){
@@ -140,7 +156,7 @@
                     
                     this.$axios.get(`${test}/actives/joinerIn`,{
                         params:{
-                            openid:localoid
+                            openid:this.oid
                         }
                     }).then((res)=>{
                         if(res.data.status===1){
@@ -155,6 +171,23 @@
                     window.location.href='http://erp.dfth.com/index.php/Weixin/getWebOpenidtest?backurl='+urlvalue;
                 }
             }
+
+            this.$axios.get(`${test}/actives/limitTime`, {
+                params:{
+                }
+            }).then((res)=> {
+                if(res.data.msg.game.status===3){
+                    let ending = sessionStorage.getItem('end');
+                    if(ending){
+
+                    }else{
+                        this.pop3=true;
+                        this.mk=true;
+                        sessionStorage.setItem('end','end');
+                    }
+                }
+
+            })
 
             this.$axios.get(`${test}/actives/dayAdd`,{
                 params:{
@@ -242,6 +275,10 @@
             menubox,tips
         },
         methods:{
+            closepop3(){
+                this.pop3=false;
+                this.mk=false;
+            },
             musiccontrols(){
                 if(this.myAudio.paused){
                     this.myAudio.play();
@@ -304,4 +341,20 @@
     .activity .support dl {padding-top: 4rem;}
     .activity .support dl dt{padding-bottom: 2.8rem;color:#05adf3;font-size: 3.6rem;}
     .activity .support dl dd{font-size: 2.8rem;color:#5c5e63;}
+
+
+    .pop {background: #fff;border-radius:2rem;box-shadow:0 0.6rem 5rem rgba(0,0,0,0.12);position: fixed;top: 50%;left: 50%
+    ;z-index:1000;}
+    .pop3 {width: 70%;height: 50rem;margin:-25rem 0 0 -35%;position: fixed;top: 50%;left: 50%
+    ;z-index:1000;}
+    .pop3 .popinner {position: relative;}
+    .pop3 .endpic {width: 29.7rem;height: 29.7rem;}
+    .pop3 .p2 {color:#fff;font-size: 4rem;margin-top: 2rem;}
+    .pop3 .lookbtn {width: 25rem;margin:2rem auto 0;}
+    .pop3 .close {position: absolute;width: 3rem;top: 2rem;right: 3rem;}
+
+    .mask {background: rgba(0,0,0,0.5);width: 100%;height: 100%;z-index:900;position: fixed;top: 0;left: 0;}
+    .seemk {background: rgba(0,0,0,0.8);}
+    .nav {z-index:500;}
+    .nopresent {font-size: 2.4rem;margin-top: 1rem;color:#999;text-align: center;}
 </style>

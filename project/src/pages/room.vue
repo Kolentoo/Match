@@ -103,8 +103,13 @@
             </div>
         </div>
 
-        <div :class="['giftbox',{'giftsend':giftsend}]">
-            <img id="sending" class="vm" src="" alt="">
+        <div class="giftbox" v-show="gift">
+            <!--<img v-show="giftfalse" class="vm" src="../public/images/gift1.gif" alt="">
+            <img v-show="giftfalse" class="vm" src="../public/images/gift2.gif" alt="">
+            <img v-show="giftfalse" class="vm" src="../public/images/gift3.gif" alt="">-->
+            <img v-show="gift===1" id="sending1" class="vm" src="../public/images/gift1.gif" alt="">
+            <img v-show="gift===2" id="sending2" class="vm" src="../public/images/gift2.gif" alt="">
+            <img v-show="gift===3" id="sending3" class="vm" src="../public/images/gift3.gif" alt="">
         </div>
 
         <div class="popbox">
@@ -164,7 +169,7 @@
         <swiper :options="swiperOption" ref="mySwiper" @slideNextTransitionStart="nextslide()" @slidePrevTransitionStart= "prevslide()">
             <!-- slides -->
             <swiper-slide v-for="(room,idx) in playlist" :key="idx">
-                <img :class="['bjpic vm',{'coming':coming}]" src="../../src/public/images/bj13.jpg" alt="">
+                <img @click="popcancel()" :class="['bjpic vm',{'coming':coming}]" src="../../src/public/images/bj13.jpg" alt="">
                 <!--<img v-show="!bjshow" :class="['bjpic showpic vm']" src="../../src/public/images/bj13.jpg" alt="">-->
                 <p class="recorddata hide">{{room.id}}</p>
                 <div class="roominner">
@@ -219,6 +224,8 @@
     export default{
         data(){
             return{
+                giftfalse:false,
+                gift:0,
                 bjshow:false,
                 see:false,
                 originalpic:'',
@@ -315,7 +322,6 @@
                 myaudio:'',
                 usershow:false,
                 userpopinner:'',
-                giftsend:false,
                 removeroom:false,
                 hasmsg:false,
                 first:'',
@@ -324,6 +330,8 @@
             }
         },
         created(){
+
+
             var curl = window.location.href;
             let localoid =localStorage.getItem('oid');
             if(localoid){
@@ -334,7 +342,7 @@
                     
                     this.$axios.get(`${test}/actives/joinerIn`,{
                         params:{
-                            openid:localoid
+                            openid:this.oid
                         }
                     }).then((res)=>{
                         if(res.data.status===1){
@@ -349,6 +357,30 @@
                     window.location.href='http://erp.dfth.com/index.php/Weixin/getWebOpenidtest?backurl='+urlvalue;
                 }
             }
+
+
+            if(this.myaudio){
+                this.myaudio.addEventListener('ended', ()=> {
+                    this.voiceplay=false
+                }, false);
+            }
+
+            this.$axios.get(`${test}/actives/limitTime`, {
+                params:{
+                }
+            }).then((res)=> {
+                if(res.data.msg.game.status===3){
+                    let ending = sessionStorage.getItem('end');
+                    if(ending){
+
+                    }else{
+                        this.pop3=true;
+                        this.mk=true;
+                        sessionStorage.setItem('end','end');
+                    }
+                }
+
+            })
 
 
 
@@ -511,11 +543,6 @@
                 })
             })
 
-            if(this.myaudio){
-                this.myaudio.addEventListener('ended', ()=> {
-                    this.voiceplay=false
-                }, false);
-            }
 
             
         },
@@ -537,23 +564,23 @@
 
             setTimeout(()=> {
                 this.action6=true;
-            }, 2500); 
+            }, 3500); 
             setTimeout(()=> {
                 this.action7=true;
-            }, 2700);    
+            }, 3700);    
             setTimeout(()=> {
                 this.action3=true;
-            }, 2900);            
+            }, 3900);            
             setTimeout(()=> {
                 this.action1=true;
                 this.action2=true;
-            }, 3100);
+            }, 4300);
             setTimeout(()=> {
                 this.usershow=true;
-            }, 3200);            
+            }, 4600);            
             setTimeout(()=> {
-                this.action4=true;
-            }, 3400);
+                this.action4=true;  
+            }, 5200);
             if(this.rank=='1'){
                 document.getElementById('btnleft').style.visibility="hidden";
             }
@@ -750,42 +777,53 @@
                     }
                 }).then((res)=> {
                     if(res.data.status===1){
-                        let mathrandom = Math.random();
-                        this.giftsend = true                        
+                        let mathrandom = Math.random();                     
                         this.tpperson.total=myjfnum-presentjfnum
                         let wname = res.data.wx_name
                         if(presenttype===1){
-                            sending.src='./static/img/gift1.gif?'+mathrandom
+                            document.getElementById('sending1').src='#'
+                            setTimeout(()=> {
+                                document.getElementById('sending1').src='./static/img/gift1.gif';
+                            }, 100);
+                            this.gift=1;
                             this.author.total_vote = parseInt(this.author.total_vote)+10
                             this.presentnum[0].tot =parseInt(this.presentnum[0].tot)+1
                             this.presentrecord.push(
                                 {inte:"10",inte_lev:"1",wx_name:wname}
                             )
                             setTimeout(()=> {
-                                this.giftsend = false 
+                                this.gift = false 
                                 sending.src='#'
-                            }, 6200);
+                            }, 6000);
                         }else if(presenttype===2){
-                            sending.src='./static/img/gift2.gif?'+mathrandom
+                            this.gift=2
+                            document.getElementById('sending2').src='#'
+                            setTimeout(()=> {
+                                document.getElementById('sending2').src='./static/img/gift2.gif'
+                            }, 100);
                             this.author.total_vote = parseInt(this.author.total_vote)+30
                             this.presentnum[1].tot =parseInt(this.presentnum[1].tot)+1
                             this.presentrecord.push(
                                 {inte:"30",inte_lev:"2",wx_name:wname}
                             )
                             setTimeout(()=> {
-                                this.giftsend = false 
+                                this.gift = false 
                                 sending.src='#'
-                            }, 4200);
+                            }, 3500);
                         }else{
-                            sending.src='./static/img/gift3.gif?'+mathrandom
+                            this.gift=3
+                            document.getElementById('sending3').src='#'
+                            setTimeout(()=> {
+                                document.getElementById('sending3').src='./static/img/gift3.gif'
+                            }, 100);
                             this.author.total_vote = parseInt(this.author.total_vote)+50
                             this.presentnum[2].tot =parseInt(this.presentnum[2].tot)+1
                             this.presentrecord.push(
                                 {inte:"50",inte_lev:"3",wx_name:wname}
                             )
                             setTimeout(()=> {
-                                this.giftsend = false 
-                                sending.src='#'
+                                this.gift = false 
+                                // sending.src='#'
                             }, 7000);
                         }
 
@@ -1119,7 +1157,12 @@
                     if(myjfnum<presentjfnum){
                         this.sendstatus=false;
                     }else{
-                        this.sendstatus=true;
+                        let ending = sessionStorage.getItem('end');
+                        if(ending){
+                            this.sendstatus=false;
+                        }else{
+                            this.sendstatus=true;
+                        }
                     }
                 }, 100);
 
@@ -1132,7 +1175,7 @@
                 setTimeout(()=> {
                         this.myaudio.play();
                         this.voiceplay=true
-                }, 3000);
+                }, 4000);
                 this.myaudio.addEventListener('ended', ()=> {
                     this.voiceplay=false
                 }, false);
@@ -1175,8 +1218,8 @@
     .workwrapper {opacity: 1;}
     .painting {opacity: 0;}
     .romeing {opacity: 0;}
-    .picbox {align-items: center;height: 100%;display:flex;margin: 16vh auto 0;width: 50vw;transition:all ease 0.5s;opacity: 0;}
-    .picaction {opacity: 1;margin: 15vh auto 0;}
+    .picbox {align-items: center;height: 100%;display:flex;margin: 19vh auto 0;width: 50vw;transition:all ease 0.5s;opacity: 0;}
+    .picaction {opacity: 1;margin: 17vh auto 0;}
     .picinner {overflow: hidden;}
     .workpic {width: 100%;box-shadow:0 0 0 0.2rem rgba(0,0,0,0.2);vertical-align: middle;max-height:25vh;}
 
@@ -1222,9 +1265,12 @@
 
     
 
-    .gallery-bottom {position: fixed;bottom: 3rem;width: 92%;left: 4%;z-index:300;transition: all ease 0.6s;opacity: 0;
-    transform: translateY(100%);}
-    .action4 {transform: translateY(0);opacity: 1;}
+    .gallery-bottom {position: fixed;bottom: 3rem;width: 92%;left: 4%;z-index:300;opacity: 0;transform: translateY(100%);}
+    .action4 {animation:action ease 0.6s forwards;}
+    @keyframes action{
+        0%{opacity: 0;transform: translateY(100%);}
+        100%{transform: translateY(0);opacity: 1;}
+    }
     .gallery-bottom .presentshow {width: 100%;background: rgba(255,255,255,0.5);height: 18rem;border-radius:2rem;
     box-shadow:0 1.8rem 6.8rem rgba(0,0,0,0.18);}
     .presentshow .showcon {padding:1rem 5%;}
@@ -1307,9 +1353,8 @@
     .seemk {background: rgba(0,0,0,0.8);}
     .nav {z-index:500;}
     .nopresent {font-size: 2.4rem;margin-top: 1rem;color:#999;text-align: center;}
-    .giftbox {position: fixed;z-index:-1;width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;top: 0;
+    .giftbox {position: fixed;z-index:1000;width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;top: 0;
     left: 0;}
-    .giftsend {z-index:1000;}
     .giftbox img{width: 100%;position: relative;top: -10%;}
     .zindex {z-index:-1;}
 </style>
