@@ -1,5 +1,5 @@
 <template>
-    <div class="manage">
+    <div class="manage" id="share">
         <div class="manageTop">
             <h2 class="tc" v-if="picStatus==='no'&&upStatus==='novoice'">未上传作品、语音</h2>
             <h2 class="tc" v-if="picStatus==='no'&&upStatus==='voiceok'">未上传作品</h2>
@@ -73,7 +73,7 @@
                         <img v-if="voice===2" class="arrow1" src="../public/images/arrow2.png" alt="">
                     </div>
                 </li>
-                <li class="clist">
+                <li class="clist" @click="goroom">
                     <h3 class="b">我的线上个人画展</h3>
                     <p class="p1">敬请期待</p>
                     <div class="status">
@@ -103,7 +103,7 @@
 
 <script>
     var local = 'http://192.168.1.227:8081'
-    var panda = 'http://studenttest.dfth.com/'
+    var panda = 'http://student.dfth.com/'
     export default{
         data(){
             return{
@@ -116,7 +116,8 @@
                 picurl:'',
                 picStatus:'no',
                 upStatus:'novoice',
-                cardshow:false
+                cardshow:false,
+                yourid:''
             }
         },
         created(){
@@ -127,7 +128,7 @@
             }else{
                 var mid = sessionStorage.getItem('tid'); 
             }
-            
+            this.yourid  = mid;
             sessionStorage.setItem('tid',mid); 
             // let newid = sessionStorage.getItem('tid'); 
             // var mid = sessionStorage.getItem('tid'); 
@@ -137,6 +138,7 @@
                 }
             }).then((res)=>{
                 this.info=res.data.content
+                this.rank = res.data.content.rank
                 if(res.data.content.works_img!=''){
                     this.picurl=res.data.content.works_img;
                     this.picStatus='yes'
@@ -211,6 +213,11 @@
                         window.location.href='http://student.dfth.com/market/index.html#/voice'
                         // this.$router.push('voice');
                     }
+                }
+            },
+            goroom(){
+                if(this.look===2){
+                    window.location.href=`http://student.dfth.com/market/index.html#/room?${this.yourid}with${this.rank}end`
                 }
             },
             test(){

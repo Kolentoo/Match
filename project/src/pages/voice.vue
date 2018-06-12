@@ -1,5 +1,5 @@
 <template>
-    <div class="voice">
+    <div class="voice" id="share">
         <div :class="['vbox',{vboxok:upload}]">
             <div class="vtitle tc">
                 <h2 v-if="upload===false">未上传语音</h2>

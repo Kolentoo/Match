@@ -216,7 +216,7 @@
 </template>
 
 <script>
-    var test = 'http://studenttest.dfth.com'
+    var test = 'http://student.dfth.com'
     var local = 'http://192.168.1.227:8081'
     var panda = 'http://student.dfth.com'
     import tips from '../components/tips/tips'
@@ -333,7 +333,7 @@
 
 
             var curl = window.location.href;
-            let localoid =localStorage.getItem('oid');
+            let localoid =localStorage.getItem('ooid');
             if(localoid){
                 this.oid=localoid
             }else{
@@ -346,7 +346,7 @@
                         }
                     }).then((res)=>{
                         if(res.data.status===1){
-                            localStorage.setItem('oid',this.oid);
+                            localStorage.setItem('ooid',this.oid);
                         }else{
                             alert('登录失败')
                         }
@@ -386,13 +386,13 @@
 
             wx.ready(()=>{
                 wx.onMenuShareTimeline({
-                    title: '绘画比赛-东方童画', // 分享标题
+                    title: '童年画语绘画比赛-东方童画', // 分享标题
                     link: curl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                     imgUrl: '', // 分享图标
                     success:  ()=> {
                         this.$axios.get(`${test}/actives/timelineAdd`,{
                             params:{
-                                openid:localoid
+                                openid:this.oid
                             }
                         }).then((res)=>{
                             if(res.data.status===1){
@@ -405,7 +405,7 @@
                 });
 
                 wx.onMenuShareAppMessage({
-                title: '绘画比赛-东方童画', // 分享标题
+                title: '童年画语绘画比赛-东方童画', // 分享标题
                 desc: '东方童画绘画比赛', // 分享描述
                 link: curl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                 imgUrl: '', // 分享图标
@@ -414,7 +414,7 @@
                 success: ()=> {
                     this.$axios.get(`${test}/actives/shareAppAdd`,{
                         params:{
-                            openid:localoid
+                            openid:this.oid
                         }
                     }).then((res)=>{
                         if(res.data.status===1){
@@ -427,87 +427,126 @@
                 });
             });
 
-            let curlSplit = curl.split('?')[1];
+            let curlSplit = curl.split('room?')[1];
             this.lid = curlSplit.split('with')[0];
-            this.rank = curlSplit.split('with')[1].split('end')[0];
+            // this.rank = curlSplit.split('with')[1].split('end')[0];
             this.newid = this.lid
-            this.ranking = parseInt(this.rank);
-
-
-            if(this.rank.length===1){
-                this.gallerypage=1
-                this.worknumber = parseInt(this.rank);
-            }else{
-                
-                if(parseInt(this.rank.charAt(1))===0){
-                    this.worknumber=10
-                    this.gallerypage = parseInt(this.rank.charAt(0));
-                }else{
-                    this.worknumber = parseInt(this.rank.charAt(1))
-                    this.gallerypage = parseInt(this.rank.charAt(0))+1;
-                }
-            }
-            this.pagegroup.push(this.gallerypage)
-
-            // 列表
-            this.$axios.get(`${test}/actives/picSayList`, {
+            
+            this.$axios.get(`${test}/actives/ParticipantInfo`, {
                 params:{
-                    page:this.gallerypage
+                    id:this.newid
                 }
             }).then((res)=> {
-                // setTimeout(()=> {
-                this.playlist = res.data.content.data
-                // }, 200);
-                
-                // let num = this.worknumber.toString();
-                let num = this.ranking.toString();
-                if(num.charAt(num.length-1)==='1'){
-                    if(this.gallerypage>1){
-                        this.gallerypage-=1 
-                        this.pagegroup.push(this.gallerypage)
-                        this.prevgroup();
-                        this.swiper.updateSlides();
-                    }
-                    
-                }else if(num.charAt(num.length-1)==='0'){
-                    this.gallerypage+=1 
-                    this.pagegroup.push(this.gallerypage)
-                    this.nextgroup();
-                    this.swiper.updateSlides();
+                this.rank = res.data.content.rank
+                this.ranking = parseInt(this.rank);
+                // alert(this.ranking)
+                this.author = res.data.content
+                this.myvoice = res.data.content.works_voice
+                if(res.data.content.voice_second==='0'){
+                    this.hasvoice=false
                 }else{
-                    
+                    this.hasvoice=true
                 }
-                this.workmany = this.worknumber
-                this.playlist.map((value,index,arr)=>{
-                    if(this.worknumber-1===index){
-                        this.currentjf = value.total_vote
-                        this.myvoice = value.works_voice
-                        if(value.voice_second=='0'){
-                            this.hasvoice=false
-                        }else{
-                            this.hasvoice=true
-                        }
-                    }
-                })
 
-            }).then(()=>{
-                wx.ready(()=>{ 
-                    if(this.hasvoice===false){
-                        
-                        this.bj = new Audio();
-                        this.bj.src='./static/audio/music.mp3';
-                        setTimeout(()=> {
-                            this.bj.play();
-                            this.voiceplay=false
-                            this.play=true
-                        }, 3000);
-                        
+                                // alert(this.rank)
+                if(this.rank.length===1){
+                    this.gallerypage=1
+                    this.worknumber = parseInt(this.rank);
+                }else if(this.rank.length===2){
+                    
+                    if(parseInt(this.rank.charAt(1))===0){
+                        this.worknumber=10
+                        this.gallerypage = parseInt(this.rank.charAt(0));
                     }else{
-                        this.uservoiceplay();
+                        this.worknumber = parseInt(this.rank.charAt(1))
+                        this.gallerypage = parseInt(this.rank.charAt(0))+1;
                     }
+                }else if(this.rank.length===3){
+                    if(parseInt(this.rank.charAt(2))===0){
+                        this.worknumber=10
+                        this.gallerypage = parseInt(this.rank.charAt(0)+this.rank.charAt(1));
+                    }else{
+                        this.worknumber = parseInt(this.rank.charAt(2))
+                        this.gallerypage = parseInt(this.rank.charAt(0)+this.rank.charAt(1))+1;
+                    }
+                    // alert(this.gallerypage)
+                }else{
+                    if(parseInt(this.rank.charAt(4))===0){
+                        this.worknumber=10
+                        this.gallerypage = parseInt(this.rank.charAt(0)+this.rank.charAt(1)+this.rank.charAt(2));
+                    }else{
+                        this.worknumber = parseInt(this.rank.charAt(3))
+                        this.gallerypage = parseInt(this.rank.charAt(0)+this.rank.charAt(1)+this.rank.charAt(2))+1;
+                    }
+                    // alert(this.gallerypage)
+                }
+                // alert(this.worknumber)
+                this.pagegroup.push(this.gallerypage)
+
+                                // 列表
+                this.$axios.get(`${test}/actives/picSayList`, {
+                    params:{
+                        page:this.gallerypage
+                    }
+                }).then((res)=> {
+                    // setTimeout(()=> {
+                    this.playlist = res.data.content.data
+                    // }, 200);
+                    
+                    // let num = this.worknumber.toString();
+                    let num = this.ranking.toString();
+                    if(num.charAt(num.length-1)==='1'){
+                        if(this.gallerypage>1){
+                            this.gallerypage-=1 
+                            this.pagegroup.push(this.gallerypage)
+                            this.prevgroup();
+                            this.swiper.updateSlides();
+                        }
+                        
+                    }else if(num.charAt(num.length-1)==='0'){
+                        this.gallerypage+=1 
+                        this.pagegroup.push(this.gallerypage)
+                        this.nextgroup();
+                        this.swiper.updateSlides();
+                    }else{
+                        
+                    }
+                    this.workmany = this.worknumber
+                    this.playlist.map((value,index,arr)=>{
+                        if(this.worknumber-1===index){
+                            this.currentjf = value.total_vote
+                            this.myvoice = value.works_voice
+                            if(value.voice_second=='0'){
+                                this.hasvoice=false
+                            }else{
+                                this.hasvoice=true
+                            }
+                        }
+                    })
+
+                }).then(()=>{
+                    wx.ready(()=>{ 
+                        if(this.hasvoice===false){
+                            
+                            this.bj = new Audio();
+                            this.bj.src='./static/audio/music.mp3';
+                            setTimeout(()=> {
+                                this.bj.play();
+                                this.voiceplay=false
+                                this.play=true
+                            }, 3000);
+                            
+                        }else{
+                            this.uservoiceplay();
+                        }
+                    })
+                    
                 })
-                
             })
+            
+
+
+
 
             console.log(this.worknumber)
             
@@ -532,7 +571,7 @@
             }).then(()=>{
                 this.$axios.get(`${test}/actives/dayAdd`,{
                     params:{
-                        openid:localoid
+                        openid:this.oid
                     }
                 }).then((res)=>{
                     if(res.data.status===1){
@@ -559,8 +598,12 @@
             
             setTimeout(()=> {
                 this.coming=true
-                this.bjshow=true
+                
             }, 1000);
+
+            setTimeout(()=> {
+                this.bjshow=true
+            }, 1100);
 
             setTimeout(()=> {
                 this.action6=true;
@@ -591,7 +634,7 @@
                 }, 250);
             })
               
-            this.authorinfo();
+            
         },
         components:{
             vueSeamlessScroll,tips
@@ -755,80 +798,87 @@
                 this.calculatejf();
             },
             sendgift(){
-                this.preon=false
-                let presentjfstr =document.querySelector(".liston").querySelector("em").innerHTML;
-                let presentjfnum = parseInt(presentjfstr);
-                let myjfnum = parseInt(this.tpperson.total);
-                if(presentjfnum===10){
-                    var presenttype=1;
-                }else if(presentjfnum===30){
-                    var presenttype=2;
+                let ending = sessionStorage.getItem('end');
+                if(ending){
+
                 }else{
-                    var presenttype=3;
-                }
 
-                var sending = document.getElementById('sending');
-                this.$axios.get(`${test}/api/actives/voteUser`, {
-                    params:{
-                        uid:this.newid,
-                        openid:this.oid,
-                        vote_type:presenttype,
-                        vote:presentjfnum
+                    this.preon=false
+                    let presentjfstr =document.querySelector(".liston").querySelector("em").innerHTML;
+                    let presentjfnum = parseInt(presentjfstr);
+                    let myjfnum = parseInt(this.tpperson.total);
+                    if(presentjfnum===10){
+                        var presenttype=1;
+                    }else if(presentjfnum===30){
+                        var presenttype=2;
+                    }else{
+                        var presenttype=3;
                     }
-                }).then((res)=> {
-                    if(res.data.status===1){
-                        let mathrandom = Math.random();                     
-                        this.tpperson.total=myjfnum-presentjfnum
-                        let wname = res.data.wx_name
-                        if(presenttype===1){
-                            document.getElementById('sending1').src='#'
-                            setTimeout(()=> {
-                                document.getElementById('sending1').src='./static/img/gift1.gif';
-                            }, 100);
-                            this.gift=1;
-                            this.author.total_vote = parseInt(this.author.total_vote)+10
-                            this.presentnum[0].tot =parseInt(this.presentnum[0].tot)+1
-                            this.presentrecord.push(
-                                {inte:"10",inte_lev:"1",wx_name:wname}
-                            )
-                            setTimeout(()=> {
-                                this.gift = false 
-                                sending.src='#'
-                            }, 6000);
-                        }else if(presenttype===2){
-                            this.gift=2
-                            document.getElementById('sending2').src='#'
-                            setTimeout(()=> {
-                                document.getElementById('sending2').src='./static/img/gift2.gif'
-                            }, 100);
-                            this.author.total_vote = parseInt(this.author.total_vote)+30
-                            this.presentnum[1].tot =parseInt(this.presentnum[1].tot)+1
-                            this.presentrecord.push(
-                                {inte:"30",inte_lev:"2",wx_name:wname}
-                            )
-                            setTimeout(()=> {
-                                this.gift = false 
-                                sending.src='#'
-                            }, 3500);
-                        }else{
-                            this.gift=3
-                            document.getElementById('sending3').src='#'
-                            setTimeout(()=> {
-                                document.getElementById('sending3').src='./static/img/gift3.gif'
-                            }, 100);
-                            this.author.total_vote = parseInt(this.author.total_vote)+50
-                            this.presentnum[2].tot =parseInt(this.presentnum[2].tot)+1
-                            this.presentrecord.push(
-                                {inte:"50",inte_lev:"3",wx_name:wname}
-                            )
-                            setTimeout(()=> {
-                                this.gift = false 
-                                // sending.src='#'
-                            }, 7000);
+
+                    var sending = document.getElementById('sending');
+                    this.$axios.get(`${test}/api/actives/voteUser`, {
+                        params:{
+                            uid:this.newid,
+                            openid:this.oid,
+                            vote_type:presenttype,
+                            vote:presentjfnum
                         }
+                    }).then((res)=> {
+                        if(res.data.status===1){
+                            let mathrandom = Math.random();                     
+                            this.tpperson.total=myjfnum-presentjfnum
+                            let wname = res.data.wx_name
+                            if(presenttype===1){
+                                
+                                document.getElementById('sending1').src='#'
+                                setTimeout(()=> {
+                                    document.getElementById('sending1').src='./static/img/gift1.gif';
+                                }, 100);
+                                this.gift=1;
+                                this.author.total_vote = parseInt(this.author.total_vote)+10
+                                this.presentnum[0].tot =parseInt(this.presentnum[0].tot)+1
+                                this.presentrecord.push(
+                                    {inte:"10",inte_lev:"1",wx_name:wname}
+                                )
+                                setTimeout(()=> {
+                                    this.gift = false 
+                                    sending.src='#'
+                                }, 6000);
+                            }else if(presenttype===2){
+                                this.gift=2
+                                document.getElementById('sending2').src='#'
+                                setTimeout(()=> {
+                                    document.getElementById('sending2').src='./static/img/gift2.gif'
+                                }, 100);
+                                this.author.total_vote = parseInt(this.author.total_vote)+30
+                                this.presentnum[1].tot =parseInt(this.presentnum[1].tot)+1
+                                this.presentrecord.push(
+                                    {inte:"30",inte_lev:"2",wx_name:wname}
+                                )
+                                setTimeout(()=> {
+                                    this.gift = false 
+                                    sending.src='#'
+                                }, 3500);
+                            }else{
+                                this.gift=3
+                                document.getElementById('sending3').src='#'
+                                setTimeout(()=> {
+                                    document.getElementById('sending3').src='./static/img/gift3.gif'
+                                }, 100);
+                                this.author.total_vote = parseInt(this.author.total_vote)+50
+                                this.presentnum[2].tot =parseInt(this.presentnum[2].tot)+1
+                                this.presentrecord.push(
+                                    {inte:"50",inte_lev:"3",wx_name:wname}
+                                )
+                                setTimeout(()=> {
+                                    this.gift = false 
+                                    // sending.src='#'
+                                }, 7000);
+                            }
 
-                    }
-                })
+                        }
+                    })
+                }
             },
             popcancel(){
                 this.preon=false
@@ -1139,7 +1189,8 @@
                         id:this.newid
                     }
                 }).then((res)=> {
-                    
+                    this.rank = res.data.content.rank
+                    // alert(this.rank)
                     this.author = res.data.content
                     this.myvoice = res.data.content.works_voice
                     if(res.data.content.voice_second==='0'){
@@ -1185,7 +1236,7 @@
 </script>
 
 <style scoped>
-    .gallery {background:url('../public/images/bj13.jpg') no-repeat;background-size: 100% 100%;transition:all ease 0.5;}
+    .gallery {background:url('../public/images/bj13.jpg') no-repeat;background-size: 100% 100%;transition:all ease 0.5;z-index:-1;}
     .gbig {background:url('../public/images/bj13.jpg') no-repeat;background-size: 170% 170%;}
 
     .original {position: fixed;top: 0;left: 0;width: 100%;height: 100%;display: flex;z-index:1500;justify-content: center;

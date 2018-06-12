@@ -44,12 +44,18 @@
             },
             workgo(){
                 this.$router.push('work')
+                setTimeout(()=> {
+                    window.location.reload();
+                }, 100);
             },
             lessongo(){
                 
             },
             jfgo(){
                 this.$router.push('integral')
+                setTimeout(()=> {
+                    window.location.reload();
+                }, 100);
             }
         }
     }

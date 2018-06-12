@@ -1,5 +1,5 @@
 <template>
-    <div class="upload">
+    <div class="upload" id="share">
         <div class="upload-box">
             <div class="load-inner">
                 <div class="load-con">

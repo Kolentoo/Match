@@ -41,7 +41,7 @@
     import menubox from '../components/menubox/menubox'
     import tips from '../components/tips/tips'
     var local = 'http://192.168.1.227:8081'
-    var test = 'http://studenttest.dfth.com'
+    var test = 'http://student.dfth.com'
     var panda = 'http://student.dfth.com'
     export default{
         data(){
@@ -56,7 +56,7 @@
         },
         created(){
             var curl = window.location.href;
-            let localoid =localStorage.getItem('oid');
+            let localoid =localStorage.getItem('ooid');
             if(localoid){
                 this.oid=localoid
             }else{
@@ -69,7 +69,7 @@
                         }
                     }).then((res)=>{
                         if(res.data.status===1){
-                            localStorage.setItem('oid',this.oid);
+                            localStorage.setItem('ooid',this.oid);
                         }else{
                             alert('登录失败')
                         }
@@ -114,13 +114,13 @@
             wx.ready(()=>{
 
                 wx.onMenuShareTimeline({
-                    title: '绘画比赛-东方童画', // 分享标题
+                    title: '童年画语绘画比赛-东方童画', // 分享标题
                     link: curl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                     imgUrl: '', // 分享图标
                     success:  ()=> {
                         this.$axios.get(`${test}/actives/timelineAdd`,{
                             params:{
-                                openid:localoid
+                                openid:this.oid
                             }
                         }).then((res)=>{
                             if(res.data.status===1){
@@ -135,7 +135,7 @@
                 });
 
                 wx.onMenuShareAppMessage({
-                title: '绘画比赛-东方童画', // 分享标题
+                title: '童年画语绘画比赛-东方童画', // 分享标题
                 desc: '东方童画绘画比赛', // 分享描述
                 link: curl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                 imgUrl: '', // 分享图标
@@ -144,7 +144,7 @@
                 success: ()=> {
                     this.$axios.get(`${test}/actives/shareAppAdd`,{
                         params:{
-                            openid:localoid
+                            openid:this.oid
                         }
                     }).then((res)=>{
                         if(res.data.status===1){
@@ -180,6 +180,7 @@
 </script>
 
 <style scoped>
+    .integral {padding-bottom: 10rem;}
     .bj {background: url('../public/images/bj4.jpg') no-repeat center center;background-size: cover;height: 57.7rem;display: flex;
     align-items: center;color:#9c4c12;}
     .bj .jfbox {width: 100%;}

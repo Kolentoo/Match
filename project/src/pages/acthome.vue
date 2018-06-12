@@ -23,11 +23,13 @@
         <div class="news" id="news">
             <div class="newstitle tc">
                 <img class="vm" src="../public/images/decorate5.png" alt="">
-                <span class="p1">童年话语报道</span>
+                <span class="p1">童年画语报道</span>
                 <img class="vm" src="../public/images/decorate6.png" alt="">
             </div>
-            <video class="vm video-box" poster="../public/images/video.jpg" controls="" src="https://imgcache.qq.com/tencentvideo_v1/playerv3/TPout.swf?max_age=86400&v=20161117&vid=l0628mbcgnr&auto=0"></video>
-
+            <!--<video class="vm video-box" poster="../public/images/video.jpg" controls="" src="https://imgcache.qq.com/tencentvideo_v1/playerv3/TPout.swf?max_age=86400&v=20161117&vid=l0628mbcgnr&auto=0"></video>-->
+            <div class="videobox">
+                <iframe frameborder="0" width="100%" height="498" src="https://v.qq.com/iframe/player.html?vid=r0685pnc9wp&tiny=0&auto=0" allowfullscreen></iframe>
+            </div>
             <swiper :options="swiperOption1" ref="mySwiper">
                 <!-- slides -->
                 <swiper-slide>
@@ -93,7 +95,7 @@
                 <dl>
                     <dt>承办方</dt>
                     <dd>东方童画</dd>
-                    <dd>中国特殊关爱基金会</dd>
+                    <dd>上海特殊关爱基金会</dd>
                 </dl>
             </div>
         </div>
@@ -116,7 +118,7 @@
 </template>
 
 <script>
-    var test = 'http://studenttest.dfth.com'
+    var test = 'http://student.dfth.com'
     var local = 'http://192.168.1.227:8081'
     var panda = 'http://student.dfth.com'
     import menubox from '../components/menubox/menubox'
@@ -147,7 +149,7 @@
         created(){
 
             var curl = window.location.href;
-            let localoid =localStorage.getItem('oid');
+            let localoid =localStorage.getItem('ooid');
             if(localoid){
                 this.oid=localoid
             }else{
@@ -160,7 +162,7 @@
                         }
                     }).then((res)=>{
                         if(res.data.status===1){
-                            localStorage.setItem('oid',this.oid);
+                            localStorage.setItem('ooid',this.oid);
                         }else{
                             alert('登录失败')
                         }
@@ -191,7 +193,7 @@
 
             this.$axios.get(`${test}/actives/dayAdd`,{
                 params:{
-                    openid:localoid
+                    openid:this.oid
                 }
             }).then((res)=>{
                 if(res.data.status===1){
@@ -204,7 +206,7 @@
 
 
             wx.ready(()=>{
-                
+                this.play=true;
                 this.myAudio = new Audio();
                 this.myAudio.src='./static/audio/music.mp3';
                 this.myAudio.loop='loop';
@@ -212,13 +214,13 @@
                 this.play=true;
 
                 wx.onMenuShareTimeline({
-                    title: '绘画比赛-东方童画', // 分享标题
-                    link: curl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    title: '童年画语绘画比赛-东方童画', // 分享标题
+                    link: window.location.href.split('#')[0]+'#'+window.location.href.split('#')[1], // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                     imgUrl: '', // 分享图标
                     success:  ()=> {
                         this.$axios.get(`${test}/actives/timelineAdd`,{
                             params:{
-                                openid:localoid
+                                openid:this.oid
                             }
                         }).then((res)=>{
                             if(res.data.status===1){
@@ -230,16 +232,16 @@
                 });
 
                 wx.onMenuShareAppMessage({
-                title: '绘画比赛-东方童画', // 分享标题
+                title: '童年画语绘画比赛-东方童画', // 分享标题
                 desc: '东方童画绘画比赛', // 分享描述
-                link: curl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                link: window.location.href.split('#')[0]+'#'+window.location.href.split('#')[1], // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                 imgUrl: '', // 分享图标
                 type: '', // 分享类型,music、video或link，不填默认为link
                 dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
                 success: ()=> {
                     this.$axios.get(`${test}/actives/shareAppAdd`,{
                         params:{
-                            openid:localoid
+                            openid:this.oid
                         }
                     }).then((res)=>{
                         if(res.data.status===1){
@@ -357,4 +359,5 @@
     .seemk {background: rgba(0,0,0,0.8);}
     .nav {z-index:500;}
     .nopresent {font-size: 2.4rem;margin-top: 1rem;color:#999;text-align: center;}
+    .videobox {margin:0 auto;width: 88%;border-radius:0.8rem;overflow: hidden;}
 </style>

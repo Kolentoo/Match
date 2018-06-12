@@ -1,5 +1,5 @@
 <template>
-    <div :class="['sign',{anzhuo:anzhuo}]">
+    <div :class="['sign',{anzhuo:anzhuo}]" id="share">
         <div class="sign-box">
             <p class="sign-time">报名时间：2018年4月8日~6月22日</p>
             <div class="content">
