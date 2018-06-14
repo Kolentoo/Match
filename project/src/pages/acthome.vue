@@ -48,8 +48,8 @@
                 </swiper-slide>
                 <swiper-slide>
                     <dl>
-                        <dd><a href="https://mp.weixin.qq.com/s/cRywsRF2oTiGoT-_Xt6kvQ" target="_blank">上海日报：Painting contest launched to discover talented child artist</a></dd>
-                        <dd><a href="https://mp.weixin.qq.com/s/wXpUMMRihwRPaFlg7Nt0Mg" target="_blank">上海热线：2018"童年画语"杯儿童绘画比赛启动 让孩子画出“我的美丽中国”</a></dd>
+                        <dd><a href="https://mp.weixin.qq.com/s/bAdgw5EjDZthFGlEcF-ARQ" target="_blank">上海日报：Painting contest launched to discover talented child artist</a></dd>
+                        <dd><a href="https://mp.weixin.qq.com/s/cRywsRF2oTiGoT-_Xt6kvQ" target="_blank">上海热线：2018"童年画语"杯儿童绘画比赛启动 让孩子画出“我的美丽中国”</a></dd>
                         <!--<dd><a href="" target="_blank">东方网：2018年“童年画语”杯儿童绘画比赛启动 让孩子画出“我的美丽中国”</a></dd>-->
                     </dl>
                 </swiper-slide>

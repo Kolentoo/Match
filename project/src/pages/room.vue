@@ -166,7 +166,7 @@
             <img class="g10 vm" :src="originalpic" alt="">
         </div>
 
-        <swiper :options="swiperOption" ref="mySwiper" @slideNextTransitionStart="nextslide()" @slidePrevTransitionStart= "prevslide()">
+        <swiper :options="swiperOption" ref="mySwiper" @slideNextTransitionStart="next()" @slidePrevTransitionStart= "prev()">
             <!-- slides -->
             <swiper-slide v-for="(room,idx) in playlist" :key="idx">
                 <img @click="popcancel()" :class="['bjpic vm',{'coming':coming}]" src="../../src/public/images/bj13.jpg" alt="">
@@ -224,6 +224,8 @@
     export default{
         data(){
             return{
+                sharename:'',
+                shareimg:'',
                 username:'',
                 imgurl:'',
                 giftfalse:false,
@@ -335,12 +337,15 @@
 
 
             var curl = window.location.href;
-
+            setTimeout(()=> {
+                
+            
             if(curl.indexOf('?from')>-1){
                 let newurl1 = curl.split('?from')[0];
                 let newurl2 = curl.split('#')[1];
                 window.location.href=newurl1+'#'+newurl2
             }
+            }, 300);
 
             let localoid =localStorage.getItem('ooid');
             if(localoid){
@@ -407,6 +412,8 @@
                         id:this.newid
                     }
                 }).then((res)=> {
+                    this.sharename =res.data.content.childname;
+                    this.shareimg = res.data.content.works_img;
                     this.rank = res.data.content.rank
                     this.ranking = parseInt(this.rank);
                     // alert(this.ranking)
@@ -441,7 +448,7 @@
                         }
                         // alert(this.gallerypage)
                     }else{
-                        if(parseInt(this.rank.charAt(4))===0){
+                        if(parseInt(this.rank.charAt(3))===0){
                             this.worknumber=10
                             this.gallerypage = parseInt(this.rank.charAt(0)+this.rank.charAt(1)+this.rank.charAt(2));
                         }else{
@@ -450,10 +457,10 @@
                         }
                         // alert(this.gallerypage)
                     }
-                    // alert(this.worknumber)
+
                     this.pagegroup.push(this.gallerypage)
 
-                                    // 列表
+                    // 列表
                     this.$axios.get(`${test}/actives/picSayList`, {
                         params:{
                             page:this.gallerypage
@@ -513,66 +520,11 @@
                         
                     })
                 })
-                wx.ready(()=>{
-                    // setTimeout(()=> {
-                    
-                    this.username = document.getElementsByClassName('swiper-slide-active')[0].getElementsByClassName("username")[0].innerHTML;
-                    this.imgurl = document.getElementsByClassName('swiper-slide-active')[0].getElementsByClassName("workpic")[0].src;
-                    console.log(this.username)
-                    console.log(this.imgurl) 
 
-                    // }, 5000);
+                    // }, 5500);
 
-                    wx.onMenuShareTimeline({
-                        title: '我是'+this.username+'，我正在参加2018童年画语，快来给我送礼物吧！', // 分享标题
-                        link: curl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                        imgUrl: this.imgurl, // 分享图标
-                        success:  ()=> {
-                            this.$axios.get(`${test}/actives/timelineAdd`,{
-                                params:{
-                                    openid:this.oid
-                                }
-                            }).then((res)=>{
-                                if(res.data.status===1){
-                                    this.hasmsg=true
-                                    this.tipsmsg='分享成功'
-                                    this.tpperson.total = parseInt(this.tpperson.total)+5
-                                }
-                            })
-                        }
-                    });
+            })
 
-                    wx.onMenuShareAppMessage({
-                        title: '我是'+this.username+'，我正在参加2018童年画语，快来给我送礼物吧！', // 分享标题
-                        desc: '东方童画绘画比赛', // 分享描述
-                        link: curl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                        imgUrl: this.imgurl, // 分享图标
-                        type: '', // 分享类型,music、video或link，不填默认为link
-                        dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
-                        success: ()=> {
-                            this.$axios.get(`${test}/actives/shareAppAdd`,{
-                                params:{
-                                    openid:this.oid
-                                }
-                            }).then((res)=>{
-                                if(res.data.status===1){
-                                    this.hasmsg=true
-                                    this.tipsmsg='分享成功'
-                                    this.tpperson.total = parseInt(this.tpperson.total)+5
-                                }
-                            })
-                        }
-                        });
-                    });
-
-                })
-
-
-            // setTimeout(()=> {
-
-            // }, 6000);
-
-            console.log(this.worknumber)
             // 礼物列表
             this.$axios.get(`${test}/actives/voteList`, {
                 params:{
@@ -605,6 +557,64 @@
             })
 
 
+            
+                
+            this.$nextTick(()=>{
+
+            
+                wx.ready(()=>{
+
+                    
+                    wx.onMenuShareTimeline({
+                        title: '我是'+this.sharename+'，我正在参加2018童年画语，快来给我送礼物吧！', // 分享标题
+                        link: curl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                        imgUrl: this.shareimg, // 分享图标
+                        success:  ()=> {
+                            this.$axios.get(`${test}/actives/timelineAdd`,{
+                                params:{
+                                    openid:this.oid
+                                }
+                            }).then((res)=>{
+                                if(res.data.status===1){
+                                    this.hasmsg=true
+                                    this.tipsmsg='分享成功'
+                                    this.tpperson.total = parseInt(this.tpperson.total)+5
+                                }
+                            })
+                        }
+                    });
+
+                    wx.onMenuShareAppMessage({
+                        title: '我是'+this.sharename+'，我正在参加2018童年画语，快来给我送礼物吧！', // 分享标题
+                        desc: '东方童画绘画比赛', // 分享描述
+                        link: curl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                        imgUrl: this.shareimg, // 分享图标
+                        type: '', // 分享类型,music、video或link，不填默认为link
+                        dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+                        success: ()=> {
+                            this.$axios.get(`${test}/actives/shareAppAdd`,{
+                                params:{
+                                    openid:this.oid
+                                }
+                            }).then((res)=>{
+                                if(res.data.status===1){
+                                    this.hasmsg=true
+                                    this.tipsmsg='分享成功'
+                                    this.tpperson.total = parseInt(this.tpperson.total)+5
+                                }
+                            })
+                        }
+                    });
+                
+                
+                
+                
+                
+                
+                });
+
+            })
+            
             
         },
         mounted(){
@@ -650,12 +660,16 @@
                 document.getElementById('btnleft').style.visibility="hidden";
             }
 
-            this.$nextTick(()=>{
-                setTimeout(()=> {
-                    this.swiper.slideTo(this.worknumber-1, 1, false)   
-                }, 250);
+            this.$nextTick(()=>{      
+            
+            setTimeout(()=> {
+                this.swiper.slideTo(this.worknumber-1, 1, false)   
+            }, 250);
+
             })
               
+
+            
             
         },
         components:{
@@ -678,142 +692,6 @@
             },
             nosee(){
                 this.see=false
-            },
-            nextslide(){
-                if(this.voiceplay===true){
-                    this.myaudio.pause();
-                    this.voiceplay=false
-                }
-
-                
-                // this.playlist = this.alllist
-                document.getElementById('btnleft').style.visibility="visible";
-                // let num = this.workmany.toString();
-                let num = this.ranking.toString();
-                var maxN = eval("Math.max(" + this.pagegroup.toString() + ")");
-                var minN = eval("Math.min(" + this.pagegroup.toString() + ")");
-
-                if(num.charAt(num.length-1)==='9'){
-                    // if(this.pagegroup.indexOf(this.gallerypage)>-1){
-                    //     console.log('yes')
-                    // }else{
- 
-                    // }
-                    if(num.length===1){
-                        this.gallerypage = 2
-                        this.pagegroup.push(this.gallerypage)
-                        this.nextgroup();
-                        this.swiper.updateSlides();
-                    }else{
-                        if(this.pagegroup.indexOf(parseInt(num.charAt(0))+2 )>-1){
-                            console.log('yes')
-                        }else{
-                            this.gallerypage = parseInt(num.charAt(0))+2
-                            this.pagegroup.push(this.gallerypage)
-                            this.nextgroup();
-                            this.swiper.updateSlides();
-
-                        }
-                    }
-
-
-
-                    // this.workmany=1
-                    // if(this.pagegroup.indexOf(parseInt(this.gallerypage)+1)>-1){
-                    //     console.log('ok')
-                    // }else{
-                    //     console.log('no')
-                    //     this.gallerypage+=1 
-                    //     this.nextgroup();
-                    // }
-                      
-                    // setTimeout(()=> {
-                    
-                    // }, 500);
-                    // setTimeout(()=> {
-                    //     this.roomchange();
-                    //     this.presentdata();
-                    //     this.authorinfo();
-                    // }, 800);
-                }
-
-                this.ranking+=1
-                console.log(this.ranking)
-            
-                if(this.listlength<10&&this.listlength===this.worknumber-1){
-                    document.getElementById('btnright').style.visibility="hidden";
-                }
-
-                setTimeout(()=> {
-                    this.roomchange();
-                    this.presentdata();
-                    this.authorinfo();
-                }, 300);
-            },
-            prevslide(){
-                // 关闭音频
-                if(this.voiceplay===true){
-                    this.myaudio.pause();
-                    this.voiceplay=false
-                }
-
-                // 箭头按钮控制
-                // document.getElementById('btnright').style.visibility="visible";
-                if(this.ranking===2){
-                    document.getElementById('btnleft').style.visibility="hidden";
-                }
-
-
-
-                let num = this.ranking.toString();
-                if(num.charAt(num.length-1)==='2'){
-                    // console.log('page'+this.gallerypage)
-                    // console.log('group'+this.pagegroup)
-                    var maxN = eval("Math.max(" + this.pagegroup.toString() + ")");
-                    var minN = eval("Math.min(" + this.pagegroup.toString() + ")");
-
-                    if(this.pagegroup.indexOf(parseInt(num.charAt(0)))>-1||minN===1){
-                        console.log('yes')
-                    }else{
-                        // this.gallerypage-=1 
-                        console.log('min'+minN);    
-                        // console.log('roomtype'+roomtype);
-                        // if(roomtype+1===minN){
-                            this.gallerypage = parseInt(num.charAt(0));
-                            this.pagegroup.push(this.gallerypage)
-                            this.prevgroup();
-                            this.swiper.updateSlides();
-                        // }
-
-                    }
-
-                    
-                    // if(this.gallerypage>1){
-                    //     this.gallerypage-=1 
-                    //     setTimeout(()=> {
-                    //         this.prevgroup();
-                    //     }, 100);
-                    //     setTimeout(()=> {
-                    //         this.roomchange();
-                    //         this.presentdata();
-                    //         this.authorinfo();
-                    //     }, 300);
-                    // }
-                }
-                // if(num.charAt(num.length-1)==='1'){
-                    
-                // }
-                if(this.ranking>1){    
-                    // this.workmany-=1
-                    this.ranking-=1
-                }
-                console.log(this.ranking)
-                
-                setTimeout(()=> {
-                    this.roomchange();
-                    this.presentdata();
-                    this.authorinfo();
-                }, 300);
             },
             sendpresent(){
                 this.preon=true
@@ -993,7 +871,6 @@
                 }, 100);
             },
             prev(){
-
                 // 关闭音频
                 if(this.voiceplay===true){
                     this.myaudio.pause();
@@ -1006,16 +883,6 @@
                     document.getElementById('btnleft').style.visibility="hidden";
                 }
 
-                setTimeout(()=> {
-                    
-                
-                this.username = document.getElementsByClassName('swiper-slide-active')[0].getElementsByClassName("username")[0].innerHTML;
-                this.imgurl = document.getElementsByClassName('swiper-slide-active')[0].getElementsByClassName("workpic")[0].src;
-                console.log(this.username)
-                console.log(this.imgurl)
-
-                }, 500);
-
 
 
                 let num = this.ranking.toString();
@@ -1025,9 +892,10 @@
                     var maxN = eval("Math.max(" + this.pagegroup.toString() + ")");
                     var minN = eval("Math.min(" + this.pagegroup.toString() + ")");
 
-                    if(this.pagegroup.indexOf(parseInt(num.charAt(0)))>-1||minN===1){
+                    // if(this.pagegroup.indexOf(parseInt(num.charAt(0)))>-1||minN===1){
+                    if(num.length===1){
                         console.log('yes')
-                    }else{
+                    }else if(num.length===2){
                         // this.gallerypage-=1 
                         console.log('min'+minN);    
                         // console.log('roomtype'+roomtype);
@@ -1038,24 +906,21 @@
                             this.swiper.updateSlides();
                         // }
 
+                    }else if(num.length===3){
+                            this.gallerypage = parseInt(num.charAt(0)+num.charAt(1));
+                            this.pagegroup.push(this.gallerypage)
+                            this.prevgroup();
+                            this.swiper.updateSlides();
+                            
+                    }else {
+                            this.gallerypage = parseInt(num.charAt(0)+num.charAt(1)+num.charAt(2));
+                            this.pagegroup.push(this.gallerypage)
+                            this.prevgroup();
+                            this.swiper.updateSlides();
                     }
 
-                    
-                    // if(this.gallerypage>1){
-                    //     this.gallerypage-=1 
-                    //     setTimeout(()=> {
-                    //         this.prevgroup();
-                    //     }, 100);
-                    //     setTimeout(()=> {
-                    //         this.roomchange();
-                    //         this.presentdata();
-                    //         this.authorinfo();
-                    //     }, 300);
-                    // }
                 }
-                // if(num.charAt(num.length-1)==='1'){
-                    
-                // }
+
                 if(this.ranking>1){    
                     // this.workmany-=1
                     this.ranking-=1
@@ -1066,11 +931,11 @@
                     this.roomchange();
                     this.presentdata();
                     this.authorinfo();
-                }, 300);
+                }, 400);
                 
             },
             prevgroup(){
-                
+                // alert(this.gallerypage)
                 this.$axios.get(`${test}/actives/picSayList`, {
                     params:{
                         page:this.gallerypage
@@ -1106,17 +971,7 @@
                     this.voiceplay=false
                 }
 
-                setTimeout(()=> {
-                    
                 
-                this.username = document.getElementsByClassName('swiper-slide-active')[0].getElementsByClassName("username")[0].innerHTML;
-                this.imgurl = document.getElementsByClassName('swiper-slide-active')[0].getElementsByClassName("workpic")[0].src;
-                
-                console.log(this.username)
-                console.log(this.imgurl)
-                
-                }, 500);
-
                 // this.playlist = this.alllist
                 document.getElementById('btnleft').style.visibility="visible";
                 // let num = this.workmany.toString();
@@ -1135,11 +990,31 @@
                         this.pagegroup.push(this.gallerypage)
                         this.nextgroup();
                         this.swiper.updateSlides();
-                    }else{
+                    }else if(num.length===2){
                         if(this.pagegroup.indexOf(parseInt(num.charAt(0))+2 )>-1){
                             console.log('yes')
                         }else{
                             this.gallerypage = parseInt(num.charAt(0))+2
+                            this.pagegroup.push(this.gallerypage)
+                            this.nextgroup();
+                            this.swiper.updateSlides();
+
+                        }
+                    }else if(num.length===3){
+                        if(this.pagegroup.indexOf(parseInt(num.charAt(0)+num.charAt(1))+2 )>-1){
+                            console.log('yes')
+                        }else{
+                            this.gallerypage = parseInt(num.charAt(0)+num.charAt(1))+2
+                            this.pagegroup.push(this.gallerypage)
+                            this.nextgroup();
+                            this.swiper.updateSlides();
+
+                        }
+                    }else{
+                        if(this.pagegroup.indexOf(parseInt(num.charAt(0)+num.charAt(1)+num.charAt(2))+2 )>-1){
+                            console.log('yes')
+                        }else{
+                            this.gallerypage = parseInt(num.charAt(0)+num.charAt(1)+num.charAt(2))+2
                             this.pagegroup.push(this.gallerypage)
                             this.nextgroup();
                             this.swiper.updateSlides();
@@ -1180,7 +1055,6 @@
                     this.presentdata();
                     this.authorinfo();
                 }, 300);
-                
 
             },
             nextgroup(){
