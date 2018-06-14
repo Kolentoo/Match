@@ -26,7 +26,7 @@
                 <div class="popinner">
                     <img class="vm endpic" src="../public/images/end.png" alt="">
                     <p class="p2 tc">线上评选活动已结束</p>
-                    <img class="lookbtn vm" src="../public/images/resultbtn.png" alt="">
+                    <img class="lookbtn vm playover" src="../public/images/resultbtn.png" alt="">
                     <img @click="closepop3()" class="vm close" src="../public/images/popclose2.png" alt="">
                 </div>
             </div>
@@ -56,6 +56,13 @@
         },
         created(){
             var curl = window.location.href;
+
+            if(curl.indexOf('?from')>-1){
+                let newurl1 = curl.split('?from')[0];
+                let newurl2 = curl.split('#')[1];
+                window.location.href=newurl1+'#'+newurl2
+            }
+
             let localoid =localStorage.getItem('ooid');
             if(localoid){
                 this.oid=localoid
@@ -115,7 +122,7 @@
 
                 wx.onMenuShareTimeline({
                     title: '童年画语绘画比赛-东方童画', // 分享标题
-                    link: curl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    link: 'http://student.dfth.com/market/index.html#/acthome', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                     imgUrl: '', // 分享图标
                     success:  ()=> {
                         this.$axios.get(`${test}/actives/timelineAdd`,{
@@ -137,7 +144,7 @@
                 wx.onMenuShareAppMessage({
                 title: '童年画语绘画比赛-东方童画', // 分享标题
                 desc: '东方童画绘画比赛', // 分享描述
-                link: curl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                link: 'http://student.dfth.com/market/index.html#/acthome', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                 imgUrl: '', // 分享图标
                 type: '', // 分享类型,music、video或link，不填默认为link
                 dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空

@@ -34,23 +34,23 @@
                 <!-- slides -->
                 <swiper-slide>
                     <dl>
-                        <dd><a href="" target="_blank">搜狐网：2018年“童年画语”杯儿童绘画比赛启动 让孩子画出“我的美丽中国”</a></dd>
-                        <dd><a href="" target="_blank">新浪网：2018年童年画语杯儿童绘画比赛启动</a></dd>
-                        <dd><a href="" target="_blank">网易：2018"童年画语"杯儿童绘画比赛启动 画出"中国梦"</a></dd>
+                        <dd><a href="https://mp.weixin.qq.com/s/jFAOV6Hbbnl8zaFXZG0cZA" target="_blank">搜狐网：2018年“童年画语”杯儿童绘画比赛启动 让孩子画出“我的美丽中国”</a></dd>
+                        <dd><a href="https://mp.weixin.qq.com/s/ItjxgYy2umRfKbzkkqJDbg" target="_blank">新浪网：2018年童年画语杯儿童绘画比赛启动</a></dd>
+                        <dd><a href="https://mp.weixin.qq.com/s/qde-oAmW2Kvf2UFiDF8-lA" target="_blank">网易：2018"童年画语"杯儿童绘画比赛启动 画出"中国梦"</a></dd>
                     </dl>
                 </swiper-slide>
                 <swiper-slide>
                     <dl>
-                        <dd><a href="" target="_blank">腾讯大申：2018年“童年画语”杯儿童绘画比赛启动 画出“我的美丽中国”</a></dd>
-                        <dd><a href="" target="_blank">新华网：“童年画语”杯儿童绘画比赛在上海启动</a></dd>
-                        <dd><a href="" target="_blank">中新社：2018年“童年画语”杯儿童绘画比赛启动 让孩子画出“我的美丽中国”</a></dd>
+                        <dd><a href="https://mp.weixin.qq.com/s/WC1w2C-7hcYEnqpNUJcoow" target="_blank">腾讯大申：2018年“童年画语”杯儿童绘画比赛启动 画出“我的美丽中国”</a></dd>
+                        <dd><a href="https://mp.weixin.qq.com/s/E-6A_c23Sve-MDYKuq-d8g" target="_blank">新华网：“童年画语”杯儿童绘画比赛在上海启动</a></dd>
+                        <dd><a href="https://mp.weixin.qq.com/s/C60nY-CVn0fKbvUCmrx7uw" target="_blank">中新社：2018年“童年画语”杯儿童绘画比赛启动 让孩子画出“我的美丽中国”</a></dd>
                     </dl>
                 </swiper-slide>
                 <swiper-slide>
                     <dl>
-                        <dd><a href="" target="_blank">上海日报：Painting contest launched to discover talented child artist</a></dd>
-                        <dd><a href="" target="_blank">上海热线：2018"童年画语"杯儿童绘画比赛启动 让孩子画出“我的美丽中国”</a></dd>
-                        <dd><a href="" target="_blank">东方网：2018年“童年画语”杯儿童绘画比赛启动 让孩子画出“我的美丽中国”</a></dd>
+                        <dd><a href="https://mp.weixin.qq.com/s/cRywsRF2oTiGoT-_Xt6kvQ" target="_blank">上海日报：Painting contest launched to discover talented child artist</a></dd>
+                        <dd><a href="https://mp.weixin.qq.com/s/wXpUMMRihwRPaFlg7Nt0Mg" target="_blank">上海热线：2018"童年画语"杯儿童绘画比赛启动 让孩子画出“我的美丽中国”</a></dd>
+                        <!--<dd><a href="" target="_blank">东方网：2018年“童年画语”杯儿童绘画比赛启动 让孩子画出“我的美丽中国”</a></dd>-->
                     </dl>
                 </swiper-slide>
                 <!-- Optional controls -->
@@ -64,13 +64,10 @@
             <swiper :options="swiperOption2" ref="mySwiper">
                 <!-- slides -->
                 <swiper-slide>
-                    <a class="block" href="" target="_blank"><img class="vm g10" src="../public/images/example.png" alt=""></a>
+                    <a class="block" href="http://m.dfth.com/index" target="_blank"><img class="vm g10" src="../public/images/banner1.jpg" alt=""></a>
                 </swiper-slide>
                 <swiper-slide>
-                    <a class="block" href="" target="_blank"><img class="vm g10" src="../public/images/example.png" alt=""></a>
-                </swiper-slide>
-                <swiper-slide>
-                    <a class="block" href="" target="_blank"><img class="vm g10" src="../public/images/example.png" alt=""></a>
+                    <a class="block" href="http://tnhy.dfth.com/marketMobile" target="_blank"><img class="vm g10" src="../public/images/banner2.jpg" alt=""></a>
                 </swiper-slide>
                 <!-- Optional controls -->
                 <div class="swiper-pagination spagination2"  slot="pagination"></div>
@@ -107,7 +104,7 @@
                 <div class="popinner">
                     <img class="vm endpic" src="../public/images/end.png" alt="">
                     <p class="p2 tc">线上评选活动已结束</p>
-                    <img class="lookbtn vm" src="../public/images/resultbtn.png" alt="">
+                    <img class="lookbtn vm playover" src="../public/images/resultbtn.png" alt="">
                     <img @click="closepop3()" class="vm close" src="../public/images/popclose2.png" alt="">
                 </div>
             </div>
@@ -149,6 +146,12 @@
         created(){
 
             var curl = window.location.href;
+            if(curl.indexOf('?from')>-1){
+                let newurl1 = curl.split('?from')[0];
+                let newurl2 = curl.split('#')[1];
+                window.location.href=newurl1+'#'+newurl2
+            }
+
             let localoid =localStorage.getItem('ooid');
             if(localoid){
                 this.oid=localoid
@@ -292,6 +295,12 @@
             },
             workgo(){
                 this.$router.push('work');
+            },
+            rulego(){
+                window.location.href="https://mp.weixin.qq.com/s/8rMpl3LkOCWYktzLHTHx4A"
+            },
+            prizego(){
+                window.location.href="https://mp.weixin.qq.com/s/GUZqNlOMfa527jQuMcP0Bw"
             }
         }
     }
@@ -329,8 +338,10 @@
 
 
     .activity #bottom .swiper-container {height:28rem;width: 88%;margin:0 auto;border-radius:2rem;
-        margin-top: 4.5rem;box-shadow:0 1.9rem 6rem rgba(0,0,0,0.12);}
-    .activity #bottom .swiper-slide {height: 28rem;overflow: hidden;}
+        margin-top: 4.5rem;
+        /*box-shadow:0 1.9rem 6rem rgba(0,0,0,0.12);*/
+        }
+    .activity #bottom .swiper-slide {height: 28rem;overflow: hidden;border-radius:2rem;}
     .activity #bottom .swiper-slide img{width: 100%;height: 100%;}
     .activity #bottom .spagination2 {background: rgba(0,0,0,0.7);border-radius:10rem;z-index:500;height: 2.8rem;padding:0 0.8rem;
     left: 38%;bottom: 2rem;width: 24%;}

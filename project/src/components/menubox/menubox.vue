@@ -49,7 +49,7 @@
                 }, 100);
             },
             lessongo(){
-                
+                window.location.href="http://m.dfth.com/index"
             },
             jfgo(){
                 this.$router.push('integral')

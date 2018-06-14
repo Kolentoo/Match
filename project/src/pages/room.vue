@@ -152,7 +152,7 @@
                 <div class="popinner">
                     <img class="vm endpic" src="../public/images/end.png" alt="">
                     <p class="p2 tc">线上评选活动已结束</p>
-                    <img class="lookbtn vm" src="../public/images/resultbtn.png" alt="">
+                    <img class="lookbtn vm playover" src="../public/images/resultbtn.png" alt="">
                     <img @click="closepop3()" class="vm close" src="../public/images/popclose2.png" alt="">
                 </div>
             </div>
@@ -224,6 +224,8 @@
     export default{
         data(){
             return{
+                username:'',
+                imgurl:'',
                 giftfalse:false,
                 gift:0,
                 bjshow:false,
@@ -333,6 +335,13 @@
 
 
             var curl = window.location.href;
+
+            if(curl.indexOf('?from')>-1){
+                let newurl1 = curl.split('?from')[0];
+                let newurl2 = curl.split('#')[1];
+                window.location.href=newurl1+'#'+newurl2
+            }
+
             let localoid =localStorage.getItem('ooid');
             if(localoid){
                 this.oid=localoid
@@ -383,174 +392,187 @@
             })
 
 
-
-            wx.ready(()=>{
-                wx.onMenuShareTimeline({
-                    title: '童年画语绘画比赛-东方童画', // 分享标题
-                    link: curl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                    imgUrl: '', // 分享图标
-                    success:  ()=> {
-                        this.$axios.get(`${test}/actives/timelineAdd`,{
-                            params:{
-                                openid:this.oid
-                            }
-                        }).then((res)=>{
-                            if(res.data.status===1){
-                                this.hasmsg=true
-                                this.tipsmsg='分享成功'
-                                this.tpperson.total = parseInt(this.tpperson.total)+5
-                            }
-                        })
-                }
-                });
-
-                wx.onMenuShareAppMessage({
-                title: '童年画语绘画比赛-东方童画', // 分享标题
-                desc: '东方童画绘画比赛', // 分享描述
-                link: curl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                imgUrl: '', // 分享图标
-                type: '', // 分享类型,music、video或link，不填默认为link
-                dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
-                success: ()=> {
-                    this.$axios.get(`${test}/actives/shareAppAdd`,{
-                        params:{
-                            openid:this.oid
-                        }
-                    }).then((res)=>{
-                        if(res.data.status===1){
-                            this.hasmsg=true
-                            this.tipsmsg='分享成功'
-                            this.tpperson.total = parseInt(this.tpperson.total)+5
-                        }
-                    })
-                }
-                });
-            });
-
-            let curlSplit = curl.split('room?')[1];
-            this.lid = curlSplit.split('with')[0];
-            // this.rank = curlSplit.split('with')[1].split('end')[0];
-            this.newid = this.lid
+            this.$nextTick(()=>{
+                
             
-            this.$axios.get(`${test}/actives/ParticipantInfo`, {
-                params:{
-                    id:this.newid
-                }
-            }).then((res)=> {
-                this.rank = res.data.content.rank
-                this.ranking = parseInt(this.rank);
-                // alert(this.ranking)
-                this.author = res.data.content
-                this.myvoice = res.data.content.works_voice
-                if(res.data.content.voice_second==='0'){
-                    this.hasvoice=false
-                }else{
-                    this.hasvoice=true
-                }
 
-                                // alert(this.rank)
-                if(this.rank.length===1){
-                    this.gallerypage=1
-                    this.worknumber = parseInt(this.rank);
-                }else if(this.rank.length===2){
-                    
-                    if(parseInt(this.rank.charAt(1))===0){
-                        this.worknumber=10
-                        this.gallerypage = parseInt(this.rank.charAt(0));
-                    }else{
-                        this.worknumber = parseInt(this.rank.charAt(1))
-                        this.gallerypage = parseInt(this.rank.charAt(0))+1;
-                    }
-                }else if(this.rank.length===3){
-                    if(parseInt(this.rank.charAt(2))===0){
-                        this.worknumber=10
-                        this.gallerypage = parseInt(this.rank.charAt(0)+this.rank.charAt(1));
-                    }else{
-                        this.worknumber = parseInt(this.rank.charAt(2))
-                        this.gallerypage = parseInt(this.rank.charAt(0)+this.rank.charAt(1))+1;
-                    }
-                    // alert(this.gallerypage)
-                }else{
-                    if(parseInt(this.rank.charAt(4))===0){
-                        this.worknumber=10
-                        this.gallerypage = parseInt(this.rank.charAt(0)+this.rank.charAt(1)+this.rank.charAt(2));
-                    }else{
-                        this.worknumber = parseInt(this.rank.charAt(3))
-                        this.gallerypage = parseInt(this.rank.charAt(0)+this.rank.charAt(1)+this.rank.charAt(2))+1;
-                    }
-                    // alert(this.gallerypage)
-                }
-                // alert(this.worknumber)
-                this.pagegroup.push(this.gallerypage)
 
-                                // 列表
-                this.$axios.get(`${test}/actives/picSayList`, {
+                let curlSplit = curl.split('room?')[1];
+                this.lid = curlSplit.split('with')[0];
+                // this.rank = curlSplit.split('with')[1].split('end')[0];
+                this.newid = this.lid
+                
+                this.$axios.get(`${test}/actives/ParticipantInfo`, {
                     params:{
-                        page:this.gallerypage
+                        id:this.newid
                     }
                 }).then((res)=> {
-                    // setTimeout(()=> {
-                    this.playlist = res.data.content.data
-                    // }, 200);
-                    
-                    // let num = this.worknumber.toString();
-                    let num = this.ranking.toString();
-                    if(num.charAt(num.length-1)==='1'){
-                        if(this.gallerypage>1){
-                            this.gallerypage-=1 
-                            this.pagegroup.push(this.gallerypage)
-                            this.prevgroup();
-                            this.swiper.updateSlides();
-                        }
-                        
-                    }else if(num.charAt(num.length-1)==='0'){
-                        this.gallerypage+=1 
-                        this.pagegroup.push(this.gallerypage)
-                        this.nextgroup();
-                        this.swiper.updateSlides();
+                    this.rank = res.data.content.rank
+                    this.ranking = parseInt(this.rank);
+                    // alert(this.ranking)
+                    this.author = res.data.content
+                    this.myvoice = res.data.content.works_voice
+                    if(res.data.content.voice_second==='0'){
+                        this.hasvoice=false
                     }else{
-                        
+                        this.hasvoice=true
                     }
-                    this.workmany = this.worknumber
-                    this.playlist.map((value,index,arr)=>{
-                        if(this.worknumber-1===index){
-                            this.currentjf = value.total_vote
-                            this.myvoice = value.works_voice
-                            if(value.voice_second=='0'){
-                                this.hasvoice=false
-                            }else{
-                                this.hasvoice=true
-                            }
-                        }
-                    })
 
-                }).then(()=>{
-                    wx.ready(()=>{ 
-                        if(this.hasvoice===false){
-                            
-                            this.bj = new Audio();
-                            this.bj.src='./static/audio/music.mp3';
-                            setTimeout(()=> {
-                                this.bj.play();
-                                this.voiceplay=false
-                                this.play=true
-                            }, 3000);
-                            
+                                    // alert(this.rank)
+                    if(this.rank.length===1){
+                        this.gallerypage=1
+                        this.worknumber = parseInt(this.rank);
+                    }else if(this.rank.length===2){
+                        
+                        if(parseInt(this.rank.charAt(1))===0){
+                            this.worknumber=10
+                            this.gallerypage = parseInt(this.rank.charAt(0));
                         }else{
-                            this.uservoiceplay();
+                            this.worknumber = parseInt(this.rank.charAt(1))
+                            this.gallerypage = parseInt(this.rank.charAt(0))+1;
                         }
+                    }else if(this.rank.length===3){
+                        if(parseInt(this.rank.charAt(2))===0){
+                            this.worknumber=10
+                            this.gallerypage = parseInt(this.rank.charAt(0)+this.rank.charAt(1));
+                        }else{
+                            this.worknumber = parseInt(this.rank.charAt(2))
+                            this.gallerypage = parseInt(this.rank.charAt(0)+this.rank.charAt(1))+1;
+                        }
+                        // alert(this.gallerypage)
+                    }else{
+                        if(parseInt(this.rank.charAt(4))===0){
+                            this.worknumber=10
+                            this.gallerypage = parseInt(this.rank.charAt(0)+this.rank.charAt(1)+this.rank.charAt(2));
+                        }else{
+                            this.worknumber = parseInt(this.rank.charAt(3))
+                            this.gallerypage = parseInt(this.rank.charAt(0)+this.rank.charAt(1)+this.rank.charAt(2))+1;
+                        }
+                        // alert(this.gallerypage)
+                    }
+                    // alert(this.worknumber)
+                    this.pagegroup.push(this.gallerypage)
+
+                                    // 列表
+                    this.$axios.get(`${test}/actives/picSayList`, {
+                        params:{
+                            page:this.gallerypage
+                        }
+                    }).then((res)=> {
+                        // setTimeout(()=> {
+                        this.playlist = res.data.content.data
+                        // }, 200);
+                        
+                        // let num = this.worknumber.toString();
+                        let num = this.ranking.toString();
+                        if(num.charAt(num.length-1)==='1'){
+                            if(this.gallerypage>1){
+                                this.gallerypage-=1 
+                                this.pagegroup.push(this.gallerypage)
+                                this.prevgroup();
+                                this.swiper.updateSlides();
+                            }
+                            
+                        }else if(num.charAt(num.length-1)==='0'){
+                            this.gallerypage+=1 
+                            this.pagegroup.push(this.gallerypage)
+                            this.nextgroup();
+                            this.swiper.updateSlides();
+                        }else{
+                            
+                        }
+                        this.workmany = this.worknumber
+                        this.playlist.map((value,index,arr)=>{
+                            if(this.worknumber-1===index){
+                                this.currentjf = value.total_vote
+                                this.myvoice = value.works_voice
+                                if(value.voice_second=='0'){
+                                    this.hasvoice=false
+                                }else{
+                                    this.hasvoice=true
+                                }
+                            }
+                        })
+
+                    }).then(()=>{
+                        wx.ready(()=>{ 
+                            if(this.hasvoice===false){
+                                
+                                this.bj = new Audio();
+                                this.bj.src='./static/audio/music.mp3';
+                                setTimeout(()=> {
+                                    this.bj.play();
+                                    this.voiceplay=false
+                                    this.play=true
+                                }, 3000);
+                                
+                            }else{
+                                this.uservoiceplay();
+                            }
+                        })
+                        
                     })
-                    
                 })
-            })
-            
+                wx.ready(()=>{
+                    // setTimeout(()=> {
+                    
+                    this.username = document.getElementsByClassName('swiper-slide-active')[0].getElementsByClassName("username")[0].innerHTML;
+                    this.imgurl = document.getElementsByClassName('swiper-slide-active')[0].getElementsByClassName("workpic")[0].src;
+                    console.log(this.username)
+                    console.log(this.imgurl) 
+
+                    // }, 5000);
+
+                    wx.onMenuShareTimeline({
+                        title: '我是'+this.username+'，我正在参加2018童年画语，快来给我送礼物吧！', // 分享标题
+                        link: curl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                        imgUrl: this.imgurl, // 分享图标
+                        success:  ()=> {
+                            this.$axios.get(`${test}/actives/timelineAdd`,{
+                                params:{
+                                    openid:this.oid
+                                }
+                            }).then((res)=>{
+                                if(res.data.status===1){
+                                    this.hasmsg=true
+                                    this.tipsmsg='分享成功'
+                                    this.tpperson.total = parseInt(this.tpperson.total)+5
+                                }
+                            })
+                        }
+                    });
+
+                    wx.onMenuShareAppMessage({
+                        title: '我是'+this.username+'，我正在参加2018童年画语，快来给我送礼物吧！', // 分享标题
+                        desc: '东方童画绘画比赛', // 分享描述
+                        link: curl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                        imgUrl: this.imgurl, // 分享图标
+                        type: '', // 分享类型,music、video或link，不填默认为link
+                        dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+                        success: ()=> {
+                            this.$axios.get(`${test}/actives/shareAppAdd`,{
+                                params:{
+                                    openid:this.oid
+                                }
+                            }).then((res)=>{
+                                if(res.data.status===1){
+                                    this.hasmsg=true
+                                    this.tipsmsg='分享成功'
+                                    this.tpperson.total = parseInt(this.tpperson.total)+5
+                                }
+                            })
+                        }
+                        });
+                    });
+
+                })
 
 
+            // setTimeout(()=> {
 
+            // }, 6000);
 
             console.log(this.worknumber)
-            
-
             // 礼物列表
             this.$axios.get(`${test}/actives/voteList`, {
                 params:{
@@ -984,6 +1006,16 @@
                     document.getElementById('btnleft').style.visibility="hidden";
                 }
 
+                setTimeout(()=> {
+                    
+                
+                this.username = document.getElementsByClassName('swiper-slide-active')[0].getElementsByClassName("username")[0].innerHTML;
+                this.imgurl = document.getElementsByClassName('swiper-slide-active')[0].getElementsByClassName("workpic")[0].src;
+                console.log(this.username)
+                console.log(this.imgurl)
+
+                }, 500);
+
 
 
                 let num = this.ranking.toString();
@@ -1074,7 +1106,17 @@
                     this.voiceplay=false
                 }
 
+                setTimeout(()=> {
+                    
                 
+                this.username = document.getElementsByClassName('swiper-slide-active')[0].getElementsByClassName("username")[0].innerHTML;
+                this.imgurl = document.getElementsByClassName('swiper-slide-active')[0].getElementsByClassName("workpic")[0].src;
+                
+                console.log(this.username)
+                console.log(this.imgurl)
+                
+                }, 500);
+
                 // this.playlist = this.alllist
                 document.getElementById('btnleft').style.visibility="visible";
                 // let num = this.workmany.toString();

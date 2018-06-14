@@ -11,11 +11,14 @@
                         <div class="info-inner">
                             <p class="name b">{{info.childname}}</p>
                             <span class="s1">
-                                <i class="group1" v-if="group===1">幼儿组</i> 
+                                
+                                <i class="group1">{{info.group_type}}</i> 
+                                <!--<i class="group1" v-if="group===1">幼儿组</i> 
                                 <i class="group2" v-if="group===2">少年组</i> 
-                                <i class="group3" v-if="group===3">特别组</i> 
+                                <i class="group3" v-if="group===3">特别组</i> -->
                                 <em>{{info.age}}岁，{{info.sex}}</em>
                             </span>
+                            <p class="p2">编号:{{info.number}}</p>
                             <p class="p2">{{info.province}}{{info.city}}</p>
                             <p class="p2">{{info.organization}}</p>
                         </div>
@@ -86,7 +89,7 @@
                 </li>
             </ul>
         </div>
-        <p class="bottom tc">
+        <p class="bottom tc" @click="gotest()">
             如有疑问拨打客服电话：<a href="tel:400-895-6006">400-895-6006</a>
         </p>
         <p class="hehe hide" @click="test()">test</p>
@@ -183,6 +186,9 @@
             
         },
         methods:{
+            gotest(){
+                this.push('acthome');
+            },
             gowork(){
                 // if(this.picStatus==='yes'){
                 //     this.$router.push('upload?fixed');

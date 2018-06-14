@@ -52,7 +52,7 @@
                 <div class="popinner">
                     <img class="vm endpic" src="../public/images/end.png" alt="">
                     <p class="p2 tc">线上评选活动已结束</p>
-                    <img class="lookbtn vm" src="../public/images/resultbtn.png" alt="">
+                    <img class="lookbtn vm playover" src="../public/images/resultbtn.png" alt="">
                     <img @click="closepop3()" class="vm close" src="../public/images/popclose2.png" alt="">
                 </div>
             </div>
@@ -98,6 +98,14 @@
         },
         created(){
             var curl = window.location.href;
+
+
+            if(curl.indexOf('?from')>-1){
+                let newurl1 = curl.split('?from')[0];
+                let newurl2 = curl.split('#')[1];
+                window.location.href=newurl1+'#'+newurl2
+            }
+            
             let localoid =localStorage.getItem('ooid');
             if(localoid){
                 this.oid=localoid

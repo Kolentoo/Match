@@ -19,6 +19,7 @@ export default {
     }
   },
   mounted(){
+
     let curl = window.location.href;
     let share = document.getElementById('share');
     var panda = 'http://student.dfth.com'
@@ -50,7 +51,6 @@ export default {
                   link: 'http://student.dfth.com/market/index.html#/?new', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                   imgUrl: '', // 分享图标
                   success: function () {
-                    console.log(123)
                   // 用户点击了分享后执行的回调函数
                 }
               });
@@ -63,7 +63,6 @@ export default {
                 type: '', // 分享类型,music、video或link，不填默认为link
                 dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
                 success: function () {
-                  console.log(456)
                 // 用户点击了分享后执行的回调函数
                 }
               });
