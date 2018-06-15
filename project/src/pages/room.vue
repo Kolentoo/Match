@@ -587,7 +587,7 @@
 
                     wx.onMenuShareAppMessage({
                         title: '我是'+this.sharename+'，我正在参加2018童年画语，快来给我送礼物吧！', // 分享标题
-                        desc: '东方童画绘画比赛', // 分享描述
+                        desc: '2018童年画语儿童绘画比赛', // 分享描述
                         link: curl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                         imgUrl: this.shareimg, // 分享图标
                         type: '', // 分享类型,music、video或link，不填默认为link
