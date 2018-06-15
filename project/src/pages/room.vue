@@ -166,9 +166,9 @@
             <img class="g10 vm" :src="originalpic" alt="">
         </div>
 
-        <swiper :options="swiperOption" ref="mySwiper" @slideNextTransitionStart="next()" @slidePrevTransitionStart= "prev()">
+        <swiper :options="swiperOption" ref="mySwiper" >
             <!-- slides -->
-            <swiper-slide v-for="(room,idx) in playlist" :key="idx">
+            <swiper-slide v-for="(room,idx) in playlist" :key="idx" class="swiper-no-swiping">
                 <img @click="popcancel()" :class="['bjpic vm',{'coming':coming}]" src="../../src/public/images/bj13.jpg" alt="">
                 <!--<img v-show="!bjshow" :class="['bjpic showpic vm']" src="../../src/public/images/bj13.jpg" alt="">-->
                 <p class="recorddata hide">{{room.id}}</p>
@@ -205,7 +205,8 @@
             <div class="swiper-pagination spagination"  slot="pagination"></div>
             <div class="swiper-scrollbar hide"   slot="scrollbar"></div>
         </swiper>
-
+        <!--@slideNextTransitionStart="next()"-->
+        <!--@slidePrevTransitionStart= "prev()"-->
         <button class="btn btn--nav btn--nav-left btn-left" id="btnleft" @click="prev()">
             <img class="btnpic vm g10" src="../public/images/prev.png" alt="">
         </button>
@@ -901,22 +902,30 @@
                         // console.log('roomtype'+roomtype);
                         // if(roomtype+1===minN){
                             this.gallerypage = parseInt(num.charAt(0));
-                            this.pagegroup.push(this.gallerypage)
-                            this.prevgroup();
-                            this.swiper.updateSlides();
+                            if(this.gallerypage<minN){
+                                this.pagegroup.push(this.gallerypage)
+                                this.prevgroup();
+                                this.swiper.updateSlides();
+                            }
+
                         // }
 
                     }else if(num.length===3){
                             this.gallerypage = parseInt(num.charAt(0)+num.charAt(1));
-                            this.pagegroup.push(this.gallerypage)
-                            this.prevgroup();
-                            this.swiper.updateSlides();
+                            
+                            if(this.gallerypage<minN){
+                                this.pagegroup.push(this.gallerypage)
+                                this.prevgroup();
+                                this.swiper.updateSlides();
+                            }
                             
                     }else {
                             this.gallerypage = parseInt(num.charAt(0)+num.charAt(1)+num.charAt(2));
-                            this.pagegroup.push(this.gallerypage)
-                            this.prevgroup();
-                            this.swiper.updateSlides();
+                            if(this.gallerypage<minN){
+                                this.pagegroup.push(this.gallerypage)
+                                this.prevgroup();
+                                this.swiper.updateSlides();
+                            }
                     }
 
                 }

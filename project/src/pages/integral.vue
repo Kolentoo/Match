@@ -121,7 +121,7 @@
             wx.ready(()=>{
 
                 wx.onMenuShareTimeline({
-                    title: '童年画语绘画比赛-东方童画', // 分享标题
+                    title: '2018童年画语-线上个人艺术馆', // 分享标题
                     link: 'http://student.dfth.com/market/index.html#/acthome', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                     imgUrl: '', // 分享图标
                     success:  ()=> {
@@ -142,10 +142,10 @@
                 });
 
                 wx.onMenuShareAppMessage({
-                title: '童年画语绘画比赛-东方童画', // 分享标题
-                desc: '东方童画绘画比赛', // 分享描述
+                title: '2018童年画语-线上个人艺术馆', // 分享标题
+                desc: '2018童年画语儿童绘画比赛', // 分享描述
                 link: 'http://student.dfth.com/market/index.html#/acthome', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                imgUrl: '', // 分享图标
+                imgUrl: 'http://student.dfth.com/market/static/img/shareimg.png', // 分享图标
                 type: '', // 分享类型,music、video或link，不填默认为link
                 dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
                 success: ()=> {
