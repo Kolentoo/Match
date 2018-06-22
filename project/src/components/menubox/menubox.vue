@@ -49,7 +49,7 @@
                 }, 100);
             },
             lessongo(){
-                window.location.href="http://m.dfth.com/index"
+                window.location.href="http://landing.dfth.com/market/mobile/index.html?tgid=baidusj"
             },
             jfgo(){
                 this.$router.push('integral')
